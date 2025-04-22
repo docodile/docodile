@@ -42,7 +42,9 @@ typedef struct {
   size_t current_line;
 } Lexer;
 
-Token *TokenStreamNext(TokenStream *stream);
+Token TokenStreamNext(TokenStream *stream);
+
+Token TokenStreamNext(TokenStream *stream) { return stream->stream[stream->pos++]; }
 
 TokenStream *Lex(FILE *input);
 
