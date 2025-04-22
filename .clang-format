@@ -1,0 +1,4 @@
+BasedOnStyle: Google
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: true
+ColumnLimit: 120
