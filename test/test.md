@@ -1,14 +1,14 @@
-# This is a H1
+# This is a H1 heading
 
-## This is a H2
+## This is a H2 heading
 
-### This is a H3
+### This is a H3 heading
 
-#### This is a H4
+#### This is a H4 heading
 
-##### This is a H5
+##### This is a H5 heading
 
-###### This is a H6
+###### This is a H6 heading
 
 This is a paragraph.
 
@@ -16,14 +16,14 @@ This is a paragraph.
 
 _This is italics._
 
-*This is also italics.*
+_This is also italics._
 
-__This is bold.__
+**This is bold.**
 
 **This is also bold.**
 
-___This is bold and italics.___
+**_This is bold and italics._**
 
-***This is also bold and italics.***
+**_This is also bold and italics._**
 
-This is a paragraph with [links](https://google.com) and *emphasis*. Multiple __kinds__ _of_ ***emphasis***.
+This is a paragraph with [links](https://google.com) and _emphasis_. Multiple **kinds** _of_ **_emphasis_**.

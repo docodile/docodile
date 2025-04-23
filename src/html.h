@@ -49,26 +49,33 @@ void ParseLink(Token token) {
   printf("<a href=\"%s\">%s</a>", href, label);
 }
 
+void RenderInlineToken(Token token) {
+  switch (token.type) {
+    case TOKEN_LINK:
+      ParseLink(token);
+      break;
+    case TOKEN_ITALICS: {
+      printf("<em>");
+      TokenStream *stream = LexInline(token);
+      RenderInlineHtml(stream);
+      printf("</em>");
+    } break;
+    case TOKEN_BOLD: {
+      printf("<strong>");
+      TokenStream *stream = LexInline(token);
+      RenderInlineHtml(stream);
+      printf("</strong>");
+    } break;
+    default:
+      printf("%.*s", token.length, token.lexeme);
+  }
+}
+
 void RenderInlineHtml(TokenStream *stream) {
   for (size_t i = 0; i < stream->count; i++) {
     Token token = TokenStreamNext(stream);
 
-    switch (token.type) {
-      case TOKEN_LINK:
-        ParseLink(token);
-        break;
-      case TOKEN_ITALICS:
-        printf("<em>%.*s</em>", token.length, token.lexeme);
-        break;
-      case TOKEN_BOLD:
-        printf("<strong>%.*s</strong>", token.length, token.lexeme);
-        break;
-      case TOKEN_BOLD_AND_ITALICS:
-        printf("<strong><em>%.*s</em></strong>", token.length, token.lexeme);
-        break;
-      default:
-        printf("%.*s", token.length, token.lexeme);
-    }
+    RenderInlineToken(token);
   }
 }
 

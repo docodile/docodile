@@ -1,10 +1,10 @@
 #ifndef LEX_H
 #define LEX_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "logger.h"
 
@@ -49,10 +49,10 @@ typedef struct {
 } Lexer;
 
 Token TokenStreamNext(TokenStream *stream);
+TokenStream *Lex(FILE *input);
 
 Token TokenStreamNext(TokenStream *stream) { return stream->stream[stream->pos++]; }
 
-TokenStream *Lex(FILE *input);
 static Token TokenNew(int line) { return (Token){.type = TOKEN_UNKNOWN, .length = 0, .lexeme = NULL, .line = line}; }
 
 static void Advance(Lexer *lexer) { fgetc(lexer->input); }
@@ -64,6 +64,7 @@ static char Peek(Lexer *lexer) {
 
   return c;
 }
+
 static TokenStream *TokenStreamNew();
 static Lexer LexerNew(FILE *input) {
   TokenStream *stream = (TokenStream *)malloc(sizeof(TokenStream));
@@ -73,17 +74,31 @@ static Lexer LexerNew(FILE *input) {
 
   return (Lexer){.input = input, .stream = stream, .pos = 0, .current_line = 1, .current_token = TokenNew(0)};
 }
+
 static void NewLine(Lexer *lexer) {
   if (Peek(lexer) == '\n') {
     Advance(lexer);
   }
 }
+
 static void Whitespace(Lexer *lexer) {
   char c;
   while ((c = Peek(lexer)) == ' ') {
     Advance(lexer);
   }
 }
+
+static int RepeatsMax(Lexer *lexer, char expected, int max) {
+  int count = 0;
+
+  while (Peek(lexer) == expected && count < max) {
+    Advance(lexer);
+    count++;
+  }
+
+  return count;
+}
+
 static int Repeats(Lexer *lexer, char expected) {
   int count = 0;
 
@@ -94,18 +109,6 @@ static int Repeats(Lexer *lexer, char expected) {
 
   return count;
 }
-
-// static char *ConsumeLine(Lexer *lexer) {
-//   char *buffer = malloc(MAX_LINE);
-
-//   int count = 0;
-//   char c;
-//   while ((c = fgetc(lexer->input)) != EOF && c != '\n') {
-//     buffer[count++] = c;
-//   }
-//   buffer[count] = '\0';
-//   return buffer;
-// }
 
 static char *ConsumeUntilAny(Lexer *lexer, char *ends, bool inclusive) {
   char *buffer = malloc(MAX_LINE);
@@ -214,20 +217,26 @@ static int min(int a, int b) {
   return a;
 }
 
+// TODO Handle mixed formats (* and _).
 static void LexEmphasis(Lexer *lexer) {
   char format  = Peek(lexer);
   int opening  = Repeats(lexer, format);
-  char *lexeme = ConsumeUntil(lexer, format, false);
+  char *inner  = ConsumeUntil(lexer, format, false);
   int closing  = Repeats(lexer, format);
-
   int matching = min(opening, closing);
+  int surplus  = opening - min(2, opening);
 
   TokenType type;
   if (matching == 0) type = TOKEN_TEXT;
   if (matching == 1) type = TOKEN_ITALICS;
-  if (matching == 2) type = TOKEN_BOLD;
-  // HACK Not the proper way of doing this, but for now bold and italics is the only nested case we need to handle.
-  if (matching > 2) type = TOKEN_BOLD_AND_ITALICS;
+  if (matching >= 2) type = TOKEN_BOLD;
+
+  char *lexeme = malloc(MAX_LINE);
+  char replace[100];
+  for (int i = 0; i < surplus; i++) replace[i] = format;
+  replace[surplus] = '\0';
+
+  sprintf(lexeme, "%s%s", replace, inner);
 
   lexer->current_token.type   = type;
   lexer->current_token.lexeme = lexeme;
