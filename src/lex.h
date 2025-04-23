@@ -19,6 +19,8 @@ typedef enum {
   TOKEN_H5,
   TOKEN_H6,
   TOKEN_P,
+  TOKEN_TEXT,
+  TOKEN_LINK
 } TokenType;
 
 typedef struct {
@@ -47,6 +49,7 @@ Token TokenStreamNext(TokenStream *stream);
 Token TokenStreamNext(TokenStream *stream) { return stream->stream[stream->pos++]; }
 
 TokenStream *Lex(FILE *input);
+static Token TokenNew(int line) { return (Token){.type = TOKEN_UNKNOWN, .length = 0, .lexeme = NULL, .line = line}; }
 
 static void Advance(Lexer *lexer) { fgetc(lexer->input); }
 
@@ -61,7 +64,9 @@ static TokenStream *TokenStreamNew();
 static Lexer LexerNew(FILE *input) {
   TokenStream *stream = (TokenStream *)malloc(sizeof(TokenStream));
   stream->stream      = malloc(MAX_TOKENS * sizeof(Token));
-  return (Lexer){.input = input, .stream = stream, .pos = 0, .current_line = 0};
+  stream->count       = 0;
+
+  return (Lexer){.input = input, .stream = stream, .pos = 0, .current_line = 1, .current_token = TokenNew(0)};
 }
 static void NewLine(Lexer *lexer) {
   if (Peek(lexer) == '\n') {
@@ -96,17 +101,14 @@ static char *ConsumeLine(Lexer *lexer) {
   return buffer;
 }
 
-static Token TokenNew(int line) { return (Token){.type = TOKEN_UNKNOWN, .length = 0, .lexeme = NULL, .line = line}; }
-
 static void CommitToken(Lexer *lexer) {
   Token token = lexer->current_token;
   LOG_DEBUG("Created token on line %d: %d - %s - %d", token.line, token.type, token.lexeme, token.length);
   lexer->stream->stream[lexer->stream->count++] = token;
+  lexer->current_token                          = TokenNew(lexer->current_line++);
 }
 
 static void LexHeading(Lexer *lexer) {
-  lexer->current_token = TokenNew(lexer->current_line++);
-
   int count = Repeats(lexer, '#');
   switch (count) {
     case 1:
@@ -139,7 +141,6 @@ static void LexHeading(Lexer *lexer) {
 }
 
 static void LexParagraph(Lexer *lexer) {
-  lexer->current_token        = TokenNew(lexer->current_line++);
   lexer->current_token.type   = TOKEN_P;
   lexer->current_token.lexeme = ConsumeLine(lexer);
   lexer->current_token.length = strlen(lexer->current_token.lexeme);
@@ -160,6 +161,42 @@ TokenStream *Lex(FILE *input) {
         break;
       default:
         LexParagraph(&lexer);
+        break;
+    }
+  }
+
+  return lexer.stream;
+}
+
+static void LexText(Lexer *lexer) {
+  lexer->current_token.type   = TOKEN_TEXT;
+  lexer->current_token.lexeme = ConsumeLine(lexer);
+  lexer->current_token.length = strlen(lexer->current_token.lexeme);
+  NewLine(lexer);
+  CommitToken(lexer);
+}
+
+static void LexLink(Lexer *lexer) {
+  lexer->current_token.type   = TOKEN_LINK;
+  lexer->current_token.lexeme = ConsumeLine(lexer);
+  lexer->current_token.length = strlen(lexer->current_token.lexeme);
+  NewLine(lexer);
+  CommitToken(lexer);
+}
+
+TokenStream *LexInline(Token token) {
+  LOG_DEBUG("TEST");
+  FILE *f     = fmemopen(token.lexeme, token.length, "r");
+  Lexer lexer = LexerNew(f);
+
+  char c;
+  while ((c = Peek(&lexer)) != EOF && c != '\n') {
+    switch (c) {
+      case '[':
+        LexLink(&lexer);
+        break;
+      default:
+        LexText(&lexer);
         break;
     }
   }

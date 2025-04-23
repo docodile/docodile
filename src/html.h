@@ -2,8 +2,11 @@
 #define HTMLGENERATOR_H
 
 #include "lex.h"
+#include "logger.h"
 
-void GenerateHtml(TokenStream *stream) {
+void RenderInlineHtml(TokenStream *stream);
+
+void RenderHtml(TokenStream *stream) {
   for (size_t i = 0; i < stream->count; i++) {
     Token token = TokenStreamNext(stream);
 
@@ -27,9 +30,18 @@ void GenerateHtml(TokenStream *stream) {
         printf("<h6>%.*s</h6>\n", (int)token.length, token.lexeme);
         break;
       default:
-        printf("<p>%.*s</p>\n", (int)token.length, token.lexeme);
+        TokenStream *stream = LexInline(token);
+        printf("<p>");
+        RenderInlineHtml(stream);
+        printf("</p>\n");
         break;
     }
+  }
+}
+
+void RenderInlineHtml(TokenStream *stream) {
+  for (size_t i = 0; i < stream->count; i++) {
+    Token token = TokenStreamNext(stream);
   }
 }
 

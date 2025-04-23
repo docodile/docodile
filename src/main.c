@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "htmlgenerator.h"
+#include "html.h"
 #include "lex.h"
 
 int main(void) {
@@ -8,7 +8,7 @@ int main(void) {
 
   TokenStream *token_stream = Lex(f);
 
-  GenerateHtml(token_stream);
+  RenderHtml(token_stream);
 
   return 0;
 }
