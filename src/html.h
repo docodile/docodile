@@ -39,9 +39,36 @@ void RenderHtml(TokenStream *stream) {
   }
 }
 
+// HACK This is a dirty sscanf implementation.
+void ParseLink(Token token) {
+  char href[2500];
+  char label[2500];
+
+  sscanf(token.lexeme, "[%2500[^]]](%2500[^)])", label, href);
+
+  printf("<a href=\"%s\">%s</a>", href, label);
+}
+
 void RenderInlineHtml(TokenStream *stream) {
   for (size_t i = 0; i < stream->count; i++) {
     Token token = TokenStreamNext(stream);
+
+    switch (token.type) {
+      case TOKEN_LINK:
+        ParseLink(token);
+        break;
+      case TOKEN_ITALICS:
+        printf("<em>%.*s</em>", token.length, token.lexeme);
+        break;
+      case TOKEN_BOLD:
+        printf("<strong>%.*s</strong>", token.length, token.lexeme);
+        break;
+      case TOKEN_BOLD_AND_ITALICS:
+        printf("<strong><em>%.*s</em></strong>", token.length, token.lexeme);
+        break;
+      default:
+        printf("%.*s", token.length, token.lexeme);
+    }
   }
 }
 

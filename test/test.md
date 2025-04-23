@@ -13,3 +13,17 @@
 This is a paragraph.
 
 [This is a link.](https://google.com)
+
+_This is italics._
+
+*This is also italics.*
+
+__This is bold.__
+
+**This is also bold.**
+
+___This is bold and italics.___
+
+***This is also bold and italics.***
+
+This is a paragraph with [links](https://google.com) and *emphasis*. Multiple __kinds__ _of_ ***emphasis***.

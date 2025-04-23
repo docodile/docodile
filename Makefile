@@ -13,10 +13,13 @@ $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	@clang -o $@ $< -lc
+	@gcc -o $@ $< -lc
 
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)
+
+clean:
+	@rm -rf $(BUILD_DIR)
 
 test: $(ALL_TESTS)
 
