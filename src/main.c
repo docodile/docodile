@@ -11,7 +11,7 @@ int main(void) {
   long length = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  char* buffer = malloc(length + 1);
+  char *buffer = malloc(length + 1);
   fread(buffer, 1, length, file);
   buffer[length] = '\0';
 

@@ -54,7 +54,9 @@ Token TokenStreamNext(TokenStream *stream);
 void TokenStreamFree(TokenStream *stream);
 TokenStream *Lex(char *input);
 
-Token TokenStreamNext(TokenStream *stream) { return stream->stream[stream->pos++]; }
+Token TokenStreamNext(TokenStream *stream) {
+  return stream->stream[stream->pos++];
+}
 
 void TokenStreamFree(TokenStream *stream) {
   if (stream->stream) {
@@ -67,7 +69,12 @@ void TokenStreamFree(TokenStream *stream) {
 }
 
 static Token TokenNew(char *input, size_t pos) {
-  return (Token){.input = input, .type = TOKEN_UNKNOWN, .length = 0, .start = pos, .end = pos, .line = 0};
+  return (Token){.input  = input,
+                 .type   = TOKEN_UNKNOWN,
+                 .length = 0,
+                 .start  = pos,
+                 .end    = pos,
+                 .line   = 0};
 }
 
 static void Advance(Lexer *lexer) { lexer->pos++; }
@@ -135,13 +142,17 @@ static size_t ConsumeUntilAny(Lexer *lexer, const char *ends, bool inclusive) {
   return lexer->pos;
 }
 
-static size_t ConsumeUntil(Lexer *lexer, char end, bool inclusive) { return ConsumeUntilAny(lexer, &end, inclusive); }
+static size_t ConsumeUntil(Lexer *lexer, char end, bool inclusive) {
+  return ConsumeUntilAny(lexer, &end, inclusive);
+}
 
-static size_t ConsumeLine(Lexer *lexer) { return ConsumeUntil(lexer, '\n', false); }
+static size_t ConsumeLine(Lexer *lexer) {
+  return ConsumeUntil(lexer, '\n', false);
+}
 
 static void CommitToken(Lexer *lexer) {
   lexer->stream->stream[lexer->stream->count++] = lexer->current_token;
-  lexer->current_token                          = TokenNew(lexer->input, lexer->pos);
+  lexer->current_token = TokenNew(lexer->input, lexer->pos);
 }
 
 static void LexHeading(Lexer *lexer) {
