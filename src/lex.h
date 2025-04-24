@@ -24,12 +24,13 @@ typedef enum {
   TOKEN_LINK,
   TOKEN_ITALICS,
   TOKEN_BOLD,
-  TOKEN_BOLD_AND_ITALICS,
 } TokenType;
 
 typedef struct {
+  char *input;
   TokenType type;
-  const char *lexeme;
+  size_t start;
+  size_t end;
   size_t length;
   size_t line;
 } Token;
@@ -40,39 +41,54 @@ typedef struct {
   Token *stream;
 } TokenStream;
 
-typedef struct {
-  FILE *input;
+typedef struct Lexer {
+  char *input;
   TokenStream *stream;
   size_t pos;
+  size_t end;
   Token current_token;
   size_t current_line;
 } Lexer;
 
 Token TokenStreamNext(TokenStream *stream);
-TokenStream *Lex(FILE *input);
+void TokenStreamFree(TokenStream *stream);
+TokenStream *Lex(char *input);
 
 Token TokenStreamNext(TokenStream *stream) { return stream->stream[stream->pos++]; }
 
-static Token TokenNew(int line) { return (Token){.type = TOKEN_UNKNOWN, .length = 0, .lexeme = NULL, .line = line}; }
+void TokenStreamFree(TokenStream *stream) {
+  if (stream->stream) {
+    free(stream->stream);
+  }
 
-static void Advance(Lexer *lexer) { fgetc(lexer->input); }
-
-static char Peek(Lexer *lexer) {
-  char c = fgetc(lexer->input);
-
-  if (c != EOF) ungetc(c, lexer->input);
-
-  return c;
+  if (stream) {
+    free(stream);
+  }
 }
 
-static TokenStream *TokenStreamNew();
-static Lexer LexerNew(FILE *input) {
+static Token TokenNew(char *input, size_t pos) {
+  return (Token){.input = input, .type = TOKEN_UNKNOWN, .length = 0, .start = pos, .end = pos, .line = 0};
+}
+
+static void Advance(Lexer *lexer) { lexer->pos++; }
+
+static char Peek(Lexer *lexer) {
+  if (lexer->pos >= lexer->end) return '\0';
+  return lexer->input[lexer->pos];
+}
+
+static Lexer LexerNew(char *input, size_t start, size_t end) {
   TokenStream *stream = (TokenStream *)malloc(sizeof(TokenStream));
   stream->stream      = malloc(MAX_TOKENS * sizeof(Token));
   stream->count       = 0;
   stream->pos         = 0;
 
-  return (Lexer){.input = input, .stream = stream, .pos = 0, .current_line = 1, .current_token = TokenNew(0)};
+  return (Lexer){.input         = input,
+                 .stream        = stream,
+                 .pos           = start,
+                 .end           = end,
+                 .current_line  = 1,
+                 .current_token = TokenNew(input, start)};
 }
 
 static void NewLine(Lexer *lexer) {
@@ -110,29 +126,22 @@ static int Repeats(Lexer *lexer, char expected) {
   return count;
 }
 
-static char *ConsumeUntilAny(Lexer *lexer, char *ends, bool inclusive) {
-  char *buffer = malloc(MAX_LINE);
-
-  int count = 0;
-  char c;
-  while ((c = Peek(lexer)) != EOF && strchr(ends, c) == NULL) {
+static size_t ConsumeUntilAny(Lexer *lexer, const char *ends, bool inclusive) {
+  char c = 0;
+  while ((c = Peek(lexer)) != '\0' && strchr(ends, c) == NULL) {
     Advance(lexer);
-    buffer[count++] = c;
   }
   if (inclusive) Advance(lexer);
-  buffer[count] = '\0';
-  return buffer;
+  return lexer->pos;
 }
 
-static char *ConsumeUntil(Lexer *lexer, char end, bool inclusive) { return ConsumeUntilAny(lexer, &end, inclusive); }
+static size_t ConsumeUntil(Lexer *lexer, char end, bool inclusive) { return ConsumeUntilAny(lexer, &end, inclusive); }
 
-static char *ConsumeLine(Lexer *lexer) { return ConsumeUntil(lexer, '\n', true); }
+static size_t ConsumeLine(Lexer *lexer) { return ConsumeUntil(lexer, '\n', false); }
 
 static void CommitToken(Lexer *lexer) {
-  Token token = lexer->current_token;
-  LOG_DEBUG("Created token on line %d: %d - %s - %d", token.line, token.type, token.lexeme, token.length);
-  lexer->stream->stream[lexer->stream->count++] = token;
-  lexer->current_token                          = TokenNew(lexer->current_line++);
+  lexer->stream->stream[lexer->stream->count++] = lexer->current_token;
+  lexer->current_token                          = TokenNew(lexer->input, lexer->pos);
 }
 
 static void LexHeading(Lexer *lexer) {
@@ -159,28 +168,32 @@ static void LexHeading(Lexer *lexer) {
   }
 
   Whitespace(lexer);
-
-  lexer->current_token.lexeme = ConsumeLine(lexer);
-  lexer->current_token.length = strlen(lexer->current_token.lexeme);
-
+  size_t start                = lexer->pos;
+  size_t end                  = ConsumeLine(lexer);
+  lexer->current_token.start  = start;
+  lexer->current_token.end    = end;
+  lexer->current_token.length = end - start;
   NewLine(lexer);
   CommitToken(lexer);
 }
 
 static void LexParagraph(Lexer *lexer) {
   lexer->current_token.type   = TOKEN_P;
-  lexer->current_token.lexeme = ConsumeLine(lexer);
-  lexer->current_token.length = strlen(lexer->current_token.lexeme);
+  size_t start                = lexer->pos;
+  size_t end                  = ConsumeLine(lexer);
+  lexer->current_token.start  = start;
+  lexer->current_token.end    = end;
+  lexer->current_token.length = end - start;
   NewLine(lexer);
   CommitToken(lexer);
 }
 
-TokenStream *Lex(FILE *input) {
-  Lexer lexer = LexerNew(input);
+TokenStream *Lex(char *input) {
+  Lexer lexer = LexerNew(input, 0, strlen(input));
 
   char c;
 
-  while ((c = Peek(&lexer)) != EOF) {
+  while ((c = Peek(&lexer)) != '\0') {
     Whitespace(&lexer);
     switch (c) {
       case '#':
@@ -190,6 +203,8 @@ TokenStream *Lex(FILE *input) {
         LexParagraph(&lexer);
         break;
     }
+    Whitespace(&lexer);
+    NewLine(&lexer);
   }
 
   return lexer.stream;
@@ -197,16 +212,22 @@ TokenStream *Lex(FILE *input) {
 
 static void LexText(Lexer *lexer) {
   lexer->current_token.type   = TOKEN_TEXT;
-  lexer->current_token.lexeme = ConsumeUntilAny(lexer, "[*_", false);
-  lexer->current_token.length = strlen(lexer->current_token.lexeme);
+  size_t start                = lexer->pos;
+  size_t end                  = ConsumeUntilAny(lexer, "[*_\n", false);
+  lexer->current_token.start  = start;
+  lexer->current_token.end    = end;
+  lexer->current_token.length = end - start;
   NewLine(lexer);
   CommitToken(lexer);
 }
 
 static void LexLink(Lexer *lexer) {
   lexer->current_token.type   = TOKEN_LINK;
-  lexer->current_token.lexeme = ConsumeUntil(lexer, ')', true);
-  lexer->current_token.length = strlen(lexer->current_token.lexeme);
+  size_t start                = lexer->pos;
+  size_t end                  = ConsumeUntil(lexer, ')', true);
+  lexer->current_token.start  = start;
+  lexer->current_token.end    = end;
+  lexer->current_token.length = end - start;
   NewLine(lexer);
   CommitToken(lexer);
 }
@@ -217,41 +238,39 @@ static int min(int a, int b) {
   return a;
 }
 
+void TokenPrint(Token *token) {
+  for (size_t i = token->start; i < token->end; i++) {
+    putchar(token->input[i]);
+  }
+}
+
 // TODO Handle mixed formats (* and _).
 static void LexEmphasis(Lexer *lexer) {
   char format  = Peek(lexer);
   int opening  = Repeats(lexer, format);
-  char *inner  = ConsumeUntil(lexer, format, false);
+  size_t start = lexer->pos;
+  size_t end   = ConsumeUntil(lexer, format, false);
   int closing  = Repeats(lexer, format);
   int matching = min(opening, closing);
-  int surplus  = opening - min(2, opening);
 
   TokenType type;
   if (matching == 0) type = TOKEN_TEXT;
   if (matching == 1) type = TOKEN_ITALICS;
   if (matching >= 2) type = TOKEN_BOLD;
 
-  char *lexeme = malloc(MAX_LINE);
-  char replace[100];
-  for (int i = 0; i < surplus; i++) replace[i] = format;
-  replace[surplus] = '\0';
-
-  sprintf(lexeme, "%s%s", replace, inner);
-
   lexer->current_token.type   = type;
-  lexer->current_token.lexeme = lexeme;
-  lexer->current_token.length = strlen(lexeme);
+  lexer->current_token.start  = start;
+  lexer->current_token.end    = end;
+  lexer->current_token.length = end - start;
 
   CommitToken(lexer);
 }
 
-TokenStream *LexInline(Token token) {
-  LOG_DEBUG("TEST");
-  FILE *f     = fmemopen(token.lexeme, token.length, "r");
-  Lexer lexer = LexerNew(f);
+TokenStream *LexInline(Token *token) {
+  Lexer lexer = LexerNew(token->input, token->start, token->end);
 
   char c;
-  while ((c = Peek(&lexer)) != EOF && c != '\n') {
+  while ((c = Peek(&lexer)) != '\0' && c != '\n') {
     switch (c) {
       case '[':
         LexLink(&lexer);
