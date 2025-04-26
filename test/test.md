@@ -34,3 +34,5 @@ This should be a separate paragraph from the line above it.
 
 This should be in the same paragraph as the line below
 but there should be a break.
+
+> This is a quote.

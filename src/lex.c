@@ -11,7 +11,10 @@ static Token TokenNew(char *input, size_t pos) {
 
 static Token TokenNull() { return (Token){.input = NULL, .type = TOKEN_NULL}; }
 
-static void Advance(Lexer *lexer) { lexer->pos++; }
+static void Advance(Lexer *lexer) {
+  assert(lexer->pos < lexer->end);
+  lexer->pos++;
+}
 
 static char Peek(Lexer *lexer) {
   if (lexer->pos >= lexer->end) return '\0';
@@ -25,21 +28,7 @@ static void NewLine(Lexer *lexer) {
 }
 
 static void Whitespace(Lexer *lexer) {
-  char c;
-  while ((c = Peek(lexer)) == ' ') {
-    Advance(lexer);
-  }
-}
-
-static int RepeatsMax(Lexer *lexer, char expected, int max) {
-  int count = 0;
-
-  while (Peek(lexer) == expected && count < max) {
-    Advance(lexer);
-    count++;
-  }
-
-  return count;
+  while (Peek(lexer) == ' ') Advance(lexer);
 }
 
 static int Repeats(Lexer *lexer, char expected) {
@@ -62,12 +51,8 @@ static size_t ConsumeUntilAny(Lexer *lexer, const char *ends, bool inclusive) {
   return lexer->pos;
 }
 
-static size_t ConsumeUntil(Lexer *lexer, char end, bool inclusive) {
-  return ConsumeUntilAny(lexer, &end, inclusive);
-}
-
 static size_t ConsumeLine(Lexer *lexer) {
-  return ConsumeUntil(lexer, '\n', false);
+  return ConsumeUntilAny(lexer, "\n", false);
 }
 
 static Token LexHeading(Lexer *lexer) {
@@ -112,10 +97,22 @@ static Token LexParagraph(Lexer *lexer) {
   size_t end   = ConsumeLine(lexer);
 
   NewLine(lexer);
+  size_t count = 0;
   char c;
   while ((c = Peek(lexer)) != '\0' && c != '\n') {
+    if (count > 2) {
+      break;
+    }
     end = ConsumeLine(lexer);
     NewLine(lexer);
+    count++;
+  }
+
+  if (count > 2) {
+    fprintf(stderr, "Something went wrong.\n");
+    fprintf(stderr, "=== DEBUG START ===\n");
+    fprintf(stderr, "lexer->pos: %d\n", lexer->pos);
+    fprintf(stderr, "==== DEBUG END ====\n");
   }
 
   token.start  = start;
@@ -139,7 +136,7 @@ static Token LexLink(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_LINK;
   size_t start = lexer->pos;
-  size_t end   = ConsumeUntil(lexer, ')', true);
+  size_t end   = ConsumeUntilAny(lexer, ")", true);
   token.start  = start;
   token.end    = end;
   token.length = end - start;
@@ -159,15 +156,16 @@ static Token LexBreak(Lexer *lexer) {
   return token;
 }
 
-#define MIN(a, b) a > b ? b : a
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
 
 static Token LexEmphasis(Lexer *lexer) {
-  char format  = Peek(lexer);
-  int opening  = Repeats(lexer, format);
-  size_t start = lexer->pos;
-  size_t end   = ConsumeUntil(lexer, format, false);
-  int closing  = Repeats(lexer, format);
-  int matching = MIN(opening, closing);
+  char format            = Peek(lexer);
+  int opening            = Repeats(lexer, format);
+  size_t start           = lexer->pos;
+  const char *format_str = (char[]){format, '\0'};
+  size_t end             = ConsumeUntilAny(lexer, format_str, false);
+  int closing            = Repeats(lexer, format);
+  int matching           = MIN(opening, closing);
 
   TokenType type;
   if (matching == 0) type = TOKEN_TEXT;
@@ -186,11 +184,72 @@ Lexer LexerNew(char *input, size_t start, size_t end) {
   return (Lexer){.input = input, .pos = start, .end = end, .current_line = 1};
 }
 
+static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
+  fprintf(stderr, "=== DEBUG START ===\n");
+  fprintf(stderr, "%s\n", is_inline ? "INLINE" : "BLOCK");
+  switch (token->type) {
+    case TOKEN_BOLD:
+      fprintf(stderr, "token->type: TOKEN_BOLD\n");
+      break;
+    case TOKEN_BR:
+      fprintf(stderr, "token->type: TOKEN_BR\n");
+      break;
+    case TOKEN_H1:
+      fprintf(stderr, "token->type: TOKEN_H1\n");
+      break;
+    case TOKEN_H2:
+      fprintf(stderr, "token->type: TOKEN_H2\n");
+      break;
+    case TOKEN_H3:
+      fprintf(stderr, "token->type: TOKEN_H3\n");
+      break;
+    case TOKEN_H4:
+      fprintf(stderr, "token->type: TOKEN_H4\n");
+      break;
+    case TOKEN_H5:
+      fprintf(stderr, "token->type: TOKEN_H5\n");
+      break;
+    case TOKEN_H6:
+      fprintf(stderr, "token->type: TOKEN_H6\n");
+      break;
+    case TOKEN_ITALICS:
+      fprintf(stderr, "token->type: TOKEN_ITALICS\n");
+      break;
+    case TOKEN_LINK:
+      fprintf(stderr, "token->type: TOKEN_LINK\n");
+      break;
+    case TOKEN_NULL:
+      fprintf(stderr, "token->type: TOKEN_NULL\n");
+      break;
+    case TOKEN_P:
+      fprintf(stderr, "token->type: TOKEN_P\n");
+      break;
+    case TOKEN_TEXT:
+      fprintf(stderr, "token->type: TOKEN_TEXT\n");
+      break;
+    case TOKEN_UNKNOWN:
+      fprintf(stderr, "token->type: TOKEN_UNKNOWN\n");
+      break;
+    default:
+      fprintf(stderr, "token->type: [error]\n");
+      break;
+  }
+  fprintf(stderr, "token->start: %zu\n", token->start);
+  fprintf(stderr, "token->end: %zu\n", token->end);
+  fprintf(stderr, "token->length: %zu\n", token->length);
+  fprintf(stderr, "lexeme: \033[34m%.*s\033[0m\n", token->length,
+          &token->input[token->start]);
+
+  fprintf(stderr, "lexer->pos: %zu\n", lexer->pos);
+  fprintf(stderr, "lexer->end: %zu\n", lexer->end);
+  fprintf(stderr, "==== DEBUG END ====\n");
+  fprintf(stderr, "\n");
+}
+
 Token NextToken(Lexer *lexer) {
   char c = Peek(lexer);
   if (c == '\0') return TokenNull();
 
-  Whitespace(lexer);
   Token token;
   switch (c) {
     case '#':
@@ -203,6 +262,8 @@ Token NextToken(Lexer *lexer) {
   Whitespace(lexer);
   NewLine(lexer);
 
+  DebugInfo(lexer, &token, false);
+
   return token;
 }
 
@@ -210,17 +271,27 @@ Token NextInlineToken(Lexer *lexer) {
   char c = Peek(lexer);
   if (c == '\0') return TokenNull();
 
+  Token token;
+
   switch (c) {
     case '[':
-      return LexLink(lexer);
+      token = LexLink(lexer);
+      break;
     case '*':
     case '_':
-      return LexEmphasis(lexer);
+      token = LexEmphasis(lexer);
+      break;
     case '\n':
-      return LexBreak(lexer);
+      token = LexBreak(lexer);
+      break;
     default:
-      return LexText(lexer);
+      token = LexText(lexer);
+      break;
   }
+
+  DebugInfo(lexer, &token, true);
+
+  return token;
 }
 
 void TokenPrint(Token *token) {

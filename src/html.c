@@ -65,6 +65,7 @@ static void RenderInlineToken(Lexer *lexer, Token *token) {
       break;
     default:
       TokenPrint(token);
+      break;
   }
 }
 

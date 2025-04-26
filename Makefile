@@ -9,7 +9,7 @@ SRC := $(wildcard $(SRC_DIR)/*.c)
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)
-	@gcc -g -o $@ $^ $(LFLAGS) -DLOG_LEVEL=4
+	@gcc -g -o $@ $^ -DLOG_LEVEL=4
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
