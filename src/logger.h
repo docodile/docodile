@@ -30,7 +30,7 @@
 
 #define _FMT(color, label, fmt) color label fmt _RST "\n"
 
-void get_current_time(char formatted_time[20]) {
+static void get_current_time(char formatted_time[20]) {
   time_t now            = time(NULL);
   struct tm *local_time = localtime(&now);
   strftime(formatted_time, 20, "%Y-%m-%d %H:%M:%S", local_time);

@@ -5,15 +5,15 @@ PROGRAM := gendoc
 SRC_DIR := src
 BUILD_DIR := $(SRC_DIR)/build
 DEBUG_DIR := $(BUILD_DIR)/debug
-SRC := $(SRC_DIR)/main.c
+SRC := $(wildcard $(SRC_DIR)/*.c)
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)
-	@gcc -g -o $@ $< $(LFLAGS) -DLOG_LEVEL=4
+	@gcc -g -o $@ $^ $(LFLAGS) -DLOG_LEVEL=4
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	@gcc -o $@ $< -lc
+	@gcc -o $@ $^ -lc
 
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)
