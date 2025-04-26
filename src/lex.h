@@ -13,6 +13,7 @@
 
 typedef enum {
   TOKEN_UNKNOWN,
+  TOKEN_NULL,
   TOKEN_H1,
   TOKEN_H2,
   TOKEN_H3,
@@ -35,38 +36,12 @@ typedef struct {
   size_t line;
 } Token;
 
-typedef struct {
-  size_t count;
-  size_t pos;
-  Token *stream;
-} TokenStream;
-
 typedef struct Lexer {
   char *input;
-  TokenStream *stream;
   size_t pos;
   size_t end;
-  Token current_token;
   size_t current_line;
 } Lexer;
-
-Token TokenStreamNext(TokenStream *stream);
-void TokenStreamFree(TokenStream *stream);
-TokenStream *Lex(char *input);
-
-Token TokenStreamNext(TokenStream *stream) {
-  return stream->stream[stream->pos++];
-}
-
-void TokenStreamFree(TokenStream *stream) {
-  if (stream->stream) {
-    free(stream->stream);
-  }
-
-  if (stream) {
-    free(stream);
-  }
-}
 
 static Token TokenNew(char *input, size_t pos) {
   return (Token){.input  = input,
@@ -77,6 +52,8 @@ static Token TokenNew(char *input, size_t pos) {
                  .line   = 0};
 }
 
+static Token TokenNull() { return (Token){.input = NULL, .type = TOKEN_NULL}; }
+
 static void Advance(Lexer *lexer) { lexer->pos++; }
 
 static char Peek(Lexer *lexer) {
@@ -85,17 +62,7 @@ static char Peek(Lexer *lexer) {
 }
 
 static Lexer LexerNew(char *input, size_t start, size_t end) {
-  TokenStream *stream = (TokenStream *)malloc(sizeof(TokenStream));
-  stream->stream      = malloc(MAX_TOKENS * sizeof(Token));
-  stream->count       = 0;
-  stream->pos         = 0;
-
-  return (Lexer){.input         = input,
-                 .stream        = stream,
-                 .pos           = start,
-                 .end           = end,
-                 .current_line  = 1,
-                 .current_token = TokenNew(input, start)};
+  return (Lexer){.input = input, .pos = start, .end = end, .current_line = 1};
 }
 
 static void NewLine(Lexer *lexer) {
@@ -150,97 +117,75 @@ static size_t ConsumeLine(Lexer *lexer) {
   return ConsumeUntil(lexer, '\n', false);
 }
 
-static void CommitToken(Lexer *lexer) {
-  lexer->stream->stream[lexer->stream->count++] = lexer->current_token;
-  lexer->current_token = TokenNew(lexer->input, lexer->pos);
-}
+static Token LexHeading(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
 
-static void LexHeading(Lexer *lexer) {
   int count = Repeats(lexer, '#');
   switch (count) {
     case 1:
-      lexer->current_token.type = TOKEN_H1;
+      token.type = TOKEN_H1;
       break;
     case 2:
-      lexer->current_token.type = TOKEN_H2;
+      token.type = TOKEN_H2;
       break;
     case 3:
-      lexer->current_token.type = TOKEN_H3;
+      token.type = TOKEN_H3;
       break;
     case 4:
-      lexer->current_token.type = TOKEN_H4;
+      token.type = TOKEN_H4;
       break;
     case 5:
-      lexer->current_token.type = TOKEN_H5;
+      token.type = TOKEN_H5;
       break;
     default:
-      lexer->current_token.type = TOKEN_H6;
+      token.type = TOKEN_H6;
       break;
   }
 
   Whitespace(lexer);
-  size_t start                = lexer->pos;
-  size_t end                  = ConsumeLine(lexer);
-  lexer->current_token.start  = start;
-  lexer->current_token.end    = end;
-  lexer->current_token.length = end - start;
+  size_t start = lexer->pos;
+  size_t end   = ConsumeLine(lexer);
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
   NewLine(lexer);
-  CommitToken(lexer);
+  return token;
 }
 
-static void LexParagraph(Lexer *lexer) {
-  lexer->current_token.type   = TOKEN_P;
-  size_t start                = lexer->pos;
-  size_t end                  = ConsumeLine(lexer);
-  lexer->current_token.start  = start;
-  lexer->current_token.end    = end;
-  lexer->current_token.length = end - start;
+static Token LexParagraph(Lexer *lexer) {
+  Token token  = TokenNew(lexer->input, lexer->pos);
+  token.type   = TOKEN_P;
+  size_t start = lexer->pos;
+  size_t end   = ConsumeLine(lexer);
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
   NewLine(lexer);
-  CommitToken(lexer);
+  return token;
 }
 
-TokenStream *Lex(char *input) {
-  Lexer lexer = LexerNew(input, 0, strlen(input));
-
-  char c;
-
-  while ((c = Peek(&lexer)) != '\0') {
-    Whitespace(&lexer);
-    switch (c) {
-      case '#':
-        LexHeading(&lexer);
-        break;
-      default:
-        LexParagraph(&lexer);
-        break;
-    }
-    Whitespace(&lexer);
-    NewLine(&lexer);
-  }
-
-  return lexer.stream;
+static Token LexText(Lexer *lexer) {
+  Token token  = TokenNew(lexer->input, lexer->pos);
+  token.type   = TOKEN_TEXT;
+  size_t start = lexer->pos;
+  size_t end   = ConsumeUntilAny(lexer, "[*_\n", false);
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
+  NewLine(lexer);
+  return token;
 }
 
-static void LexText(Lexer *lexer) {
-  lexer->current_token.type   = TOKEN_TEXT;
-  size_t start                = lexer->pos;
-  size_t end                  = ConsumeUntilAny(lexer, "[*_\n", false);
-  lexer->current_token.start  = start;
-  lexer->current_token.end    = end;
-  lexer->current_token.length = end - start;
+static Token LexLink(Lexer *lexer) {
+  Token token  = TokenNew(lexer->input, lexer->pos);
+  token.type   = TOKEN_LINK;
+  size_t start = lexer->pos;
+  size_t end   = ConsumeUntil(lexer, ')', true);
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
   NewLine(lexer);
-  CommitToken(lexer);
-}
-
-static void LexLink(Lexer *lexer) {
-  lexer->current_token.type   = TOKEN_LINK;
-  size_t start                = lexer->pos;
-  size_t end                  = ConsumeUntil(lexer, ')', true);
-  lexer->current_token.start  = start;
-  lexer->current_token.end    = end;
-  lexer->current_token.length = end - start;
-  NewLine(lexer);
-  CommitToken(lexer);
+  return token;
 }
 
 static int min(int a, int b) {
@@ -255,8 +200,7 @@ void TokenPrint(Token *token) {
   }
 }
 
-// TODO Handle mixed formats (* and _).
-static void LexEmphasis(Lexer *lexer) {
+static Token LexEmphasis(Lexer *lexer) {
   char format  = Peek(lexer);
   int opening  = Repeats(lexer, format);
   size_t start = lexer->pos;
@@ -269,34 +213,47 @@ static void LexEmphasis(Lexer *lexer) {
   if (matching == 1) type = TOKEN_ITALICS;
   if (matching >= 2) type = TOKEN_BOLD;
 
-  lexer->current_token.type   = type;
-  lexer->current_token.start  = start;
-  lexer->current_token.end    = end;
-  lexer->current_token.length = end - start;
+  Token token  = TokenNew(lexer->input, start);
+  token.type   = type;
+  token.end    = end;
+  token.length = end - start;
 
-  CommitToken(lexer);
+  return token;
 }
 
-TokenStream *LexInline(Token *token) {
-  Lexer lexer = LexerNew(token->input, token->start, token->end);
+Token NextToken(Lexer *lexer) {
+  char c = Peek(lexer);
+  if (c == '\0') return TokenNull();
 
-  char c;
-  while ((c = Peek(&lexer)) != '\0' && c != '\n') {
-    switch (c) {
-      case '[':
-        LexLink(&lexer);
-        break;
-      case '*':
-      case '_':
-        LexEmphasis(&lexer);
-        break;
-      default:
-        LexText(&lexer);
-        break;
-    }
+  Whitespace(lexer);
+  Token token;
+  switch (c) {
+    case '#':
+      token = LexHeading(lexer);
+      break;
+    default:
+      token = LexParagraph(lexer);
+      break;
   }
+  Whitespace(lexer);
+  NewLine(lexer);
 
-  return lexer.stream;
+  return token;
+}
+
+Token NextInlineToken(Lexer *lexer) {
+  char c = Peek(lexer);
+  if (c == '\0') return TokenNull();
+
+  switch (c) {
+    case '[':
+      return LexLink(lexer);
+    case '*':
+    case '_':
+      return LexEmphasis(lexer);
+    default:
+      return LexText(lexer);
+  }
 }
 
 #endif  // LEX_H

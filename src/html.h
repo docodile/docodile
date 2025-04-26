@@ -6,7 +6,8 @@
 #include "lex.h"
 #include "logger.h"
 
-void RenderInlineHtml(TokenStream *stream);
+void RenderHtml(Lexer *lexer);
+void RenderInlineHtml(Lexer *lexer, Token *token);
 
 void RenderHeading(int heading, Token *token) {
   assert(heading > 0);
@@ -17,31 +18,62 @@ void RenderHeading(int heading, Token *token) {
   printf("</h%d>", heading);
 }
 
-void RenderParagraph(Token *token) {
+void RenderParagraph(Lexer *lexer, Token *token) {
   printf("<p>");
-  TokenStream *stream = LexInline(token);
-  RenderInlineHtml(stream);
+  RenderInlineHtml(lexer, token);
   printf("</p>");
 }
 
-void RenderEmphasis(Token *token) {
+void RenderEmphasis(Lexer *lexer, Token *token) {
   printf("<em>");
-  TokenStream *stream = LexInline(token);
-  RenderInlineHtml(stream);
+  RenderInlineHtml(lexer, token);
   printf("</em>");
 }
 
-void RenderStrong(Token *token) {
+void RenderStrong(Lexer *lexer, Token *token) {
   printf("<strong>");
-  TokenStream *stream = LexInline(token);
-  RenderInlineHtml(stream);
+  RenderInlineHtml(lexer, token);
   printf("</strong>");
 }
 
-void RenderHtml(TokenStream *stream) {
-  for (size_t i = 0; i < stream->count; i++) {
-    Token token = TokenStreamNext(stream);
+// HACK This is a dirty sscanf implementation.
+void ParseLink(Token *token) {
+  char buffer[2500];
+  size_t c = 0;
+  // TODO TokenPrint function to print to string?
+  for (size_t i = token->start; i < token->end; i++) {
+    buffer[c++] = token->input[i];
+  }
 
+  buffer[c] = '\0';
+
+  char href[2500];
+  char label[2500];
+  sscanf(buffer, "[%2500[^]]](%2500[^)])", label, href);
+
+  printf("<a href=\"%s\">%s</a>", href, label);
+}
+
+void RenderInlineToken(Lexer *lexer, Token *token) {
+  switch (token->type) {
+    case TOKEN_LINK:
+      ParseLink(token);
+      break;
+    case TOKEN_ITALICS:
+      RenderEmphasis(lexer, token);
+      break;
+    case TOKEN_BOLD:
+      RenderStrong(lexer, token);
+      break;
+    default:
+      TokenPrint(token);
+  }
+}
+
+void RenderHtml(Lexer *lexer) {
+  Token token = NextToken(lexer);
+
+  while (token.type != TOKEN_NULL) {
     switch (token.type) {
       case TOKEN_H1:
         RenderHeading(1, &token);
@@ -62,53 +94,23 @@ void RenderHtml(TokenStream *stream) {
         RenderHeading(6, &token);
         break;
       default:
-        RenderParagraph(&token);
+        RenderParagraph(lexer, &token);
         break;
     }
 
     printf("\n");
+
+    token = NextToken(lexer);
   }
 }
 
-// HACK This is a dirty sscanf implementation.
-void ParseLink(Token token) {
-  char buffer[2500];
-  size_t c = 0;
-  // TODO TokenPrint function to print to string?
-  for (size_t i = token.start; i < token.end; i++) {
-    buffer[c++] = token.input[i];
-  }
+void RenderInlineHtml(Lexer *lexer, Token *token) {
+  Lexer inline_lexer = LexerNew(lexer->input, token->start, token->end);
+  Token inline_token = NextInlineToken(&inline_lexer);
 
-  buffer[c] = '\0';
-
-  char href[2500];
-  char label[2500];
-  sscanf(buffer, "[%2500[^]]](%2500[^)])", label, href);
-
-  printf("<a href=\"%s\">%s</a>", href, label);
-}
-
-void RenderInlineToken(Token token) {
-  switch (token.type) {
-    case TOKEN_LINK:
-      ParseLink(token);
-      break;
-    case TOKEN_ITALICS:
-      RenderEmphasis(&token);
-      break;
-    case TOKEN_BOLD:
-      RenderStrong(&token);
-      break;
-    default:
-      TokenPrint(&token);
-  }
-}
-
-void RenderInlineHtml(TokenStream *stream) {
-  for (size_t i = 0; i < stream->count; i++) {
-    Token token = TokenStreamNext(stream);
-
-    RenderInlineToken(token);
+  while (inline_token.type != TOKEN_NULL) {
+    RenderInlineToken(&inline_lexer, &inline_token);
+    inline_token = NextInlineToken(&inline_lexer);
   }
 }
 

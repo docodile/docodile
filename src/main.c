@@ -15,10 +15,11 @@ int main(void) {
   fread(buffer, 1, length, file);
   buffer[length] = '\0';
 
-  TokenStream *token_stream = Lex(buffer);
+  Lexer lexer = LexerNew(buffer, 0, length);
 
-  RenderHtml(token_stream);
+  RenderHtml(&lexer);
 
+  free(buffer);
   fclose(file);
 
   return 0;
