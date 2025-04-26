@@ -110,10 +110,17 @@ static Token LexParagraph(Lexer *lexer) {
   token.type   = TOKEN_P;
   size_t start = lexer->pos;
   size_t end   = ConsumeLine(lexer);
+
+  NewLine(lexer);
+  char c;
+  while ((c = Peek(lexer)) != '\0' && c != '\n') {
+    end = ConsumeLine(lexer);
+    NewLine(lexer);
+  }
+
   token.start  = start;
   token.end    = end;
   token.length = end - start;
-  NewLine(lexer);
   return token;
 }
 
@@ -125,7 +132,6 @@ static Token LexText(Lexer *lexer) {
   token.start  = start;
   token.end    = end;
   token.length = end - start;
-  NewLine(lexer);
   return token;
 }
 
@@ -138,6 +144,18 @@ static Token LexLink(Lexer *lexer) {
   token.end    = end;
   token.length = end - start;
   NewLine(lexer);
+  return token;
+}
+
+static Token LexBreak(Lexer *lexer) {
+  Token token  = TokenNew(lexer->input, lexer->pos);
+  token.type   = TOKEN_BR;
+  size_t start = lexer->pos;
+  NewLine(lexer);
+  size_t end   = lexer->pos;
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
   return token;
 }
 
@@ -198,6 +216,8 @@ Token NextInlineToken(Lexer *lexer) {
     case '*':
     case '_':
       return LexEmphasis(lexer);
+    case '\n':
+      return LexBreak(lexer);
     default:
       return LexText(lexer);
   }

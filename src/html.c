@@ -27,6 +27,10 @@ static void RenderStrong(Lexer *lexer, Token *token) {
   printf("</strong>");
 }
 
+static void RenderBreak(Lexer *lexer, Token *token) {
+    printf("<br>");
+}
+
 // HACK This is a dirty sscanf implementation.
 static void ParseLink(Token *token) {
   char buffer[2500];
@@ -55,6 +59,9 @@ static void RenderInlineToken(Lexer *lexer, Token *token) {
       break;
     case TOKEN_BOLD:
       RenderStrong(lexer, token);
+      break;
+    case TOKEN_BR:
+      RenderBreak(lexer, token);
       break;
     default:
       TokenPrint(token);

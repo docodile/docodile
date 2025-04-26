@@ -22,6 +22,7 @@ typedef enum {
   TOKEN_LINK,
   TOKEN_ITALICS,
   TOKEN_BOLD,
+  TOKEN_BR,
 } TokenType;
 
 typedef struct {

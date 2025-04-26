@@ -27,3 +27,10 @@ _This is also italics._
 **_This is also bold and italics._**
 
 This is a paragraph with [links](https://google.com) and _emphasis_. Multiple **kinds** _of_ **_emphasis_**.
+
+This should be a separate paragraph from the line below it.
+
+This should be a separate paragraph from the line above it.
+
+This should be in the same paragraph as the line below
+but there should be a break.
