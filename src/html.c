@@ -22,6 +22,18 @@ static void RenderQuote(Lexer *lexer, Token *token) {
   printf("</blockquote>");
 }
 
+static void RenderOrderedList(Lexer *lexer, Token *token) {
+  printf("<ol>\n");
+  RenderInlineHtml(lexer, token);
+  printf("\n</ol>");
+}
+
+static void RenderUnorderedList(Lexer *lexer, Token *token) {
+  printf("<ul>\n");
+  RenderInlineHtml(lexer, token);
+  printf("\n</ul>");
+}
+
 static void RenderEmphasis(Lexer *lexer, Token *token) {
   printf("<em>");
   RenderInlineHtml(lexer, token);
@@ -34,8 +46,12 @@ static void RenderStrong(Lexer *lexer, Token *token) {
   printf("</strong>");
 }
 
-static void RenderBreak(Lexer *lexer, Token *token) {
-    printf("<br>");
+static void RenderBreak(Lexer *lexer, Token *token) { printf("<br>"); }
+
+static void RenderListItem(Lexer *lexer, Token *token) {
+  printf("<li>");
+  RenderInlineHtml(lexer, token);
+  printf("</li>");
 }
 
 // HACK This is a dirty sscanf implementation.
@@ -70,6 +86,15 @@ static void RenderInlineToken(Lexer *lexer, Token *token) {
     case TOKEN_BR:
       RenderBreak(lexer, token);
       break;
+    case TOKEN_LISTITEM:
+      RenderListItem(lexer, token);
+      break;
+    case TOKEN_UNORDEREDLIST:
+      RenderUnorderedList(lexer, token);
+      break;
+    case TOKEN_ORDEREDLIST:
+      RenderOrderedList(lexer, token);
+      break;
     default:
       TokenPrint(token);
       break;
@@ -101,6 +126,12 @@ void RenderHtml(Lexer *lexer) {
         break;
       case TOKEN_QUOTE:
         RenderQuote(lexer, &token);
+        break;
+      case TOKEN_ORDEREDLIST:
+        RenderOrderedList(lexer, &token);
+        break;
+      case TOKEN_UNORDEREDLIST:
+        RenderUnorderedList(lexer, &token);
         break;
       default:
         RenderParagraph(lexer, &token);

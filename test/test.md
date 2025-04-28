@@ -30,6 +30,32 @@ This should be in the same paragraph as the line below
 but there should be a break.
 
 > This is a quote.
-> Is this part of the same quote?
+> This is part of the same quote.
 
-> Is this a separate quote?
+> This is a separate quote.
+
+1. Apple
+2. Orange
+3. Banana
+
+4. _Italics_
+5. **Bold**
+6. **_Bold and Italics_**
+
+- Red
+- Green
+- Blue
+
+- _Italics_
+- **Bold**
+- **_Bold and Italics_**
+
+- This list contains a nested list.
+  - This is the nested list.
+  - It can contain multiple list items.
+- This item comes after the nested list.
+
+1. Nested lists can be placed in ordered lists too.
+   1. This is a nested ordered list.
+   2. This is the second item in the nested ordered list.
+2. This item comes after the nested list.

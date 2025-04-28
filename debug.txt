@@ -1,0 +1,1214 @@
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H1
+token->start: 2
+token->end: 22
+token->length: 20
+lexeme: [34mThis is a H1 heading[0m
+lexer->pos: 24
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H2
+token->start: 27
+token->end: 47
+token->length: 20
+lexeme: [34mThis is a H2 heading[0m
+lexer->pos: 49
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H3
+token->start: 53
+token->end: 73
+token->length: 20
+lexeme: [34mThis is a H3 heading[0m
+lexer->pos: 75
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H4
+token->start: 80
+token->end: 100
+token->length: 20
+lexeme: [34mThis is a H4 heading[0m
+lexer->pos: 102
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H5
+token->start: 108
+token->end: 128
+token->length: 20
+lexeme: [34mThis is a H5 heading[0m
+lexer->pos: 130
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_H6
+token->start: 137
+token->end: 157
+token->length: 20
+lexeme: [34mThis is a H6 heading[0m
+lexer->pos: 159
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 159
+token->end: 179
+token->length: 20
+lexeme: [34mThis is a paragraph.[0m
+lexer->pos: 181
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 159
+token->end: 179
+token->length: 20
+lexeme: [34mThis is a paragraph.[0m
+lexer->pos: 179
+lexer->end: 179
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 181
+token->end: 218
+token->length: 37
+lexeme: [34m[This is a link.](https://google.com)[0m
+lexer->pos: 220
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LINK
+token->start: 181
+token->end: 218
+token->length: 37
+lexeme: [34m[This is a link.](https://google.com)[0m
+lexer->pos: 218
+lexer->end: 218
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 220
+token->end: 238
+token->length: 18
+lexeme: [34m_This is italics._[0m
+lexer->pos: 240
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 221
+token->end: 237
+token->length: 16
+lexeme: [34mThis is italics.[0m
+lexer->pos: 238
+lexer->end: 238
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 221
+token->end: 237
+token->length: 16
+lexeme: [34mThis is italics.[0m
+lexer->pos: 237
+lexer->end: 237
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 240
+token->end: 257
+token->length: 17
+lexeme: [34m**This is bold.**[0m
+lexer->pos: 259
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 242
+token->end: 255
+token->length: 13
+lexeme: [34mThis is bold.[0m
+lexer->pos: 257
+lexer->end: 257
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 242
+token->end: 255
+token->length: 13
+lexeme: [34mThis is bold.[0m
+lexer->pos: 255
+lexer->end: 255
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 259
+token->end: 290
+token->length: 31
+lexeme: [34m**_This is bold and italics._**[0m
+lexer->pos: 292
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 261
+token->end: 288
+token->length: 27
+lexeme: [34m_This is bold and italics._[0m
+lexer->pos: 290
+lexer->end: 290
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 262
+token->end: 287
+token->length: 25
+lexeme: [34mThis is bold and italics.[0m
+lexer->pos: 288
+lexer->end: 288
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 262
+token->end: 287
+token->length: 25
+lexeme: [34mThis is bold and italics.[0m
+lexer->pos: 287
+lexer->end: 287
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 292
+token->end: 400
+token->length: 108
+lexeme: [34mThis is a paragraph with [links](https://google.com) and _emphasis_. Multiple **kinds** _of_ **_emphasis_**.[0m
+lexer->pos: 402
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 292
+token->end: 317
+token->length: 25
+lexeme: [34mThis is a paragraph with [0m
+lexer->pos: 317
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LINK
+token->start: 317
+token->end: 344
+token->length: 27
+lexeme: [34m[links](https://google.com)[0m
+lexer->pos: 344
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 345
+token->end: 349
+token->length: 4
+lexeme: [34mand [0m
+lexer->pos: 349
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 350
+token->end: 358
+token->length: 8
+lexeme: [34memphasis[0m
+lexer->pos: 359
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 350
+token->end: 358
+token->length: 8
+lexeme: [34memphasis[0m
+lexer->pos: 358
+lexer->end: 358
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 359
+token->end: 370
+token->length: 11
+lexeme: [34m. Multiple [0m
+lexer->pos: 370
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 372
+token->end: 377
+token->length: 5
+lexeme: [34mkinds[0m
+lexer->pos: 379
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 372
+token->end: 377
+token->length: 5
+lexeme: [34mkinds[0m
+lexer->pos: 377
+lexer->end: 377
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 381
+token->end: 383
+token->length: 2
+lexeme: [34mof[0m
+lexer->pos: 384
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 381
+token->end: 383
+token->length: 2
+lexeme: [34mof[0m
+lexer->pos: 383
+lexer->end: 383
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 387
+token->end: 397
+token->length: 10
+lexeme: [34m_emphasis_[0m
+lexer->pos: 399
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 388
+token->end: 396
+token->length: 8
+lexeme: [34memphasis[0m
+lexer->pos: 397
+lexer->end: 397
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 388
+token->end: 396
+token->length: 8
+lexeme: [34memphasis[0m
+lexer->pos: 396
+lexer->end: 396
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 399
+token->end: 400
+token->length: 1
+lexeme: [34m.[0m
+lexer->pos: 400
+lexer->end: 400
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 402
+token->end: 461
+token->length: 59
+lexeme: [34mThis should be a separate paragraph from the line below it.[0m
+lexer->pos: 463
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 402
+token->end: 461
+token->length: 59
+lexeme: [34mThis should be a separate paragraph from the line below it.[0m
+lexer->pos: 461
+lexer->end: 461
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 463
+token->end: 522
+token->length: 59
+lexeme: [34mThis should be a separate paragraph from the line above it.[0m
+lexer->pos: 524
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 463
+token->end: 522
+token->length: 59
+lexeme: [34mThis should be a separate paragraph from the line above it.[0m
+lexer->pos: 522
+lexer->end: 522
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 524
+token->end: 607
+token->length: 83
+lexeme: [34mThis should be in the same paragraph as the line below
+but there should be a break.[0m
+lexer->pos: 609
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 524
+token->end: 578
+token->length: 54
+lexeme: [34mThis should be in the same paragraph as the line below[0m
+lexer->pos: 578
+lexer->end: 607
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BR
+token->start: 578
+token->end: 579
+token->length: 1
+lexeme: [34m
+[0m
+lexer->pos: 579
+lexer->end: 607
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 579
+token->end: 607
+token->length: 28
+lexeme: [34mbut there should be a break.[0m
+lexer->pos: 607
+lexer->end: 607
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: [error]
+token->start: 611
+token->end: 661
+token->length: 50
+lexeme: [34mThis is a quote.
+> This is part of the same quote.[0m
+lexer->pos: 663
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 611
+token->end: 661
+token->length: 50
+lexeme: [34mThis is a quote.
+> This is part of the same quote.[0m
+lexer->pos: 661
+lexer->end: 661
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 611
+token->end: 627
+token->length: 16
+lexeme: [34mThis is a quote.[0m
+lexer->pos: 627
+lexer->end: 661
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BR
+token->start: 627
+token->end: 628
+token->length: 1
+lexeme: [34m
+[0m
+lexer->pos: 628
+lexer->end: 661
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 630
+token->end: 661
+token->length: 31
+lexeme: [34mThis is part of the same quote.[0m
+lexer->pos: 661
+lexer->end: 661
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: [error]
+token->start: 665
+token->end: 690
+token->length: 25
+lexeme: [34mThis is a separate quote.[0m
+lexer->pos: 692
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_P
+token->start: 665
+token->end: 690
+token->length: 25
+lexeme: [34mThis is a separate quote.[0m
+lexer->pos: 690
+lexer->end: 690
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 665
+token->end: 690
+token->length: 25
+lexeme: [34mThis is a separate quote.[0m
+lexer->pos: 690
+lexer->end: 690
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_ORDERDEDLIST
+token->start: 692
+token->end: 720
+token->length: 28
+lexeme: [34m1. Apple
+2. Orange
+3. Banana[0m
+lexer->pos: 722
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 695
+token->end: 700
+token->length: 5
+lexeme: [34mApple[0m
+lexer->pos: 701
+lexer->end: 720
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 695
+token->end: 700
+token->length: 5
+lexeme: [34mApple[0m
+lexer->pos: 700
+lexer->end: 700
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 704
+token->end: 710
+token->length: 6
+lexeme: [34mOrange[0m
+lexer->pos: 711
+lexer->end: 720
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 704
+token->end: 710
+token->length: 6
+lexeme: [34mOrange[0m
+lexer->pos: 710
+lexer->end: 710
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 714
+token->end: 720
+token->length: 6
+lexeme: [34mBanana[0m
+lexer->pos: 720
+lexer->end: 720
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 714
+token->end: 720
+token->length: 6
+lexeme: [34mBanana[0m
+lexer->pos: 720
+lexer->end: 720
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_ORDERDEDLIST
+token->start: 722
+token->end: 772
+token->length: 50
+lexeme: [34m4. _Italics_
+5. **Bold**
+6. **_Bold and Italics_**[0m
+lexer->pos: 774
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 725
+token->end: 734
+token->length: 9
+lexeme: [34m_Italics_[0m
+lexer->pos: 735
+lexer->end: 772
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 726
+token->end: 733
+token->length: 7
+lexeme: [34mItalics[0m
+lexer->pos: 734
+lexer->end: 734
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 726
+token->end: 733
+token->length: 7
+lexeme: [34mItalics[0m
+lexer->pos: 733
+lexer->end: 733
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 738
+token->end: 746
+token->length: 8
+lexeme: [34m**Bold**[0m
+lexer->pos: 747
+lexer->end: 772
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 740
+token->end: 744
+token->length: 4
+lexeme: [34mBold[0m
+lexer->pos: 746
+lexer->end: 746
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 740
+token->end: 744
+token->length: 4
+lexeme: [34mBold[0m
+lexer->pos: 744
+lexer->end: 744
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 750
+token->end: 772
+token->length: 22
+lexeme: [34m**_Bold and Italics_**[0m
+lexer->pos: 772
+lexer->end: 772
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 752
+token->end: 770
+token->length: 18
+lexeme: [34m_Bold and Italics_[0m
+lexer->pos: 772
+lexer->end: 772
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 753
+token->end: 769
+token->length: 16
+lexeme: [34mBold and Italics[0m
+lexer->pos: 770
+lexer->end: 770
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 753
+token->end: 769
+token->length: 16
+lexeme: [34mBold and Italics[0m
+lexer->pos: 769
+lexer->end: 769
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_UNORDEREDLIST
+token->start: 774
+token->end: 794
+token->length: 20
+lexeme: [34m- Red
+- Green
+- Blue[0m
+lexer->pos: 796
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 776
+token->end: 779
+token->length: 3
+lexeme: [34mRed[0m
+lexer->pos: 780
+lexer->end: 794
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 776
+token->end: 779
+token->length: 3
+lexeme: [34mRed[0m
+lexer->pos: 779
+lexer->end: 779
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 782
+token->end: 787
+token->length: 5
+lexeme: [34mGreen[0m
+lexer->pos: 788
+lexer->end: 794
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 782
+token->end: 787
+token->length: 5
+lexeme: [34mGreen[0m
+lexer->pos: 787
+lexer->end: 787
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 790
+token->end: 794
+token->length: 4
+lexeme: [34mBlue[0m
+lexer->pos: 794
+lexer->end: 794
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 790
+token->end: 794
+token->length: 4
+lexeme: [34mBlue[0m
+lexer->pos: 794
+lexer->end: 794
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_UNORDEREDLIST
+token->start: 796
+token->end: 843
+token->length: 47
+lexeme: [34m- _Italics_
+- **Bold**
+- **_Bold and Italics_**[0m
+lexer->pos: 845
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 798
+token->end: 807
+token->length: 9
+lexeme: [34m_Italics_[0m
+lexer->pos: 808
+lexer->end: 843
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 799
+token->end: 806
+token->length: 7
+lexeme: [34mItalics[0m
+lexer->pos: 807
+lexer->end: 807
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 799
+token->end: 806
+token->length: 7
+lexeme: [34mItalics[0m
+lexer->pos: 806
+lexer->end: 806
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 810
+token->end: 818
+token->length: 8
+lexeme: [34m**Bold**[0m
+lexer->pos: 819
+lexer->end: 843
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 812
+token->end: 816
+token->length: 4
+lexeme: [34mBold[0m
+lexer->pos: 818
+lexer->end: 818
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 812
+token->end: 816
+token->length: 4
+lexeme: [34mBold[0m
+lexer->pos: 816
+lexer->end: 816
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 821
+token->end: 843
+token->length: 22
+lexeme: [34m**_Bold and Italics_**[0m
+lexer->pos: 843
+lexer->end: 843
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_BOLD
+token->start: 823
+token->end: 841
+token->length: 18
+lexeme: [34m_Bold and Italics_[0m
+lexer->pos: 843
+lexer->end: 843
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_ITALICS
+token->start: 824
+token->end: 840
+token->length: 16
+lexeme: [34mBold and Italics[0m
+lexer->pos: 841
+lexer->end: 841
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 824
+token->end: 840
+token->length: 16
+lexeme: [34mBold and Italics[0m
+lexer->pos: 840
+lexer->end: 840
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_UNORDEREDLIST
+token->start: 845
+token->end: 880
+token->length: 35
+lexeme: [34m- This list contains a nested list.[0m
+lexer->pos: 883
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 847
+token->end: 880
+token->length: 33
+lexeme: [34mThis list contains a nested list.[0m
+lexer->pos: 880
+lexer->end: 880
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 847
+token->end: 880
+token->length: 33
+lexeme: [34mThis list contains a nested list.[0m
+lexer->pos: 880
+lexer->end: 880
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_UNORDEREDLIST
+token->start: 883
+token->end: 909
+token->length: 26
+lexeme: [34m- This is the nested list.[0m
+lexer->pos: 912
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 885
+token->end: 909
+token->length: 24
+lexeme: [34mThis is the nested list.[0m
+lexer->pos: 909
+lexer->end: 909
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 885
+token->end: 909
+token->length: 24
+lexeme: [34mThis is the nested list.[0m
+lexer->pos: 909
+lexer->end: 909
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_UNORDEREDLIST
+token->start: 912
+token->end: 990
+token->length: 78
+lexeme: [34m- It can contain multiple list items.
+- This item comes after the nested list.[0m
+lexer->pos: 992
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 914
+token->end: 949
+token->length: 35
+lexeme: [34mIt can contain multiple list items.[0m
+lexer->pos: 950
+lexer->end: 990
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 914
+token->end: 949
+token->length: 35
+lexeme: [34mIt can contain multiple list items.[0m
+lexer->pos: 949
+lexer->end: 949
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 952
+token->end: 990
+token->length: 38
+lexeme: [34mThis item comes after the nested list.[0m
+lexer->pos: 990
+lexer->end: 990
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 952
+token->end: 990
+token->length: 38
+lexeme: [34mThis item comes after the nested list.[0m
+lexer->pos: 990
+lexer->end: 990
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_ORDERDEDLIST
+token->start: 992
+token->end: 1043
+token->length: 51
+lexeme: [34m1. Nested lists can be placed in ordered lists too.[0m
+lexer->pos: 1047
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 995
+token->end: 1043
+token->length: 48
+lexeme: [34mNested lists can be placed in ordered lists too.[0m
+lexer->pos: 1043
+lexer->end: 1043
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 995
+token->end: 1043
+token->length: 48
+lexeme: [34mNested lists can be placed in ordered lists too.[0m
+lexer->pos: 1043
+lexer->end: 1043
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_ORDERDEDLIST
+token->start: 1047
+token->end: 1080
+token->length: 33
+lexeme: [34m1. This is a nested ordered list.[0m
+lexer->pos: 1084
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 1050
+token->end: 1080
+token->length: 30
+lexeme: [34mThis is a nested ordered list.[0m
+lexer->pos: 1080
+lexer->end: 1080
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 1050
+token->end: 1080
+token->length: 30
+lexeme: [34mThis is a nested ordered list.[0m
+lexer->pos: 1080
+lexer->end: 1080
+==== DEBUG END ====
+
+=== DEBUG START ===
+BLOCK
+token->type: TOKEN_ORDERDEDLIST
+token->start: 1084
+token->end: 1180
+token->length: 96
+lexeme: [34m2. This is the second item in the nested ordered list.
+2. This item comes after the nested list.[0m
+lexer->pos: 1181
+lexer->end: 1181
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 1087
+token->end: 1138
+token->length: 51
+lexeme: [34mThis is the second item in the nested ordered list.[0m
+lexer->pos: 1139
+lexer->end: 1180
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 1087
+token->end: 1138
+token->length: 51
+lexeme: [34mThis is the second item in the nested ordered list.[0m
+lexer->pos: 1138
+lexer->end: 1138
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_LISTITEM
+token->start: 1142
+token->end: 1180
+token->length: 38
+lexeme: [34mThis item comes after the nested list.[0m
+lexer->pos: 1180
+lexer->end: 1180
+==== DEBUG END ====
+
+=== DEBUG START ===
+INLINE
+token->type: TOKEN_TEXT
+token->start: 1142
+token->end: 1180
+token->length: 38
+lexeme: [34mThis item comes after the nested list.[0m
+lexer->pos: 1180
+lexer->end: 1180
+==== DEBUG END ====
+

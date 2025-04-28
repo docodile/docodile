@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "logger.h"
 
@@ -25,6 +26,10 @@ typedef enum {
   TOKEN_BOLD,
   TOKEN_BR,
   TOKEN_QUOTE,
+  TOKEN_ORDEREDLIST,
+  TOKEN_UNORDEREDLIST,
+  TOKEN_LISTITEM,
+  TOKEN_NESTED,
 } TokenType;
 
 typedef struct {
