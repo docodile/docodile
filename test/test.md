@@ -16,15 +16,9 @@ This is a paragraph.
 
 _This is italics._
 
-_This is also italics._
-
 **This is bold.**
 
-**This is also bold.**
-
 **_This is bold and italics._**
-
-**_This is also bold and italics._**
 
 This is a paragraph with [links](https://google.com) and _emphasis_. Multiple **kinds** _of_ **_emphasis_**.
 
@@ -36,3 +30,6 @@ This should be in the same paragraph as the line below
 but there should be a break.
 
 > This is a quote.
+> Is this part of the same quote?
+
+> Is this a separate quote?

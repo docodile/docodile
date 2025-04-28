@@ -24,6 +24,7 @@ typedef enum {
   TOKEN_ITALICS,
   TOKEN_BOLD,
   TOKEN_BR,
+  TOKEN_QUOTE,
 } TokenType;
 
 typedef struct {

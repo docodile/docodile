@@ -15,6 +15,13 @@ static void RenderParagraph(Lexer *lexer, Token *token) {
   printf("</p>");
 }
 
+static void RenderQuote(Lexer *lexer, Token *token) {
+  printf("<blockquote>");
+  Lexer inline_lexer = LexerNew(lexer->input, token->start, token->end);
+  RenderHtml(&inline_lexer);
+  printf("</blockquote>");
+}
+
 static void RenderEmphasis(Lexer *lexer, Token *token) {
   printf("<em>");
   RenderInlineHtml(lexer, token);
@@ -91,6 +98,9 @@ void RenderHtml(Lexer *lexer) {
         break;
       case TOKEN_H6:
         RenderHeading(6, &token);
+        break;
+      case TOKEN_QUOTE:
+        RenderQuote(lexer, &token);
         break;
       default:
         RenderParagraph(lexer, &token);

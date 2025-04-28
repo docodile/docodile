@@ -90,6 +90,29 @@ static Token LexHeading(Lexer *lexer) {
   return token;
 }
 
+static Token LexQuote(Lexer *lexer) {
+  int count = Repeats(lexer, '>');
+  Whitespace(lexer);
+  Token token  = TokenNew(lexer->input, lexer->pos);
+  token.type   = TOKEN_QUOTE;
+  size_t start = lexer->pos;
+  size_t end   = ConsumeLine(lexer);
+
+  NewLine(lexer);
+  count = Repeats(lexer, '>');
+  char c;
+  while (count > 0 && (c = Peek(lexer)) != '\0' && c != '\n') {
+    end = ConsumeLine(lexer);
+    NewLine(lexer);
+    count = Repeats(lexer, '>');
+  }
+
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
+  return token;
+}
+
 static Token LexParagraph(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_P;
@@ -100,19 +123,9 @@ static Token LexParagraph(Lexer *lexer) {
   size_t count = 0;
   char c;
   while ((c = Peek(lexer)) != '\0' && c != '\n') {
-    if (count > 2) {
-      break;
-    }
     end = ConsumeLine(lexer);
     NewLine(lexer);
     count++;
-  }
-
-  if (count > 2) {
-    fprintf(stderr, "Something went wrong.\n");
-    fprintf(stderr, "=== DEBUG START ===\n");
-    fprintf(stderr, "lexer->pos: %d\n", lexer->pos);
-    fprintf(stderr, "==== DEBUG END ====\n");
   }
 
   token.start  = start;
@@ -122,6 +135,9 @@ static Token LexParagraph(Lexer *lexer) {
 }
 
 static Token LexText(Lexer *lexer) {
+  // HACK Remove quote.
+  if (Repeats(lexer, '>') > 0) Whitespace(lexer);
+
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_TEXT;
   size_t start = lexer->pos;
@@ -254,6 +270,9 @@ Token NextToken(Lexer *lexer) {
   switch (c) {
     case '#':
       token = LexHeading(lexer);
+      break;
+    case '>':
+      token = LexQuote(lexer);
       break;
     default:
       token = LexParagraph(lexer);
