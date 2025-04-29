@@ -52,9 +52,7 @@ int main(void) {
   Node *doc = NewNode(NODE_DOCUMENT);
   Parse(&lexer, doc);
 
-  PrintNode(doc, 0);
-
-  // RenderHtml(&lexer);
+  RenderHtml(doc);
 
   free(buffer);
   fclose(file);

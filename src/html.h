@@ -3,10 +3,9 @@
 
 #include <assert.h>
 
-#include "lex.h"
+#include "parser.h"
 #include "logger.h"
 
-void RenderHtml(Lexer *lexer);
-void RenderInlineHtml(Lexer *lexer, Token *token);
+void RenderHtml(Node *ast);
 
 #endif  // HTML_H

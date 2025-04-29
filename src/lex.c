@@ -372,7 +372,7 @@ Token NextToken(Lexer *lexer) {
   Whitespace(lexer);
   NewLine(lexer);
 
-  DebugInfo(lexer, &token, false);
+  // DebugInfo(lexer, &token, false);
 
   return token;
 }
@@ -403,7 +403,7 @@ Token NextInlineToken(Lexer *lexer) {
     }
   }
 
-  DebugInfo(lexer, &token, true);
+  // DebugInfo(lexer, &token, true);
 
   return token;
 }
