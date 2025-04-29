@@ -266,6 +266,32 @@ static Token LexText(Lexer *lexer) {
   return token;
 }
 
+static Token LexLinkLabel(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_LINKLABEL;
+  Repeats(lexer, '[');
+  size_t start = lexer->pos;
+  size_t end   = ConsumeUntilAny(lexer, "]", false);
+  Repeats(lexer, ']');
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
+  return token;
+}
+
+static Token LexLinkHref(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_LINKHREF;
+  Repeats(lexer, '(');
+  size_t start = lexer->pos;
+  size_t end   = ConsumeUntilAny(lexer, ")", false);
+  Repeats(lexer, ')');
+  token.start  = start;
+  token.end    = end;
+  token.length = end - start;
+  return token;
+}
+
 static Token LexLink(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_LINK;
@@ -388,7 +414,10 @@ Token NextInlineToken(Lexer *lexer) {
   } else {
     switch (c) {
       case '[':
-        token = LexLink(lexer);
+        token = LexLinkLabel(lexer);
+        break;
+      case '(':
+        token = LexLinkHref(lexer);
         break;
       case '*':
       case '_':

@@ -5,6 +5,7 @@ Node *NewNode(NodeType type) {
   node->type         = type;
   node->first_child  = NULL;
   node->next_sibling = NULL;
+  node->input        = NULL;
   node->start        = 0;
   node->end          = 0;
   node->indent_level = 0;
@@ -175,13 +176,18 @@ Node *ParseListItem(Token *token) {
   return n;
 }
 
-Node *ParseLink(Token *token) {
-  Node *n = NodeFromToken(NODE_LINK, token);
-  // TODO Get href and label. Maybe this should just be in the lexer?
-  n->data.Link.href_start  = 0;
-  n->data.Link.href_end    = 0;
-  n->data.Link.label_start = 0;
-  n->data.Link.label_end   = 0;
+Node *ParseLink(Token *token, Lexer *lexer) {
+  Node *n                  = NodeFromToken(NODE_LINK, token);
+  n->data.Link.label_start = token->start;
+  n->data.Link.label_end   = token->end;
+
+  Token link_href_token = NextInlineToken(lexer);
+
+  assert(link_href_token.type ==
+         TOKEN_LINKHREF);  // TODO Silently fail and fallback to text rendering.
+
+  n->data.Link.href_start = link_href_token.start;
+  n->data.Link.href_end   = link_href_token.end;
 
   return n;
 }
@@ -218,8 +224,8 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
       case TOKEN_BOLD:
         node = ParseEmphasis(&token, true);
         break;
-      case TOKEN_LINK:
-        node = ParseLink(&token);
+      case TOKEN_LINKLABEL:
+        node = ParseLink(&token, &inline_lexer);
         break;
       case TOKEN_BR:
         node = ParseBreak(&token);
