@@ -15,6 +15,7 @@ typedef enum {
   NODE_LISTITEM,
   NODE_HEADING,
   NODE_QUOTE,
+  NODE_EMPHASIS,
   NODE_LINK,
   NODE_TEXT,
   NODE_BREAK,
@@ -33,9 +34,8 @@ typedef union {
   } List;
 
   struct {
-    bool emphasis;
     bool strong;
-  } Text;
+  } Emphasis;
 
   struct {
     size_t href_start;

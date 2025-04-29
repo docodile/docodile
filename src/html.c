@@ -27,6 +27,13 @@ static void RenderNodeTag(Node *node, bool closing) {
     case NODE_QUOTE:
       printf(TAG("blockquote", closing));
       break;
+    case NODE_EMPHASIS: {
+      if (node->data.Emphasis.strong) {
+        printf(TAG("strong", closing));
+      } else {
+        printf(TAG("em", closing));
+      }
+    } break;
   }
 }
 

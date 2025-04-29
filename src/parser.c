@@ -191,10 +191,14 @@ Node *ParseBreak(Token *token) {
   return n;
 }
 
-Node *ParseText(Token *token, bool bold, bool italics) {
-  Node *n               = NodeFromToken(NODE_TEXT, token);
-  n->data.Text.emphasis = italics;
-  n->data.Text.strong   = bold;
+Node *ParseEmphasis(Token *token, bool strong) {
+  Node *n                 = NodeFromToken(NODE_EMPHASIS, token);
+  n->data.Emphasis.strong = strong;
+  return n;
+}
+
+Node *ParseText(Token *token) {
+  Node *n = NodeFromToken(NODE_TEXT, token);
   return n;
 }
 
@@ -209,10 +213,10 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
         node = ParseListItem(&token);
         break;
       case TOKEN_ITALICS:
-        node = ParseText(&token, false, true);
+        node = ParseEmphasis(&token, false);
         break;
       case TOKEN_BOLD:
-        node = ParseText(&token, true, false);
+        node = ParseEmphasis(&token, true);
         break;
       case TOKEN_LINK:
         node = ParseLink(&token);
@@ -222,7 +226,7 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
         break;
       case TOKEN_TEXT:
       default:
-        node = ParseText(&token, false, false);
+        node = ParseText(&token);
         break;
     }
 
