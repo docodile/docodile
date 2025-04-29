@@ -3,6 +3,7 @@
 #include "html.h"
 #include "lex.h"
 #include "logger.h"
+#include "parser.h"
 
 int main(void) {
   FILE *file = fopen("test/test.md", "r");
@@ -48,7 +49,12 @@ int main(void) {
 
   Lexer lexer = LexerNew(buffer, 0, length);
 
-  RenderHtml(&lexer);
+  Node *doc = NewNode(NODE_DOCUMENT);
+  Parse(&lexer, doc);
+
+  PrintNode(doc, 0);
+
+  // RenderHtml(&lexer);
 
   free(buffer);
   fclose(file);
