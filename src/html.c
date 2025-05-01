@@ -59,21 +59,43 @@ void RenderNodeContent(Node *node) {
   }
 }
 
-void RenderHtml(Node *node) {
+bool Break(Node *node) {
+  bool should_break = true;
+
+  if (node->is_inline) should_break = false;
+
+  if (should_break) printf("\n");
+
+  return should_break;
+}
+
+void Indent(int indent) {
+  for (int i = 0; i < indent; i++) {
+    printf("  ");
+  }
+}
+
+static void RenderNode(Node *node, int indent, bool should_indent) {
   if (node == NULL) return;
 
   if (node->type == NODE_BREAK) {
     printf("<br />");
-    RenderHtml(node->next_sibling);
+    RenderNode(node->next_sibling, indent, false);
     return;
   }
 
+  if (should_indent) Indent(indent);
   RenderNodeTag(node, false);
+  int did_break = Break(node);
   {
     RenderNodeContent(node);
-    RenderHtml(node->first_child);
+    RenderNode(node->first_child, indent + 1, did_break);
   }
+  if (Break(node)) Indent(indent);
   RenderNodeTag(node, true);
+  if (node->next_sibling) Break(node);
 
-  RenderHtml(node->next_sibling);
+  RenderNode(node->next_sibling, indent, did_break);
 }
+
+void RenderHtml(Node *node) { RenderNode(node, 0, false); }

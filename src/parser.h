@@ -56,6 +56,7 @@ typedef struct Node {
   int end;
 
   int indent_level;
+  bool is_inline;
 
   NodeData data;
 } Node;

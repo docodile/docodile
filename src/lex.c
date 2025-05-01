@@ -70,12 +70,13 @@ static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
 }
 
 static Token TokenNew(char *input, size_t pos) {
-  return (Token){.input  = input,
-                 .type   = TOKEN_UNKNOWN,
-                 .length = 0,
-                 .start  = pos,
-                 .end    = pos,
-                 .line   = 0};
+  return (Token){.input        = input,
+                 .type         = TOKEN_UNKNOWN,
+                 .length       = 0,
+                 .start        = pos,
+                 .end          = pos,
+                 .line         = 0,
+                 .indent_level = 0};
 }
 
 static Token TokenNull() { return (Token){.input = NULL, .type = TOKEN_NULL}; }

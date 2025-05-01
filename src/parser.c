@@ -9,6 +9,7 @@ Node *NewNode(NodeType type) {
   node->start        = 0;
   node->end          = 0;
   node->indent_level = 0;
+  node->is_inline    = false;
   return node;
 }
 
@@ -251,6 +252,7 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
         break;
     }
 
+    node->is_inline = true;
     NodeAppendChild(parent, node);
 
     // TODO Determine exhaustive list of terminals.
