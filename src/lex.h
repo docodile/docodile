@@ -28,9 +28,8 @@ typedef enum {
   TOKEN_BOLD,
   TOKEN_BR,
   TOKEN_QUOTE,
-  TOKEN_ORDEREDLIST,
-  TOKEN_UNORDEREDLIST,
-  TOKEN_LISTITEM,
+  TOKEN_LISTITEMORDERED,
+  TOKEN_LISTITEMUNORDERED,
   TOKEN_NESTED,
 } TokenType;
 
@@ -41,6 +40,7 @@ typedef struct {
   size_t end;
   size_t length;
   size_t line;
+  int indent_level;
 } Token;
 
 typedef struct Lexer {
@@ -52,6 +52,7 @@ typedef struct Lexer {
 
 Lexer LexerNew(char *input, size_t start, size_t end);
 Token NextToken(Lexer *lexer);
+Token PeekToken(Lexer *lexer);
 Token NextInlineToken(Lexer *lexer);
 void TokenPrint(Token *token);
 

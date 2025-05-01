@@ -13,10 +13,11 @@ Node *NewNode(NodeType type) {
 }
 
 Node *NodeFromToken(NodeType type, Token *token) {
-  Node *node  = NewNode(type);
-  node->start = token->start;
-  node->end   = token->end;
-  node->input = token->input;
+  Node *node         = NewNode(type);
+  node->start        = token->start;
+  node->end          = token->end;
+  node->input        = token->input;
+  node->indent_level = token->indent_level;
   return node;
 }
 
@@ -108,15 +109,34 @@ Node *ParseQuote(Token *token) {
   return n;
 }
 
-Node *ParseOrderedList(Token *token) {
-  Node *n              = NodeFromToken(NODE_LIST, token);
-  n->data.List.ordered = true;
-  return n;
-}
+Node *ParseList(Token *token, Lexer *lexer) {
+  Node *n              = NewNode(NODE_LIST);
+  n->indent_level      = token->indent_level;
+  n->data.List.ordered = token->type == TOKEN_LISTITEMORDERED;
 
-Node *ParseUnorderedList(Token *token) {
-  Node *n              = NodeFromToken(NODE_LIST, token);
-  n->data.List.ordered = false;
+  Node *first_item = NodeFromToken(NODE_LISTITEM, token);
+  NodeAppendChild(n, first_item);
+  ParseInline(lexer, first_item);
+
+  Token next = PeekToken(lexer);
+  while (next.type == token->type) {
+    next = NextToken(lexer);
+    if (next.indent_level > n->indent_level) {
+      NodeAppendChild(n, ParseList(&next, lexer));
+    } else {
+      Node *list_item = NodeFromToken(NODE_LISTITEM, &next);
+      ParseInline(lexer, list_item);
+      if (list_item->indent_level < n->indent_level) {
+        NodeAppendSibling(n, list_item);
+      } else {
+        NodeAppendChild(n, list_item);
+      }
+    }
+    next = PeekToken(lexer);
+  }
+
+  Token after = PeekToken(lexer);
+
   return n;
 }
 
@@ -149,11 +169,9 @@ Node *Parse(Lexer *lexer, Node *parent) {
       case TOKEN_QUOTE:
         node = ParseQuote(&token);
         break;
-      case TOKEN_ORDEREDLIST:
-        node = ParseOrderedList(&token);
-        break;
-      case TOKEN_UNORDEREDLIST:
-        node = ParseUnorderedList(&token);
+      case TOKEN_LISTITEMORDERED:
+      case TOKEN_LISTITEMUNORDERED:
+        node = ParseList(&token, lexer);
         break;
       case TOKEN_P:
       default:
@@ -183,8 +201,8 @@ Node *ParseLink(Token *token, Lexer *lexer) {
 
   Token link_href_token = NextInlineToken(lexer);
 
-  assert(link_href_token.type ==
-         TOKEN_LINKHREF);  // TODO Silently fail and fallback to text rendering.
+  // TODO Silently fail and fallback to text rendering.
+  assert(link_href_token.type == TOKEN_LINKHREF);
 
   n->data.Link.href_start = link_href_token.start;
   n->data.Link.href_end   = link_href_token.end;
@@ -215,9 +233,6 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
 
   while (token.type != TOKEN_NULL) {
     switch (token.type) {
-      case TOKEN_LISTITEM:
-        node = ParseListItem(&token);
-        break;
       case TOKEN_ITALICS:
         node = ParseEmphasis(&token, false);
         break;

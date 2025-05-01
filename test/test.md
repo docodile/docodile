@@ -59,3 +59,16 @@ but there should be a break.
    1. This is a nested ordered list.
    2. This is the second item in the nested ordered list.
 2. This item comes after the nested list.
+
+- Multiple levels of nesting
+  - Level 1
+    - Level 2
+      - Level 3
+
+1. Multiple levels of nesting
+   1. Level 1
+      1. Level 2
+         1. Level 3
+
+1. Mixed list types?
+   - Does this work?

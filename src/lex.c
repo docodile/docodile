@@ -46,14 +46,11 @@ static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
     case TOKEN_UNKNOWN:
       fprintf(stderr, "token->type: TOKEN_UNKNOWN\n");
       break;
-    case TOKEN_ORDEREDLIST:
-      fprintf(stderr, "token->type: TOKEN_ORDERDEDLIST\n");
+    case TOKEN_LISTITEMORDERED:
+      fprintf(stderr, "token->type: TOKEN_LISTITEMORDED\n");
       break;
-    case TOKEN_UNORDEREDLIST:
-      fprintf(stderr, "token->type: TOKEN_UNORDEREDLIST\n");
-      break;
-    case TOKEN_LISTITEM:
-      fprintf(stderr, "token->type: TOKEN_LISTITEM\n");
+    case TOKEN_LISTITEMUNORDERED:
+      fprintf(stderr, "token->type: TOKEN_LISTITEMUNORDERED\n");
       break;
     default:
       fprintf(stderr, "token->type: [error]\n");
@@ -62,6 +59,7 @@ static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
   fprintf(stderr, "token->start: %zu\n", token->start);
   fprintf(stderr, "token->end: %zu\n", token->end);
   fprintf(stderr, "token->length: %zu\n", token->length);
+  fprintf(stderr, "token->indent_level: %zu\n", token->indent_level);
   fprintf(stderr, "lexeme: \033[34m%.*s\033[0m\n", token->length,
           &token->input[token->start]);
 
@@ -100,7 +98,10 @@ static void NewLine(Lexer *lexer) {
 
 static int Whitespace(Lexer *lexer) {
   int count = 0;
-  while (Peek(lexer) == ' ' && ++count) Advance(lexer);
+  while (Peek(lexer) == ' ') {
+    Advance(lexer);
+    count++;
+  }
   return count;
 }
 
@@ -205,53 +206,6 @@ static Token LexParagraph(Lexer *lexer) {
   return token;
 }
 
-static Token LexOrderedList(Lexer *lexer) {
-  Token token  = TokenNew(lexer->input, lexer->pos);
-  token.type   = TOKEN_ORDEREDLIST;
-  size_t start = lexer->pos;
-  if (isdigit(Peek(lexer))) {
-    Advance(lexer);
-    if (Peek(lexer) == '.') Advance(lexer);
-  }
-  size_t end = ConsumeLine(lexer);
-  NewLine(lexer);
-  Whitespace(lexer);
-  char c;
-  while (isdigit(c = Peek(lexer)) && c != '\n') {
-    end = ConsumeLine(lexer);
-    NewLine(lexer);
-    Whitespace(lexer);
-  }
-
-  token.start  = start;
-  token.end    = end;
-  token.length = end - start;
-  return token;
-}
-
-static Token LexUnorderedList(Lexer *lexer) {
-  Token token  = TokenNew(lexer->input, lexer->pos);
-  token.type   = TOKEN_UNORDEREDLIST;
-  size_t start = lexer->pos;
-  int spaces   = 0;
-  Repeats(lexer, '-');
-  size_t end = ConsumeLine(lexer);
-  NewLine(lexer);
-  Whitespace(lexer);
-  char c;
-  while ((c = Peek(lexer)) == '-' && c != '\n') {
-    end = ConsumeLine(lexer);
-    NewLine(lexer);
-    spaces = Whitespace(lexer);
-  }
-
-  token.start  = start;
-  token.end    = end;
-  token.length = end - start;
-
-  return token;
-}
-
 static Token LexText(Lexer *lexer) {
   // HACK Remove quote.
   if (Repeats(lexer, '>') > 0) Whitespace(lexer);
@@ -304,19 +258,20 @@ static Token LexLink(Lexer *lexer) {
   return token;
 }
 
-static Token LexListItem(Lexer *lexer) {
-  Token token = TokenNew(lexer->input, lexer->pos);
-  token.type  = TOKEN_TEXT;
+static Token LexListItem(Lexer *lexer, int indent_level) {
+  Token token        = TokenNew(lexer->input, lexer->pos);
+  token.type         = TOKEN_TEXT;
+  token.indent_level = indent_level;
 
   char c    = Peek(lexer);
   int count = 0;
   if (c == '-') {
     Advance(lexer);
-    token.type = TOKEN_LISTITEM;
+    token.type = TOKEN_LISTITEMUNORDERED;
   } else if (isdigit(c)) {
     Advance(lexer);
     count = Repeats(lexer, '.');
-    if (count > 0) token.type = TOKEN_LISTITEM;
+    if (count > 0) token.type = TOKEN_LISTITEMORDERED;
   }
 
   Whitespace(lexer);
@@ -327,6 +282,8 @@ static Token LexListItem(Lexer *lexer) {
   token.end    = end;
   token.length = end - start;
   NewLine(lexer);
+
+  DebugInfo(lexer, &token, false);
   return token;
 }
 
@@ -370,19 +327,26 @@ Lexer LexerNew(char *input, size_t start, size_t end) {
   return (Lexer){.input = input, .pos = start, .end = end, .current_line = 1};
 }
 
+Token PeekToken(Lexer *lexer) {
+  size_t saved_pos = lexer->pos;
+  Token token      = NextToken(lexer);
+  lexer->pos       = saved_pos;
+  return token;
+}
+
 Token NextToken(Lexer *lexer) {
   char c = Peek(lexer);
   if (c == '\0') return TokenNull();
 
   Token token;
 
-  if (isdigit(c)) {
-    token = LexOrderedList(lexer);
+  int spaces       = Whitespace(lexer);
+  int indent_level = spaces / 2;  // TODO Handle tabs.
+  c                = Peek(lexer);
+  if (isdigit(c) || c == '-') {
+    token = LexListItem(lexer, indent_level);
   } else {
     switch (c) {
-      case '-':
-        token = LexUnorderedList(lexer);
-        break;
       case '#':
         token = LexHeading(lexer);
         break;
@@ -395,7 +359,6 @@ Token NextToken(Lexer *lexer) {
     }
   }
 
-  Whitespace(lexer);
   NewLine(lexer);
 
   // DebugInfo(lexer, &token, false);
@@ -408,28 +371,23 @@ Token NextInlineToken(Lexer *lexer) {
   if (c == '\0') return TokenNull();
 
   Token token;
-
-  if (isdigit(c) || c == '-') {
-    token = LexListItem(lexer);
-  } else {
-    switch (c) {
-      case '[':
-        token = LexLinkLabel(lexer);
-        break;
-      case '(':
-        token = LexLinkHref(lexer);
-        break;
-      case '*':
-      case '_':
-        token = LexEmphasis(lexer);
-        break;
-      case '\n':
-        token = LexBreak(lexer);
-        break;
-      default:
-        token = LexText(lexer);
-        break;
-    }
+  switch (c) {
+    case '[':
+      token = LexLinkLabel(lexer);
+      break;
+    case '(':
+      token = LexLinkHref(lexer);
+      break;
+    case '*':
+    case '_':
+      token = LexEmphasis(lexer);
+      break;
+    case '\n':
+      token = LexBreak(lexer);
+      break;
+    default:
+      token = LexText(lexer);
+      break;
   }
 
   // DebugInfo(lexer, &token, true);
