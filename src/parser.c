@@ -40,60 +40,6 @@ Node *NodeAppendChild(Node *parent, Node *child) {
   return NodeAppendSibling(parent->first_child, child);
 }
 
-void PrintNodeType(Node *node) {
-  switch (node->type) {
-    case NODE_UNKNOWN:
-      printf("<UNKNOWN>");
-      break;
-    case NODE_DOCUMENT:
-      printf("<document>");
-      break;
-    case NODE_PARAGRAPH:
-      printf("<paragraph>");
-      break;
-    case NODE_LIST:
-      printf("<list>");
-      break;
-    case NODE_LISTITEM:
-      printf("<listitem>");
-      break;
-    case NODE_TEXT:
-      printf("<text>");
-      break;
-    case NODE_HEADING:
-      printf("<heading>");
-      break;
-    case NODE_LINK:
-      printf("<link>");
-      break;
-    case NODE_QUOTE:
-      printf("<quote>");
-      break;
-  }
-
-  printf("\n");
-}
-
-void PrintNode(Node *node, int indent) {
-  for (int i = 0; i < indent; i++) {
-    if (i == 0) {
-      printf("├─");
-    } else {
-      printf("──");
-    }
-  }
-
-  PrintNodeType(node);
-
-  if (node->first_child) {
-    PrintNode(node->first_child, indent + 1);
-  }
-
-  if (node->next_sibling) {
-    PrintNode(node->next_sibling, indent);
-  }
-}
-
 Node *ParseHeading(Token *token, int level) {
   Node *n               = NodeFromToken(NODE_HEADING, token);
   n->data.Heading.level = level;
@@ -120,7 +66,9 @@ Node *ParseList(Token *token, Lexer *lexer) {
   ParseInline(lexer, first_item);
 
   Token next = PeekToken(lexer);
-  while (next.type == token->type) {
+  while ((next.type == TOKEN_LISTITEMORDERED ||
+          next.type == TOKEN_LISTITEMUNORDERED) &&
+         next.indent_level >= n->indent_level) {
     next = NextToken(lexer);
     if (next.indent_level > n->indent_level) {
       NodeAppendChild(n, ParseList(&next, lexer));
@@ -147,8 +95,13 @@ Node *Parse(Lexer *lexer, Node *parent) {
 
   Node *node;
 
+  bool skip = false;
+
   while (token.type != TOKEN_NULL) {
     switch (token.type) {
+      case TOKEN_EMPTYLINE:
+        skip = true;
+        break;
       case TOKEN_H1:
         node = ParseHeading(&token, 1);
         break;
@@ -180,9 +133,12 @@ Node *Parse(Lexer *lexer, Node *parent) {
         break;
     }
 
-    NodeAppendChild(parent, node);
-    ParseInline(lexer, node);
+    if (!skip) {
+      NodeAppendChild(parent, node);
+      ParseInline(lexer, node);
+    }
 
+    skip  = false;
     token = NextToken(lexer);
   }
 

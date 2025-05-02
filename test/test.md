@@ -66,9 +66,33 @@ but there should be a break.
       - Level 3
 
 1. Multiple levels of nesting
+
    1. Level 1
       1. Level 2
          1. Level 3
 
 1. Mixed list types?
    - Does this work?
+
+## Todo list
+
+1. Markdown to HTML converter
+   - Block
+     - Table
+     - Code
+     - Horizontal rule
+     - Task list
+   - Inline
+     - `code`
+     - Image
+     - Footnotes
+     - Strike through
+     - Highlight
+     - Subscript / superscript
+2. HTML template
+   - Only needs to be very basic
+   - Really only need one HTML file that markdown articles can be embedded into
+3. YAML configuration
+   - Allow configuration of things like theme, accent color etc.
+4. Styling
+   - Both html template and the generated markdown will need some styles, and they need to be easily user-replaceable

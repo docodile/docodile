@@ -1,12 +1,12 @@
 #ifndef LEX_H
 #define LEX_H
 
+#include <assert.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <ctype.h>
 
 #include "logger.h"
 
@@ -31,6 +31,7 @@ typedef enum {
   TOKEN_LISTITEMORDERED,
   TOKEN_LISTITEMUNORDERED,
   TOKEN_NESTED,
+  TOKEN_EMPTYLINE,
 } TokenType;
 
 typedef struct {

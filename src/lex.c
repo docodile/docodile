@@ -69,6 +69,55 @@ static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
   fprintf(stderr, "\n");
 }
 
+const char *TokenName(Token *token) {
+  switch (token->type) {
+    case TOKEN_BOLD:
+      return "BOLD";
+    case TOKEN_BR:
+      return "BREAK";
+    case TOKEN_EMPTYLINE:
+      return "EMPTYLINE";
+    case TOKEN_H1:
+      return "H1";
+    case TOKEN_H2:
+      return "H2";
+    case TOKEN_H3:
+      return "H3";
+    case TOKEN_H4:
+      return "H4";
+    case TOKEN_H5:
+      return "H5";
+    case TOKEN_H6:
+      return "H6";
+    case TOKEN_ITALICS:
+      return "ITALICS";
+    case TOKEN_LINK:
+      return "LINK";
+    case TOKEN_LINKHREF:
+      return "LINKHREF";
+    case TOKEN_LINKLABEL:
+      return "LINKLABEL";
+    case TOKEN_LISTITEMORDERED:
+      return "OL";
+    case TOKEN_LISTITEMUNORDERED:
+      return "UL";
+    case TOKEN_P:
+      return "PARAGRAPH";
+    case TOKEN_QUOTE:
+      return "QUOTE";
+    case TOKEN_TEXT:
+      return "TEXT";
+    case TOKEN_UNKNOWN:
+    default:
+      return "UNKNOWN";
+  }
+}
+
+static void DebugMini(Token *token, bool is_inline) {
+  if (!is_inline) fprintf(stderr, "\n\n");
+  fprintf(stderr, "\x1b[44m\x1b[1m %s \x1b[0m  ", TokenName(token));
+}
+
 static Token TokenNew(char *input, size_t pos) {
   return (Token){.input        = input,
                  .type         = TOKEN_UNKNOWN,
@@ -207,6 +256,17 @@ static Token LexParagraph(Lexer *lexer) {
   return token;
 }
 
+static Token LexEmptyLine(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_EMPTYLINE;
+
+  NewLine(lexer);
+
+  token.end    = lexer->pos;
+  token.length = token.end - token.start;
+  return token;
+}
+
 static Token LexText(Lexer *lexer) {
   // HACK Remove quote.
   if (Repeats(lexer, '>') > 0) Whitespace(lexer);
@@ -284,7 +344,6 @@ static Token LexListItem(Lexer *lexer, int indent_level) {
   token.length = end - start;
   NewLine(lexer);
 
-  DebugInfo(lexer, &token, false);
   return token;
 }
 
@@ -348,6 +407,9 @@ Token NextToken(Lexer *lexer) {
     token = LexListItem(lexer, indent_level);
   } else {
     switch (c) {
+      case '\n':
+        token = LexEmptyLine(lexer);
+        break;
       case '#':
         token = LexHeading(lexer);
         break;
@@ -360,9 +422,10 @@ Token NextToken(Lexer *lexer) {
     }
   }
 
-  NewLine(lexer);
+  // NewLine(lexer);
 
   // DebugInfo(lexer, &token, false);
+  DebugMini(&token, false);
 
   return token;
 }
@@ -392,6 +455,8 @@ Token NextInlineToken(Lexer *lexer) {
   }
 
   // DebugInfo(lexer, &token, true);
+
+  DebugMini(&token, true);
 
   return token;
 }
