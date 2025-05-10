@@ -1,5 +1,5 @@
-#ifndef LEX_H
-#define LEX_H
+#ifndef MARKDOWNLEX_H
+#define MARKDOWNLEX_H
 
 #include <assert.h>
 #include <ctype.h>
@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "logger.h"
+#include "../logger.h"
 
 typedef enum {
   TOKEN_UNKNOWN,
@@ -59,4 +59,4 @@ Token PeekToken(Lexer *lexer);
 Token NextInlineToken(Lexer *lexer);
 void TokenPrint(Token *token);
 
-#endif  // LEX_H
+#endif  // MARKDOWNLEX_H

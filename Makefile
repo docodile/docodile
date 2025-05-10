@@ -5,7 +5,7 @@ PROGRAM := gendoc
 SRC_DIR := src
 BUILD_DIR := $(SRC_DIR)/build
 DEBUG_DIR := $(BUILD_DIR)/debug
-SRC := $(wildcard $(SRC_DIR)/*.c)
+SRC := $(wildcard $(SRC_DIR)/**/*.c) $(wildcard $(SRC_DIR)/*.c)
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)

@@ -4,7 +4,7 @@
 #include <assert.h>
 
 #include "parser.h"
-#include "logger.h"
+#include "../logger.h"
 
 void RenderHtml(Node *ast);
 

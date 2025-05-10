@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef MARKDOWNPARSER_H
+#define MARKDOWNPARSER_H
 
 #include "lex.h"
 
@@ -67,4 +67,4 @@ Node *Parse(Lexer *lexer, Node *parent);
 Node *ParseInline(Lexer *lexer, Node *parent);
 Node *NewNode(NodeType type);
 
-#endif  // PARSER_H
+#endif  // MARKDOWNPARSER_H

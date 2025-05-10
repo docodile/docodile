@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "html.h"
-#include "lex.h"
 #include "logger.h"
-#include "parser.h"
+#include "markdown/html.h"
+#include "markdown/lex.h"
+#include "markdown/parser.h"
 
 int main(void) {
   FILE *file = fopen("docs/index.md", "r");
