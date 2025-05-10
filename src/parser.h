@@ -19,6 +19,8 @@ typedef enum {
   NODE_LINK,
   NODE_TEXT,
   NODE_BREAK,
+  NODE_CODE,
+  NODE_INLINECODE,
 } NodeType;
 
 typedef union {

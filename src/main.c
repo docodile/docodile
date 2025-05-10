@@ -6,7 +6,7 @@
 #include "parser.h"
 
 int main(void) {
-  FILE *file = fopen("test/test.md", "r");
+  FILE *file = fopen("docs/index.md", "r");
   if (!file) {
     perror("Failed to open file");
     return 1;

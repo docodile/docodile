@@ -1,5 +1,7 @@
 #include "parser.h"
 
+Node *ParseInlineCode(Token *token);
+
 Node *NewNode(NodeType type) {
   Node *node         = (Node *)malloc(sizeof(Node));
   node->type         = type;
@@ -89,15 +91,20 @@ Node *ParseList(Token *token, Lexer *lexer) {
   return n;
 }
 
+Node *ParseCodeBlock(Token *token) {
+  Node *n = NodeFromToken(NODE_CODE, token);
+  return n;
+}
+
 Node *Parse(Lexer *lexer, Node *parent) {
   Node *doc   = NewNode(NODE_DOCUMENT);
   Token token = NextToken(lexer);
 
   Node *node;
 
-  bool skip = false;
-
   while (token.type != TOKEN_NULL) {
+    bool skip = false;
+
     switch (token.type) {
       case TOKEN_EMPTYLINE:
         skip = true;
@@ -127,6 +134,9 @@ Node *Parse(Lexer *lexer, Node *parent) {
       case TOKEN_LISTITEMUNORDERED:
         node = ParseList(&token, lexer);
         break;
+      case TOKEN_CODEBLOCK:
+        node = ParseCodeBlock(&token);
+        break;
       case TOKEN_P:
       default:
         node = ParseParagraph(&token);
@@ -135,10 +145,10 @@ Node *Parse(Lexer *lexer, Node *parent) {
 
     if (!skip) {
       NodeAppendChild(parent, node);
-      ParseInline(lexer, node);
+      // HACK Maybe not the nicest way of handling code blocks.
+      if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node); 
     }
 
-    skip  = false;
     token = NextToken(lexer);
   }
 
@@ -172,6 +182,11 @@ Node *ParseBreak(Token *token) {
   return n;
 }
 
+Node *ParseInlineCode(Token *token) {
+  Node *n = NodeFromToken(NODE_INLINECODE, token);
+  return n;
+}
+
 Node *ParseEmphasis(Token *token, bool strong) {
   Node *n                 = NodeFromToken(NODE_EMPHASIS, token);
   n->data.Emphasis.strong = strong;
@@ -201,6 +216,9 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
         break;
       case TOKEN_BR:
         node = ParseBreak(&token);
+        break;
+      case TOKEN_CODEBLOCKINLINE:
+        node = ParseInlineCode(&token);
         break;
       case TOKEN_TEXT:
       default:

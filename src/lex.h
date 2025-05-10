@@ -32,6 +32,8 @@ typedef enum {
   TOKEN_LISTITEMUNORDERED,
   TOKEN_NESTED,
   TOKEN_EMPTYLINE,
+  TOKEN_CODEBLOCK,
+  TOKEN_CODEBLOCKINLINE,
 } TokenType;
 
 typedef struct {

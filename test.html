@@ -1,256 +1,72 @@
 <article>
   <h1>
-    This is a H1 heading
+    gendoc
   </h1>
+  <p>
+    <code>gendoc</code> is a simple Markdown static site generator.
+  </p>
   <h2>
-    This is a H2 heading
+    Supported syntax
   </h2>
   <h3>
-    This is a H3 heading
+    Headings
   </h3>
-  <h4>
-    This is a H4 heading
-  </h4>
-  <h5>
-    This is a H5 heading
-  </h5>
-  <h6>
-    This is a H6 heading
-  </h6>
+  <pre>
+markdown
+# Heading level 1
+
+## Heading level 2
+
+### Heading level 3
+
+#### Heading level 4
+
+##### Heading level 5
+
+###### Heading level 6
+  </pre>
+  <h3>
+    Paragraphs
+  </h3>
   <p>
     This is a paragraph.
   </p>
   <p>
-    <a href="https://google.com">This is a link.</a>
+    This is a separate paragraph.
   </p>
+  <h3>
+    Line breaks
+  </h3>
   <p>
-    <em>This is italics.</em>
+    This is a line<br />break within a paragraph.
   </p>
+  <h3>
+    Emphasis
+  </h3>
   <p>
-    <strong>This is bold.</strong>
+    You can use <em>italics</em> and <strong>bold</strong> to emphasise parts of text. You can combine <strong><em>bold and italics</em></strong>.
   </p>
-  <p>
-    <strong><em>This is bold and italics.</em></strong>
-  </p>
-  <p>
-    This is a paragraph with <a href="https://google.com">links</a> and <em>emphasis</em>. Multiple <strong>kinds</strong> <em>of</em> <strong><em>emphasis</em></strong>.
-  </p>
-  <p>
-    This should be a separate paragraph from the line below it.
-  </p>
-  <p>
-    This should be a separate paragraph from the line above it.
-  </p>
-  <p>
-    This should be in the same paragraph as the line below<br />but there should be a break.
-  </p>
+  <pre>
+markdown
+You can use _italics_ and **bold** to emphasise parts of text. You can combine **_bold and italics_**.
+  </pre>
+  <h3>
+    Blockquotes
+  </h3>
   <blockquote>
-    This is a quote.<br />This is part of the same quote.
+    This is a block quote
+  </blockquote>
+  <pre>
+markdown
+> This is a block quote.
+  </pre>
+  <h4>
+    Nested blockquotes
+  </h4>
+  <blockquote>
+    Nested blockquotes.
   </blockquote>
   <blockquote>
-    This is a separate quote.
+    This is nested.
   </blockquote>
-  <ol>
-    <li>
-      Apple
-    </li>
-    <li>
-      Orange
-    </li>
-    <li>
-      Banana
-    </li>
-  </ol>
-  <ol>
-    <li>
-      <em>Italics</em>
-    </li>
-    <li>
-      <strong>Bold</strong>
-    </li>
-    <li>
-      <strong><em>Bold and Italics</em></strong>
-    </li>
-  </ol>
-  <ul>
-    <li>
-      Red
-    </li>
-    <li>
-      Green
-    </li>
-    <li>
-      Blue
-    </li>
-  </ul>
-  <ul>
-    <li>
-      <em>Italics</em>
-    </li>
-    <li>
-      <strong>Bold</strong>
-    </li>
-    <li>
-      <strong><em>Bold and Italics</em></strong>
-    </li>
-  </ul>
-  <ul>
-    <li>
-      This list contains a nested list.
-    </li>
-    <ul>
-      <li>
-        This is the nested list.
-      </li>
-      <li>
-        It can contain multiple list items.
-      </li>
-    </ul>
-    <li>
-      This item comes after the nested list.
-    </li>
-  </ul>
-  <ol>
-    <li>
-      Nested lists can be placed in ordered lists too.
-    </li>
-    <ol>
-      <li>
-        This is a nested ordered list.
-      </li>
-      <li>
-        This is the second item in the nested ordered list.
-      </li>
-    </ol>
-    <li>
-      This item comes after the nested list.
-    </li>
-  </ol>
-  <ul>
-    <li>
-      Multiple levels of nesting
-    </li>
-    <ul>
-      <li>
-        Level 1
-      </li>
-      <ul>
-        <li>
-          Level 2
-        </li>
-        <ul>
-          <li>
-            Level 3
-          </li>
-        </ul>
-      </ul>
-    </ul>
-  </ul>
-  <ol>
-    <li>
-      Multiple levels of nesting
-    </li>
-  </ol>
-  <ol>
-    <li>
-      Level 1
-    </li>
-    <ol>
-      <li>
-        Level 2
-      </li>
-      <ol>
-        <li>
-          Level 3
-        </li>
-      </ol>
-    </ol>
-  </ol>
-  <ol>
-    <li>
-      Mixed list types?
-    </li>
-    <ul>
-      <li>
-        Does this work?
-      </li>
-    </ul>
-  </ol>
-  <h2>
-    Todo list
-  </h2>
-  <ol>
-    <li>
-      Markdown to HTML converter
-    </li>
-    <ul>
-      <li>
-        Block
-      </li>
-      <ul>
-        <li>
-          Table
-        </li>
-        <li>
-          Code
-        </li>
-        <li>
-          Horizontal rule
-        </li>
-        <li>
-          Task list
-        </li>
-      </ul>
-      <li>
-        Inline
-      </li>
-      <ul>
-        <li>
-          `code`
-        </li>
-        <li>
-          Image
-        </li>
-        <li>
-          Footnotes
-        </li>
-        <li>
-          Strike through
-        </li>
-        <li>
-          Highlight
-        </li>
-        <li>
-          Subscript / superscript
-        </li>
-      </ul>
-    </ul>
-    <li>
-      HTML template
-    </li>
-    <ul>
-      <li>
-        Only needs to be very basic
-      </li>
-      <li>
-        Really only need one HTML file that markdown articles can be embedded into
-      </li>
-    </ul>
-    <li>
-      YAML configuration
-    </li>
-    <ul>
-      <li>
-        Allow configuration of things like theme, accent color etc.
-      </li>
-    </ul>
-    <li>
-      Styling
-    </li>
-    <ul>
-      <li>
-        Both html template and the generated markdown will need some styles, and they need to be easily user-replaceable
-      </li>
-    </ul>
-  </ol>
 </article>

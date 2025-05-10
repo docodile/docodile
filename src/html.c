@@ -34,6 +34,13 @@ static void RenderNodeTag(Node *node, bool closing) {
     case NODE_QUOTE:
       printf(TAG("blockquote", closing));
       break;
+    case NODE_CODE:
+      // TODO Instead of <pre> use <code> and css to preserve whitespace.
+      printf(TAG("pre", closing));
+      break;
+    case NODE_INLINECODE:
+      printf(TAG("code", closing));
+      break;
     case NODE_EMPHASIS: {
       if (node->data.Emphasis.strong) {
         printf(TAG("strong", closing));
@@ -52,7 +59,7 @@ void RenderNodeContent(Node *node) {
     printf("%.*s", length, &node->input[start]);
   }
 
-  if (node->type == NODE_TEXT) {
+  if (node->type == NODE_TEXT || node->type == NODE_CODE) {
     size_t length = node->end - node->start;
     assert(length >= 0);
     printf("%.*s", length, &node->input[node->start]);

@@ -1,5 +1,7 @@
 #include "lex.h"
 
+static Token LexParagraph(Lexer *lexer);
+
 static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
   fprintf(stderr, "=== DEBUG START ===\n");
   fprintf(stderr, "%s\n", is_inline ? "INLINE" : "BLOCK");
@@ -107,6 +109,9 @@ const char *TokenName(Token *token) {
       return "QUOTE";
     case TOKEN_TEXT:
       return "TEXT";
+    case TOKEN_CODEBLOCK:
+    case TOKEN_CODEBLOCKINLINE:
+      return "CODE";
     case TOKEN_UNKNOWN:
     default:
       return "UNKNOWN";
@@ -212,6 +217,47 @@ static Token LexHeading(Lexer *lexer) {
   token.length = end - start;
   NewLine(lexer);
   return token;
+}
+
+static Token LexCodeBlock(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  Repeats(lexer, '`');
+  token.type  = TOKEN_CODEBLOCK;
+  token.start = lexer->pos;
+
+  char c = Peek(lexer);
+  while (c != '`' && c != '\0') {
+    token.end = ConsumeLine(lexer);
+    NewLine(lexer);
+    c = Peek(lexer);
+  }
+
+  Repeats(lexer, '`');  // TODO Check balanced backticks?
+
+  token.length = token.end - token.start;
+  NewLine(lexer);
+  return token;
+}
+
+static Token LexCodeInline(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_CODEBLOCKINLINE;
+  Repeats(lexer, '`');
+  token.start = lexer->pos;
+  token.end   = ConsumeUntilAny(lexer, "`", false);
+  Repeats(lexer, '`');
+  token.length = token.end - token.start;
+  return token;
+}
+
+static Token LexCode(Lexer *lexer) {
+  size_t saved_pos = lexer->pos;
+  int count        = Repeats(lexer, '`');
+  lexer->pos       = saved_pos;
+
+  if (count >= 3) return LexCodeBlock(lexer);
+
+  return LexParagraph(lexer);
 }
 
 static Token LexQuote(Lexer *lexer) {
@@ -407,6 +453,9 @@ Token NextToken(Lexer *lexer) {
     token = LexListItem(lexer, indent_level);
   } else {
     switch (c) {
+      case '`':
+        token = LexCode(lexer);
+        break;
       case '\n':
         token = LexEmptyLine(lexer);
         break;
@@ -436,6 +485,9 @@ Token NextInlineToken(Lexer *lexer) {
 
   Token token;
   switch (c) {
+    case '`':
+      token = LexCodeInline(lexer);
+      break;
     case '[':
       token = LexLinkLabel(lexer);
       break;
