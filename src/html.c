@@ -43,8 +43,7 @@ static void RenderNodeTag(Node *node, bool closing) {
       printf(TAG("blockquote", closing));
       break;
     case NODE_CODE:
-      // TODO Instead of <pre> use <code> and css to preserve whitespace.
-      printf(TAG("pre", closing));
+      printf(TAG("code", closing));
       break;
     case NODE_INLINECODE:
       printf(TAG("code", closing));
