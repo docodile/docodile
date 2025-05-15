@@ -23,21 +23,9 @@ typedef struct {
   char full_path[MAXFILEPATH];
 } Page;
 
-static void ChangeFilePathFormat(const char *from, const char *to,
-                                 const char *in, char *out) {
-  const char *ext = strrchr(in, '.');
-  if (ext && strcmp(ext, from) == 0) {
-    size_t base_len = ext - in;
-    strncpy(out, in, base_len);
-    strcpy(out + base_len, to);
-  } else {
-    strcpy(out, in);
-  }
-}
-
 static Page *NewPage(const char *name, const char *fullpath) {
   Page *page = malloc(sizeof(Page));
-  ChangeFilePathFormat(".md", ".html", name, page->out_name);
+  ChangeFilePathExtension(".md", ".html", name, page->out_name);
   strcpy(page->src_name, name);
   strcpy(page->full_path, fullpath);
   return page;
@@ -163,16 +151,18 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
   }
 
   for (size_t i = 0; i < site_directory->num_pages; i++) {
+    Page *page = site_directory->pages[i];
     char path[MAXFILEPATH];
-    sprintf(path, "%s/%s", base_path, site_directory->pages[i]->out_name);
+    sprintf(path, "%s/%s", base_path, page->out_name);
     FILE *html_page = freopen(path, "w", stdout);
-    BuildPage(site_directory->pages[i]->full_path);
+    BuildPage(page->full_path);
   }
 
   for (size_t i = 0; i < site_directory->num_dirs; i++) {
+    Directory *directory = site_directory->dirs[i];
     char path[MAXFILEPATH];
-    sprintf(path, "%s/%s", base_path, site_directory->dirs[i]->path);
-    BuildSite(site_directory->dirs[i], path);
+    sprintf(path, "%s/%s", base_path, directory->path);
+    BuildSite(directory, path);
   }
 }
 

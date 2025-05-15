@@ -5,6 +5,7 @@
 
 #include "parser.h"
 #include "logger.h"
+#include "utils.h"
 
 void RenderHtml(Node *ast);
 

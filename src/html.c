@@ -4,6 +4,21 @@
 #define CLOSETAG(name)     "</" name ">"
 #define TAG(name, closing) closing ? CLOSETAG(name) : OPENTAG(name)
 
+static void RenderLink(Node *node, bool closing) {
+  if (!closing) {
+    size_t start  = node->data.Link.href_start;
+    size_t end    = node->data.Link.href_end;
+    size_t length = end - start;
+    char raw_link[length];
+    snprintf(raw_link, length + 1, "%s", &node->input[start]);
+    char html_link[length + 2];
+    ChangeFilePathExtension(".md", ".html", raw_link, html_link);
+    printf(TAG("a href=\"%.*s\"", closing), length + 2, html_link);
+  } else {
+    printf(TAG("a", closing));
+  }
+}
+
 static void RenderNodeTag(Node *node, bool closing) {
   switch (node->type) {
     case NODE_DOCUMENT:
@@ -12,16 +27,9 @@ static void RenderNodeTag(Node *node, bool closing) {
     case NODE_HEADING:
       printf(TAG("h%d", closing), node->data.Heading.level);
       break;
-    case NODE_LINK: {
-      if (!closing) {
-        size_t start  = node->data.Link.href_start;
-        size_t end    = node->data.Link.href_end;
-        size_t length = end - start;
-        printf(TAG("a href=\"%.*s\"", closing), length, &node->input[start]);
-      } else {
-        printf(TAG("a", closing));
-      }
-    } break;
+    case NODE_LINK:
+      RenderLink(node, closing);
+      break;
     case NODE_LIST:
       printf(TAG("%2s", closing), node->data.List.ordered ? "ol" : "ul");
       break;
