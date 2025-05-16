@@ -9,6 +9,7 @@
 #include "logger.h"
 #include "parser.h"
 #include "server.h"
+#include "template.h"
 
 #define BUILDDIR       "site"
 #define DOCSDIR        "docs"
@@ -155,75 +156,9 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
     FILE *html_page = fopen(path, "w");
-
-#define print(...) fprintf(html_page, __VA_ARGS__)
-
-    // TODO build outer html template
-    print("<!DOCTYPE html>\n");
-    print("<html>\n");
-    print("<head>\n");
-    print("<meta charset=\"UTF-8\">");
-    print(
-        "<meta name=\"viewport\" content=\"width=device-width, "
-        "initial-scale=1.0\">\n");
-    // TODO Make the format of this configurable e.g. "SITENAME | PAGE".
-    print("<title>gendoc</title>\n");
-    // TODO Make this configurable.
-    print("<meta name=\"description\" content=\"Put description here.\">\n");
-    // TODO Make this configurable.
-    print("<meta name=\"author\" content=\"Your Name or Company\">\n");
-    print("<link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\">\n");
-    // TODO Open Graph
-    // TODO Twitter Card
-    // TODO Add override styles.
-    print(
-        "<script "
-        "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/"
-        "prism.min.js\" "
-        "integrity=\"sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+"
-        "X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ==\" "
-        "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>\n");
-    print(
-        "<link rel=\"stylesheet\" "
-        "href=\"https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/"
-        "prism.min.css\" "
-        "integrity=\"sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/"
-        "RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w==\" "
-        "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />\n");
-    print("<link rel=\"stylesheet\" href=\"assets/reset.css\">\n");
-    print("<link rel=\"stylesheet\" href=\"assets/styles.css\">\n");
-    print("</head>\n");
-    print("<body>\n");
-    // TODO Header
-    print("<header>\n");
-    // TODO Site name
-    print("<h1>gendoc</h1>\n");
-
-    // TODO Generate nav
-    print("<nav>\n");
-    print("<ul>\n");
-    print("<li><a href=\"/\">Home</a></li>\n");
-    print(
-        "<li><a href=\"/getting-started/index.html\">Getting "
-        "started</a></li>\n");
-    print("<li><a href=\"/setup/index.html\">Setup</a></li>\n");
-    print("<li><a href=\"\">About</a></li>\n");
-    print("</ul>\n");
-    print("</nav>\n");
-
-    print("</header>\n");
-
-    print("<main>\n");
-
+    TemplateStart(html_page);
     BuildPage(page->full_path, html_page);
-
-    print("</main>\n");
-
-    print("<footer></footer>\n");
-    print("</body>\n");
-    print("</html>\n");
-    // TODO build outer html template
-
+    TemplateEnd();
     fclose(html_page);
   }
 

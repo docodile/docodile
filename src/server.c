@@ -63,7 +63,6 @@ void Serve(const char *dir) {
   printf("Serving on http://localhost:%d\n", PORT);
 
   while (1) {
-    printf("Waiting for connection...\n");
     int client_fd = accept(server_fd, NULL, NULL);
     char request[BUFFER_SIZE];
     read(client_fd, request, BUFFER_SIZE - 1);
