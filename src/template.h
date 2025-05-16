@@ -3,7 +3,13 @@
 
 #include <stdio.h>
 
-void TemplateStart(FILE *out_file);
+typedef struct {
+  const char *site_name;
+  const char *page_title;
+  const char *description;
+} PageConfig;
+
+void TemplateStart(FILE *out_file, PageConfig *page_config);
 void TemplateEnd();
 
 #endif  // TEMPLATE_H

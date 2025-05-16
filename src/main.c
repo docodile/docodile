@@ -155,8 +155,9 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
     Page *page = site_directory->pages[i];
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
-    FILE *html_page = fopen(path, "w");
-    TemplateStart(html_page);
+    FILE *html_page        = fopen(path, "w");
+    PageConfig page_config = (PageConfig){.page_title = page->src_name};
+    TemplateStart(html_page, &page_config);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);
