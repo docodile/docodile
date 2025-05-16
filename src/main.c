@@ -89,7 +89,7 @@ void BuildSiteDirectory(Directory *dest, const char *path) {
   closedir(dir);
 }
 
-static void BuildPage(const char *src_path) {
+static void BuildPage(const char *src_path, FILE *out_file) {
   FILE *file = fopen(src_path, "r");
   if (!file) {
     perror("Failed to open file");
@@ -136,7 +136,7 @@ static void BuildPage(const char *src_path) {
   Node *doc = NewNode(NODE_DOCUMENT);
   Parse(&lexer, doc);
 
-  RenderHtml(doc);
+  RenderHtml(doc, out_file);
 
   free(buffer);
 }
@@ -154,72 +154,74 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
     Page *page = site_directory->pages[i];
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
-    FILE *html_page = freopen(path, "w", stdout);
+    FILE *html_page = fopen(path, "w");
+
+#define print(...) fprintf(html_page, __VA_ARGS__)
 
     // TODO build outer html template
-    printf("<!DOCTYPE html>\n");
-    printf("<html>\n");
-    printf("<head>\n");
-    printf("<meta charset=\"UTF-8\">");
-    printf(
+    print("<!DOCTYPE html>\n");
+    print("<html>\n");
+    print("<head>\n");
+    print("<meta charset=\"UTF-8\">");
+    print(
         "<meta name=\"viewport\" content=\"width=device-width, "
         "initial-scale=1.0\">\n");
     // TODO Make the format of this configurable e.g. "SITENAME | PAGE".
-    printf("<title>gendoc</title>\n");
+    print("<title>gendoc</title>\n");
     // TODO Make this configurable.
-    printf("<meta name=\"description\" content=\"Put description here.\">\n");
+    print("<meta name=\"description\" content=\"Put description here.\">\n");
     // TODO Make this configurable.
-    printf("<meta name=\"author\" content=\"Your Name or Company\">\n");
-    printf("<link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\">\n");
+    print("<meta name=\"author\" content=\"Your Name or Company\">\n");
+    print("<link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\">\n");
     // TODO Open Graph
     // TODO Twitter Card
     // TODO Add override styles.
-    printf(
+    print(
         "<script "
         "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/"
         "prism.min.js\" "
         "integrity=\"sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+"
         "X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ==\" "
         "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>\n");
-    printf(
+    print(
         "<link rel=\"stylesheet\" "
         "href=\"https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/"
         "prism.min.css\" "
         "integrity=\"sha512-/mZ1FHPkg6EKcxo0fKXF51ak6Cr2ocgDi5ytaTBjsQZIH/"
         "RNs6GF6+oId/vPe3eJB836T36nXwVh/WBl/cWT4w==\" "
         "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />\n");
-    printf("<link rel=\"stylesheet\" href=\"assets/reset.css\">\n");
-    printf("<link rel=\"stylesheet\" href=\"assets/styles.css\">\n");
-    printf("</head>\n");
-    printf("<body>\n");
+    print("<link rel=\"stylesheet\" href=\"assets/reset.css\">\n");
+    print("<link rel=\"stylesheet\" href=\"assets/styles.css\">\n");
+    print("</head>\n");
+    print("<body>\n");
     // TODO Header
-    printf("<header>\n");
+    print("<header>\n");
     // TODO Site name
-    printf("<h1>gendoc</h1>\n");
+    print("<h1>gendoc</h1>\n");
 
     // TODO Generate nav
-    printf("<nav>\n");
-    printf("<ul>\n");
-    printf("<li><a href=\"/\">Home</a></li>\n");
-    printf(
+    print("<nav>\n");
+    print("<ul>\n");
+    print("<li><a href=\"/\">Home</a></li>\n");
+    print(
         "<li><a href=\"/getting-started/index.html\">Getting "
         "started</a></li>\n");
-    printf("<li><a href=\"/setup/index.html\">Setup</a></li>\n");
-    printf("<li><a href=\"\">About</a></li>\n");
-    printf("</ul>\n");
-    printf("</nav>\n");
+    print("<li><a href=\"/setup/index.html\">Setup</a></li>\n");
+    print("<li><a href=\"\">About</a></li>\n");
+    print("</ul>\n");
+    print("</nav>\n");
 
-    printf("</header>\n");
+    print("</header>\n");
 
-    printf("<main>\n");
+    print("<main>\n");
 
-    BuildPage(page->full_path);
+    BuildPage(page->full_path, html_page);
 
-    printf("</main>\n");
+    print("</main>\n");
 
-    printf("<footer></footer>\n");
-    printf("</body>\n");
-    printf("</html>\n");
+    print("<footer></footer>\n");
+    print("</body>\n");
+    print("</html>\n");
     // TODO build outer html template
 
     fclose(html_page);

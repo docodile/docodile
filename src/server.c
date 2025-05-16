@@ -52,6 +52,8 @@ static void SendFile(int client_fd, const char *path) {
 
 void Serve(const char *dir) {
   int server_fd           = socket(AF_INET, SOCK_STREAM, 0);
+  int opt = 1;
+  setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
   struct sockaddr_in addr = {.sin_family      = AF_INET,
                              .sin_port        = htons(PORT),
                              .sin_addr.s_addr = INADDR_ANY};
@@ -61,6 +63,7 @@ void Serve(const char *dir) {
   printf("Serving on http://localhost:%d\n", PORT);
 
   while (1) {
+    printf("Waiting for connection...\n");
     int client_fd = accept(server_fd, NULL, NULL);
     char request[BUFFER_SIZE];
     read(client_fd, request, BUFFER_SIZE - 1);

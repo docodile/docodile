@@ -1,8 +1,14 @@
 #include "html.h"
 
+#include <stdarg.h>
+
 #define OPENTAG(name)      "<" name ">"
 #define CLOSETAG(name)     "</" name ">"
 #define TAG(name, closing) closing ? CLOSETAG(name) : OPENTAG(name)
+
+static FILE *out;
+
+#define print(...) fprintf(out, __VA_ARGS__)
 
 static void RenderLink(Node *node, bool closing) {
   if (!closing) {
@@ -13,46 +19,46 @@ static void RenderLink(Node *node, bool closing) {
     snprintf(raw_link, length + 1, "%s", &node->input[start]);
     char html_link[length + 2];
     ChangeFilePathExtension(".md", ".html", raw_link, html_link);
-    printf(TAG("a href=\"%.*s\"", closing), length + 2, html_link);
+    print(TAG("a href=\"%.*s\"", closing), length + 2, html_link);
   } else {
-    printf(TAG("a", closing));
+    print(TAG("a", closing));
   }
 }
 
 static void RenderNodeTag(Node *node, bool closing) {
   switch (node->type) {
     case NODE_DOCUMENT:
-      printf(TAG("article", closing));
+      print(TAG("article", closing));
       break;
     case NODE_HEADING:
-      printf(TAG("h%d", closing), node->data.Heading.level);
+      print(TAG("h%d", closing), node->data.Heading.level);
       break;
     case NODE_LINK:
       RenderLink(node, closing);
       break;
     case NODE_LIST:
-      printf(TAG("%2s", closing), node->data.List.ordered ? "ol" : "ul");
+      print(TAG("%2s", closing), node->data.List.ordered ? "ol" : "ul");
       break;
     case NODE_LISTITEM:
-      printf(TAG("li", closing));
+      print(TAG("li", closing));
       break;
     case NODE_PARAGRAPH:
-      printf(TAG("p", closing));
+      print(TAG("p", closing));
       break;
     case NODE_QUOTE:
-      printf(TAG("blockquote", closing));
+      print(TAG("blockquote", closing));
       break;
     case NODE_CODE:
-      printf(TAG("code", closing));
+      print(TAG("code", closing));
       break;
     case NODE_INLINECODE:
-      printf(TAG("code", closing));
+      print(TAG("code", closing));
       break;
     case NODE_EMPHASIS: {
       if (node->data.Emphasis.strong) {
-        printf(TAG("strong", closing));
+        print(TAG("strong", closing));
       } else {
-        printf(TAG("em", closing));
+        print(TAG("em", closing));
       }
     } break;
   }
@@ -63,13 +69,13 @@ void RenderNodeContent(Node *node) {
     size_t start  = node->data.Link.label_start;
     size_t length = node->data.Link.label_end - start;
     assert(length >= 0);
-    printf("%.*s", length, &node->input[start]);
+    print("%.*s", length, &node->input[start]);
   }
 
   if (node->type == NODE_TEXT || node->type == NODE_CODE) {
     size_t length = node->end - node->start;
     assert(length >= 0);
-    printf("%.*s", length, &node->input[node->start]);
+    print("%.*s", length, &node->input[node->start]);
   }
 }
 
@@ -78,14 +84,14 @@ bool Break(Node *node) {
 
   if (node->is_inline) should_break = false;
 
-  if (should_break) printf("\n");
+  if (should_break) print("\n");
 
   return should_break;
 }
 
 void Indent(int indent) {
   for (int i = 0; i < indent; i++) {
-    printf("  ");
+    print("  ");
   }
 }
 
@@ -93,7 +99,7 @@ static void RenderNode(Node *node, int indent, bool should_indent) {
   if (node == NULL) return;
 
   if (node->type == NODE_BREAK) {
-    printf("<br />");
+    print("<br />");
     RenderNode(node->next_sibling, indent, false);
     return;
   }
@@ -112,4 +118,7 @@ static void RenderNode(Node *node, int indent, bool should_indent) {
   RenderNode(node->next_sibling, indent, did_break);
 }
 
-void RenderHtml(Node *node) { RenderNode(node, 0, false); }
+void RenderHtml(Node *node, FILE *file) {
+  out = file;
+  RenderNode(node, 0, false);
+}
