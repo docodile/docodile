@@ -474,7 +474,7 @@ Token NextToken(Lexer *lexer) {
   // NewLine(lexer);
 
   // DebugInfo(lexer, &token, false);
-  DebugMini(&token, false);
+  // DebugMini(&token, false);
 
   return token;
 }
@@ -508,7 +508,7 @@ Token NextInlineToken(Lexer *lexer) {
 
   // DebugInfo(lexer, &token, true);
 
-  DebugMini(&token, true);
+  // DebugMini(&token, true);
 
   return token;
 }

@@ -8,6 +8,7 @@
 #include "lex.h"
 #include "logger.h"
 #include "parser.h"
+#include "server.h"
 
 #define BUILDDIR       "site"
 #define DOCSDIR        "docs"
@@ -138,7 +139,6 @@ static void BuildPage(const char *src_path) {
   RenderHtml(doc);
 
   free(buffer);
-  fclose(file);
 }
 
 static void BuildSite(Directory *site_directory, const char *base_path) {
@@ -200,11 +200,11 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
     // TODO Generate nav
     printf("<nav>\n");
     printf("<ul>\n");
-    printf("<li><a href=\"\">Home</a></li>\n");
+    printf("<li><a href=\"/\">Home</a></li>\n");
     printf(
-        "<li><a href=\"getting-started/index.html\">Getting "
+        "<li><a href=\"/getting-started/index.html\">Getting "
         "started</a></li>\n");
-    printf("<li><a href=\"\">Setup</a></li>\n");
+    printf("<li><a href=\"/setup/index.html\">Setup</a></li>\n");
     printf("<li><a href=\"\">About</a></li>\n");
     printf("</ul>\n");
     printf("</nav>\n");
@@ -237,6 +237,8 @@ int main(void) {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR);
   BuildSite(site_directory, BUILDDIR);
+
+  Serve(BUILDDIR);
 
   return 0;
 }
