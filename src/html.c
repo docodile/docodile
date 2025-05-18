@@ -10,6 +10,24 @@ static FILE *out;
 
 #define print(...) fprintf(out, __VA_ARGS__)
 
+static char *RenderAttributes(Node *node) {
+  size_t buffer_size = node->attributes_count * 32;
+  size_t written     = 0;
+  char *buffer       = malloc(buffer_size);
+  for (int i = 0; i < node->attributes_count; i++) {
+    if (written >= buffer_size / 2) {
+      buffer = realloc(buffer, (buffer_size *= 2));
+    }
+
+    HTMLAttribute attr = node->attributes[i];
+    written += sprintf(buffer, "%s=\"%s\"", attr.name, attr.value);
+  }
+
+  buffer[written] = '\0';
+
+  return buffer;
+}
+
 static void RenderLink(Node *node, bool closing) {
   if (!closing) {
     size_t start  = node->data.Link.href_start;
@@ -23,6 +41,12 @@ static void RenderLink(Node *node, bool closing) {
   } else {
     print(TAG("a", closing));
   }
+}
+
+static void RenderCode(Node *node, bool closing) {
+  char *attrs = RenderAttributes(node);
+  print(TAG("code %s", closing), attrs);
+  free(attrs);
 }
 
 static void RenderNodeTag(Node *node, bool closing) {
@@ -49,7 +73,7 @@ static void RenderNodeTag(Node *node, bool closing) {
       print(TAG("blockquote", closing));
       break;
     case NODE_CODE:
-      print(TAG("code", closing));
+      RenderCode(node, closing);
       break;
     case NODE_INLINECODE:
       print(TAG("code", closing));

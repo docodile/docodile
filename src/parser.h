@@ -47,6 +47,11 @@ typedef union {
   } Link;
 } NodeData;
 
+typedef struct {
+  char *name;
+  char *value;
+} HTMLAttribute;
+
 typedef struct Node {
   NodeType type;
   struct Node *first_child;
@@ -60,11 +65,17 @@ typedef struct Node {
   int indent_level;
   bool is_inline;
 
+  int attributes_count;
+  int max_attributes;
+  HTMLAttribute *attributes;
   NodeData data;
 } Node;
 
 Node *Parse(Lexer *lexer, Node *parent);
 Node *ParseInline(Lexer *lexer, Node *parent);
 Node *NewNode(NodeType type);
+void FreeNode(Node *node);
+Node *NodeAppendSibling(Node *node, Node *sibling);
+Node *NodeAppendChild(Node *node, Node *child);
 
 #endif  // PARSER_H

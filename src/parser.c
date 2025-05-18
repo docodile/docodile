@@ -3,15 +3,50 @@
 Node *ParseInlineCode(Token *token);
 
 Node *NewNode(NodeType type) {
-  Node *node         = (Node *)malloc(sizeof(Node));
-  node->type         = type;
-  node->first_child  = NULL;
-  node->next_sibling = NULL;
-  node->input        = NULL;
-  node->start        = 0;
-  node->end          = 0;
-  node->indent_level = 0;
-  node->is_inline    = false;
+  Node *node = (Node *)malloc(sizeof(Node));
+  if (node == NULL) {
+    perror("malloc failed");
+    exit(EXIT_FAILURE);
+  }
+  node->attributes       = (HTMLAttribute *)malloc(10 * sizeof(HTMLAttribute));
+  node->attributes_count = 0;
+  node->max_attributes   = 10;
+  node->type             = type;
+  node->first_child      = NULL;
+  node->next_sibling     = NULL;
+  node->input            = NULL;
+  node->start            = 0;
+  node->end              = 0;
+  node->indent_level     = 0;
+  node->is_inline        = false;
+  return node;
+}
+
+void FreeNode(Node *node) {
+  free(node->attributes);
+  free(node);
+}
+
+// TODO Error handling
+// TODO Test if the realloc works when enough attrs are added
+Node *NodeAddAttribute(Node *node, char *name, char *value) {
+  if (node->attributes_count + 1 >= node->max_attributes) {
+    int new_max = node->max_attributes * 2;
+    HTMLAttribute *new_attrs =
+        realloc(node->attributes, new_max * sizeof(HTMLAttribute));
+    node->attributes = new_attrs;
+
+    if (new_attrs == NULL) {
+      perror("realloc failed");
+      exit(EXIT_FAILURE);
+    }
+    node->max_attributes = new_max;
+  }
+
+  node->attributes[node->attributes_count] =
+      (HTMLAttribute){.name = name, .value = value};
+  node->attributes_count++;
+
   return node;
 }
 
@@ -24,22 +59,22 @@ Node *NodeFromToken(NodeType type, Token *token) {
   return node;
 }
 
-Node *NodeAppendSibling(Node *prev, Node *curr) {
-  if (prev->next_sibling == NULL) {
-    prev->next_sibling = curr;
-    return curr;
+Node *NodeAppendSibling(Node *node, Node *sibling) {
+  if (node->next_sibling == NULL) {
+    node->next_sibling = sibling;
+    return sibling;
   }
 
-  return NodeAppendSibling(prev->next_sibling, curr);
+  return NodeAppendSibling(node->next_sibling, sibling);
 }
 
-Node *NodeAppendChild(Node *parent, Node *child) {
-  if (parent->first_child == NULL) {
-    parent->first_child = child;
+Node *NodeAppendChild(Node *node, Node *child) {
+  if (node->first_child == NULL) {
+    node->first_child = child;
     return child;
   }
 
-  return NodeAppendSibling(parent->first_child, child);
+  return NodeAppendSibling(node->first_child, child);
 }
 
 Node *ParseHeading(Token *token, int level) {
@@ -93,6 +128,28 @@ Node *ParseList(Token *token, Lexer *lexer) {
 
 Node *ParseCodeBlock(Token *token) {
   Node *n = NodeFromToken(NODE_CODE, token);
+
+  // HACK Get the code block language. This is not very readable and shouldn't
+  // really be done this way. The lexer should most likely have an opening code
+  // block token. But as a hack I've just made it so that it inline lexes the
+  // language token and writes that to a node attribute. The start of the node
+  // needs to be updated by the length of the language token so that it's not
+  // included in the final output.
+
+  Lexer inline_lexer = LexerNew(token->input, token->start, token->end);
+  Token inline_token = NextInlineToken(&inline_lexer);
+  if (inline_token.type == TOKEN_TEXT && token->length > 0) {
+    char *buffer = malloc(100);
+    int written  = snprintf(buffer, inline_token.length + 10, "language-%.*s",
+                            inline_token.length + 1,
+                            &inline_token.input[inline_token.start]);
+    written += 9;  // "language-" = 9 chars
+    buffer[written] = '\0';
+    n->start        = n->start + inline_token.length + 1;
+
+    NodeAddAttribute(n, "class", buffer);
+  }
+
   return n;
 }
 
@@ -146,7 +203,7 @@ Node *Parse(Lexer *lexer, Node *parent) {
     if (!skip) {
       NodeAppendChild(parent, node);
       // HACK Maybe not the nicest way of handling code blocks.
-      if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node); 
+      if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node);
     }
 
     token = NextToken(lexer);

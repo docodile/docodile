@@ -139,6 +139,7 @@ static void BuildPage(const char *src_path, FILE *out_file) {
 
   RenderHtml(doc, out_file);
 
+  FreeNode(doc);
   free(buffer);
 }
 
