@@ -24,8 +24,12 @@ void TemplateStart(FILE *out_file, PageConfig *page_config) {
       "<link rel=\"icon\" href=\"/assets/favicon.ico\" type=\"image/x-icon\">");
   // TODO Open Graph
   // TODO Twitter Card
-  print("<link rel=\"stylesheet\" href=\"/assets/reset.css\">");
-  print("<link rel=\"stylesheet\" href=\"/assets/styles.css\">");
+  print(
+      "<link rel=\"stylesheet\" type=\"text/css\" "
+      "href=\"/assets/styles/reset.css\">");
+  print(
+      "<link rel=\"stylesheet\" type=\"text/css\" "
+      "href=\"/assets/styles/main.css\">");
   print("</head>");
   print("<body>");
   print("<header>");

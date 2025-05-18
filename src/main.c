@@ -35,6 +35,7 @@ static Page *NewPage(const char *name, const char *fullpath) {
 
 typedef struct Directory {
   char path[MAXFILEPATH];
+  bool hidden;
   size_t num_pages;
   size_t num_dirs;
   Page *pages[MAXPAGESPERDIR];
@@ -47,6 +48,7 @@ static Directory *NewDirectory(const char *path) {
   strcpy(dir->path, path);
   dir->num_pages = 0;
   dir->num_dirs  = 0;
+  dir->hidden    = false;
   return dir;
 }
 
@@ -143,17 +145,60 @@ static void BuildPage(const char *src_path, FILE *out_file) {
   free(buffer);
 }
 
-static void BuildSite(Directory *site_directory, const char *base_path) {
-  int dir_result = mkdir(base_path, 0755);
-  // TODO -1 is File exists
+static void CopyFile(const char *src_path, const char *out_path) {
+  FILE *in = fopen(src_path, "rb");
+  if (!in) return;
+
+  FILE *out = fopen(out_path, "wb");
+  if (!out) {
+    fclose(in);
+    return;
+  }
+
+  char buffer[4096];
+  size_t bytes;
+  while ((bytes = fread(buffer, 1, sizeof(buffer), in)) > 0) {
+    if (fwrite(buffer, 1, bytes, out) != bytes) {
+      fclose(in);
+      fclose(out);
+      return;
+    }
+  }
+
+  fclose(in);
+  fclose(out);
+}
+
+static void MkDir(const char *path) {
+  int dir_result = mkdir(path, 0755);
   if (dir_result == 0 || dir_result == -1) {
   } else {
     perror("mkdir");
     return;
   }
+}
+
+static void InitializeSite() {
+  MkDir("site");
+  MkDir("site/assets");
+  MkDir("site/assets/styles");
+}
+
+static void BuildSite(Directory *site_directory, const char *base_path) {
+  if (site_directory->path[0] != '_') {
+    MkDir(base_path);
+  }
 
   for (size_t i = 0; i < site_directory->num_pages; i++) {
-    Page *page = site_directory->pages[i];
+    Page *page      = site_directory->pages[i];
+    const char *ext = strrchr(page->src_name, '.');
+    if (strcmp(".css", ext) == 0) {
+      char path[MAXFILEPATH];
+      sprintf(path, "site/assets/styles/%s", page->src_name);
+      CopyFile(page->full_path, path);
+      continue;
+    }
+
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
     FILE *html_page        = fopen(path, "w");
@@ -175,6 +220,7 @@ static void BuildSite(Directory *site_directory, const char *base_path) {
 int main(void) {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR);
+  InitializeSite();
   BuildSite(site_directory, BUILDDIR);
 
   Serve(BUILDDIR);

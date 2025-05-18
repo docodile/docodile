@@ -32,13 +32,19 @@ static void SendFile(int client_fd, const char *path) {
   struct stat st;
   fstat(file_fd, &st);
 
+  const char *mime_type = "text/html";
+  const char *ext = strrchr(path, '.');
+  if (ext && strcmp(ext, ".css") == 0) {
+    mime_type = "text/css";
+  }
+
   char header[256];
   snprintf(header, sizeof(header),
            "HTTP/1.1 200 OK\r\n"
            "Content-Length: %ld\r\n"
-           "Content-Type: text/html\r\n"
+           "Content-Type: %s\r\n"
            "\r\n",
-           st.st_size);
+           st.st_size, mime_type);
   write(client_fd, header, strlen(header));
 
   char buffer[BUFFER_SIZE];
