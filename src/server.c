@@ -9,8 +9,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define PORT        6006
-#define BUFFER_SIZE 4096
+#include "builder.h"
+
+#define PORT           6006
+#define BUFFER_SIZE    4096
+#define HIDDENBUILDDIR ".site"
 
 void Send404(int client_fd) {
   const char *response =
@@ -33,7 +36,7 @@ static void SendFile(int client_fd, const char *path) {
   fstat(file_fd, &st);
 
   const char *mime_type = "text/html";
-  const char *ext = strrchr(path, '.');
+  const char *ext       = strrchr(path, '.');
   if (ext && strcmp(ext, ".css") == 0) {
     mime_type = "text/css";
   }
@@ -56,9 +59,16 @@ static void SendFile(int client_fd, const char *path) {
   close(file_fd);
 }
 
+static void Build() {
+  Directory *site_directory = NewDirectory("");
+  BuildSiteDirectory(site_directory, DOCSDIR);
+  InitializeSite(HIDDENBUILDDIR);
+  BuildSite(site_directory, HIDDENBUILDDIR);
+}
+
 void Serve(const char *dir) {
-  int server_fd           = socket(AF_INET, SOCK_STREAM, 0);
-  int opt = 1;
+  int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+  int opt       = 1;
   setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
   struct sockaddr_in addr = {.sin_family      = AF_INET,
                              .sin_port        = htons(PORT),
@@ -70,6 +80,8 @@ void Serve(const char *dir) {
 
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);
+    // TODO only build if change detected
+    Build();
     char request[BUFFER_SIZE];
     read(client_fd, request, BUFFER_SIZE - 1);
 
@@ -78,7 +90,7 @@ void Serve(const char *dir) {
 
     if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
     char full_path[1024];
-    snprintf(full_path, sizeof(full_path), "site/.%s", path);
+    snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR"/.%s", path);
 
     SendFile(client_fd, full_path);
     close(client_fd);
