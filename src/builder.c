@@ -143,7 +143,10 @@ static void MkDir(const char *path) {
   }
 }
 
+static char *BUILDDIR;
+
 void InitializeSite(const char *dir) {
+  BUILDDIR = dir;
   MkDir(dir);
   char buff[100];
   sprintf(buff, "%s/assets", dir);
@@ -162,7 +165,7 @@ void BuildSite(Directory *site_directory, const char *base_path) {
     const char *ext = strrchr(page->src_name, '.');
     if (strcmp(".css", ext) == 0) {
       char path[MAXFILEPATH];
-      sprintf(path, "site/assets/styles/%s", page->src_name);
+      sprintf(path, "%s/assets/styles/%s", BUILDDIR, page->src_name);
       CopyFile(page->full_path, path);
       continue;
     }
@@ -171,7 +174,8 @@ void BuildSite(Directory *site_directory, const char *base_path) {
     sprintf(path, "%s/%s", base_path, page->out_name);
     FILE *html_page        = fopen(path, "w");
     PageConfig page_config = (PageConfig){.page_title = page->src_name};
-    TemplateStart(html_page, &page_config);
+    Config config = LoadConfig();
+    TemplateStart(html_page, &page_config, &config);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);
