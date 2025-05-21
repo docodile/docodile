@@ -4,14 +4,12 @@
 
 static FILE *_out;
 static PageConfig *_page_config;
-static Config *_config;
 
 #define print(fmt, ...) fprintf(_out, fmt "\n", ##__VA_ARGS__)
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Config *config) {
+void TemplateStart(FILE *out_file, PageConfig *page_config) {
   _out         = out_file;
   _page_config = page_config;
-  _config      = config;
 
   print("<!DOCTYPE html>");
   print("<html>");
@@ -36,7 +34,7 @@ void TemplateStart(FILE *out_file, PageConfig *page_config, Config *config) {
       "<link rel=\"stylesheet\" type=\"text/css\" "
       "href=\"/assets/styles/main.css\">");
   print("</head>");
-  print("<body data-gd-color-scheme=\"%s\">", _config->theme.color_scheme);
+  print("<body data-gd-color-scheme=\"%s\">", ReadConfig("theme"));
   print("<header class=\"gd-header\">");
   print("<h1>gendoc</h1>");
   print("<nav>");
@@ -56,7 +54,6 @@ void TemplateStart(FILE *out_file, PageConfig *page_config, Config *config) {
 void TemplateEnd() {
   assert(_out);
   assert(_page_config);
-  assert(_config);
   print("<aside class=\"gd-toc\">");
   print("</aside>");
   print(

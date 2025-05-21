@@ -23,6 +23,14 @@ Node *NewNode(NodeType type) {
 }
 
 void FreeNode(Node *node) {
+  if (node->first_child) {
+    FreeNode(node->first_child);
+  }
+
+  if (node->next_sibling) {
+    FreeNode(node->next_sibling);
+  }
+
   free(node->attributes);
   free(node);
 }

@@ -64,6 +64,7 @@ static void Build() {
   BuildSiteDirectory(site_directory, DOCSDIR);
   InitializeSite(HIDDENBUILDDIR);
   BuildSite(site_directory, HIDDENBUILDDIR);
+  FreeDirectory(site_directory);
 }
 
 void Serve(const char *dir) {

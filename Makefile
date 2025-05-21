@@ -18,6 +18,9 @@ $(BUILD_DIR)/$(PROGRAM): $(SRC)
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)
 
+watch:
+	@find src docs gendoc.config | entr -rs "make build && ./src/build/gendoc"
+
 clean:
 	@rm -rf $(BUILD_DIR)
 

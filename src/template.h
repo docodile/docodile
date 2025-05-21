@@ -10,7 +10,7 @@ typedef struct {
   const char *description;
 } PageConfig;
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Config *config);
+void TemplateStart(FILE *out_file, PageConfig *page_config);
 void TemplateEnd();
 
 #endif  // TEMPLATE_H

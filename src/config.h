@@ -10,6 +10,13 @@ typedef struct {
   Theme theme;
 } Config;
 
-Config LoadConfig();
+#define MAXVALUES      100
+#define MAXSECTIONNAME 100
+#define MAXKEY         100
+#define MAXVALUE       100
+
+void LoadConfig();
+void UnloadConfig();
+char *ReadConfig(const char *path);
 
 #endif  // CONFIG_H

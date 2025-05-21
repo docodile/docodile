@@ -38,8 +38,8 @@ typedef struct Directory {
   struct Directory *dirs[MAXDIRS];
 } Directory;
 
-// TODO FreeDirectory function
 Directory *NewDirectory(const char *path);
+void FreeDirectory(Directory *dir);
 
 void BuildSiteDirectory(Directory *dest, const char *path);
 void InitializeSite(const char *dir);

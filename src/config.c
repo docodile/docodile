@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum {
   TOKEN_NULL,
@@ -151,17 +152,43 @@ static void LoadConfigFile(const char *filename) {
   pos   = 0;
 }
 
-// TODO load from a file
-Config LoadConfig() {
-  LoadConfigFile("gendoc.config");
+void LoadConfig() { LoadConfigFile("gendoc.config"); }
 
-  Token token;
-  while ((token = NextToken()).type != TOKEN_NULL) {
-    printf("TOKEN %s %.*s\n", token.type == TOKEN_SECTION ? "SECTION" : "KVP",
-           token.end - token.start, &input[token.start]);
+void UnloadConfig() { free(input); }
+
+#define GLOBAL "!global"
+
+char *ReadConfig(const char *path) {
+  char _path[200];
+  strcpy(_path, path);
+
+  char *section = strtok(_path, ".");
+  char *key     = strtok(NULL, ".");
+
+  if (key == NULL) {
+    key     = section;
+    section = GLOBAL;
   }
 
-  free(input);
+  printf("SECTION: %s\n", section);
+  printf("KEY: %s\n", key);
 
-  return (Config){.theme = {.accent_color = "red", .color_scheme = "dark"}};
+  Token token;
+  char current_section[100] = GLOBAL;
+  while ((token = NextToken()).type != TOKEN_NULL) {
+    if (token.type == TOKEN_SECTION) {
+      if (strcmp(section, GLOBAL) == 0) {
+        break;
+      }
+      strncpy(current_section, &input[token.start], token.end - token.start);
+      current_section[token.end - token.start] = '\0';
+      continue;
+    }
+
+    if (strcmp(current_section, section) == 0) {
+      // TODO inline lex key and value
+    }
+  }
+
+  return path;
 }

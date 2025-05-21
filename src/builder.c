@@ -8,6 +8,10 @@ Page *NewPage(const char *name, const char *fullpath) {
   return page;
 }
 
+static void FreePage(Page *page) {
+  free(page);
+}
+
 Directory *NewDirectory(const char *path) {
   Directory *dir = malloc(sizeof(Directory));
   strcpy(dir->path, path);
@@ -15,6 +19,18 @@ Directory *NewDirectory(const char *path) {
   dir->num_dirs  = 0;
   dir->hidden    = false;
   return dir;
+}
+
+void FreeDirectory(Directory *dir) {
+  for (size_t i = 0; i < dir->num_pages; i++) {
+    FreePage(dir->pages[i]);
+  }
+
+  for (size_t i = 0; i < dir->num_dirs; i++) {
+    FreeDirectory(dir->dirs[i]);
+  }
+
+  free(dir);
 }
 
 static void AddPage(Directory *dir, Page *page) {
@@ -99,6 +115,8 @@ static void BuildPage(const char *src_path, FILE *out_file) {
     return;
   }
 
+  fclose(file);
+
   Lexer lexer = LexerNew(buffer, 0, length);
 
   Node *doc = NewNode(NODE_DOCUMENT);
@@ -174,8 +192,8 @@ void BuildSite(Directory *site_directory, const char *base_path) {
     sprintf(path, "%s/%s", base_path, page->out_name);
     FILE *html_page        = fopen(path, "w");
     PageConfig page_config = (PageConfig){.page_title = page->src_name};
-    Config config = LoadConfig();
-    TemplateStart(html_page, &page_config, &config);
+    LoadConfig();
+    TemplateStart(html_page, &page_config);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);
