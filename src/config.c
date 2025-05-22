@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,6 +27,8 @@ static Token NewToken(TokenType type) {
 static char *input;
 static size_t len;
 static size_t pos = 0;
+static size_t saved_len;
+static size_t saved_pos = 0;
 
 static char Peek() { return (pos >= len) ? EOF : input[pos]; }
 static bool Advance() { return (pos + 1 > len) ? false : pos++; }
@@ -81,25 +84,25 @@ static Token LexKey() {
   return token;
 }
 
-static Token LexNextInlineToken(Token parent) {
-  size_t saved_pos = pos;
-  size_t saved_len = len;
-  pos              = parent.start;
-  len              = parent.end - parent.start;
+static void StartInline(Token parent) {
+  saved_pos = pos;
+  saved_len = len;
+  pos       = parent.start;
+  len       = pos + parent.end - parent.start;
+}
 
-  Token token;
-  switch (Peek()) {
-    case '=':
-      token = LexValue();
-      break;
-    default:
-      token = LexKey();
-  }
-
+static void EndInline() {
   pos = saved_pos;
   len = saved_len;
+}
 
-  return token;
+static Token NextInlineToken() {
+  switch (Peek()) {
+    case '=':
+      return LexValue();
+    default:
+      return LexKey();
+  }
 }
 
 static void LoadConfigFile(const char *filename) {
@@ -159,6 +162,7 @@ void UnloadConfig() { free(input); }
 #define GLOBAL "!global"
 
 char *ReadConfig(const char *path) {
+  pos = 0;
   char _path[200];
   strcpy(_path, path);
 
@@ -170,11 +174,9 @@ char *ReadConfig(const char *path) {
     section = GLOBAL;
   }
 
-  printf("SECTION: %s\n", section);
-  printf("KEY: %s\n", key);
-
   Token token;
   char current_section[100] = GLOBAL;
+  char *value               = path;
   while ((token = NextToken()).type != TOKEN_NULL) {
     if (token.type == TOKEN_SECTION) {
       if (strcmp(section, GLOBAL) == 0) {
@@ -186,9 +188,22 @@ char *ReadConfig(const char *path) {
     }
 
     if (strcmp(current_section, section) == 0) {
-      // TODO inline lex key and value
+      assert(token.type == TOKEN_KVP);
+      StartInline(token);
+      Token key_token   = NextInlineToken();
+      size_t key_length = key_token.end - key_token.start;
+      if (strncmp(&input[key_token.start], key, key_length) == 0) {
+        Token value_token = NextInlineToken();
+        size_t length     = value_token.end - value_token.start;
+        value             = (char *)malloc(length);
+        strncpy(value, &input[value_token.start], length);
+        value[length] = '\0';
+        EndInline();
+        return value;
+      }
+      EndInline();
     }
   }
 
-  return path;
+  return value;
 }

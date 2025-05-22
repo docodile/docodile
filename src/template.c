@@ -34,9 +34,10 @@ void TemplateStart(FILE *out_file, PageConfig *page_config) {
       "<link rel=\"stylesheet\" type=\"text/css\" "
       "href=\"/assets/styles/main.css\">");
   print("</head>");
-  print("<body data-gd-color-scheme=\"%s\">", ReadConfig("theme"));
+  print("<body data-gd-color-scheme=\"%s\" data-gd-accent-color=\"%s\">",
+        ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"));
   print("<header class=\"gd-header\">");
-  print("<h1>gendoc</h1>");
+  print("<h1>%s</h1>", ReadConfig("site-name"));
   print("<nav>");
   print("<ul>");
   print("<li><a href=\"/\">Home</a></li>");

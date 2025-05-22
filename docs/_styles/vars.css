@@ -3,6 +3,16 @@
   --gd-bg-secondary: #c4c4c4;
   --gd-fg-primary: #241e2f;
 
+  --gd-accent-color: purple;
+
+  [data-gd-accent-color="blue"] {
+    --gd-accent-color: blue;
+  }
+
+  [data-gd-accent-color="red"] {
+    --gd-accent-color: red;
+  }
+
   [data-gd-color-scheme="dark"] {
     --gd-bg-primary: #241e2f;
     --gd-bg-secondary: #14101d;
