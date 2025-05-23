@@ -18,7 +18,8 @@ int main(void) {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR);
   InitializeSite(BUILDDIR);
-  BuildSite(site_directory, BUILDDIR);
+  Nav *nav = BuildNav(site_directory);
+  BuildSite(site_directory, BUILDDIR, nav);
 
   Serve(BUILDDIR);
 

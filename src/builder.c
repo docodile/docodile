@@ -8,9 +8,7 @@ Page *NewPage(const char *name, const char *fullpath) {
   return page;
 }
 
-static void FreePage(Page *page) {
-  free(page);
-}
+static void FreePage(Page *page) { free(page); }
 
 Directory *NewDirectory(const char *path) {
   Directory *dir = malloc(sizeof(Directory));
@@ -173,7 +171,23 @@ void InitializeSite(const char *dir) {
   MkDir(buff);
 }
 
-void BuildSite(Directory *site_directory, const char *base_path) {
+Nav *BuildNav(Directory *dir) {
+  Nav *nav         = malloc(sizeof(Nav));
+  nav->items_count = 0;
+  for (size_t i = 0; i < dir->num_dirs; i++) {
+    if (dir->dirs[i]->path[0] != '_') {  // Ignore hidden directories.
+      NavItem nav_item = {};
+      strcpy(nav_item.url, dir->dirs[i]->path);
+      char label[100];
+      KebabCaseToTitleCase(dir->dirs[i]->path, label);
+      strcpy(nav_item.label, label);
+      nav->items[nav->items_count++] = nav_item;
+    }
+  }
+  return nav;
+}
+
+void BuildSite(Directory *site_directory, const char *base_path, Nav *nav) {
   if (site_directory->path[0] != '_') {
     MkDir(base_path);
   }
@@ -193,7 +207,7 @@ void BuildSite(Directory *site_directory, const char *base_path) {
     FILE *html_page        = fopen(path, "w");
     PageConfig page_config = (PageConfig){.page_title = page->src_name};
     LoadConfig();
-    TemplateStart(html_page, &page_config);
+    TemplateStart(html_page, &page_config, nav);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);
@@ -203,6 +217,6 @@ void BuildSite(Directory *site_directory, const char *base_path) {
     Directory *directory = site_directory->dirs[i];
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, directory->path);
-    BuildSite(directory, path);
+    BuildSite(directory, path, nav);
   }
 }

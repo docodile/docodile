@@ -7,7 +7,21 @@ static PageConfig *_page_config;
 
 #define print(fmt, ...) fprintf(_out, fmt "\n", ##__VA_ARGS__)
 
-void TemplateStart(FILE *out_file, PageConfig *page_config) {
+void FreeNav(Nav *nav) { free(nav); }
+
+static void BuildNav(Nav *nav) {
+  print("<nav>");
+  print("<ul>");
+  for (size_t i = 0; i < nav->items_count; i++) {
+    print("<li>");
+    print("<a href=\"/%s/index.html\">%s</a>", nav->items[i].url, nav->items[i].label); // HACK Update server to not need explicit /index.html
+    print("</li>");
+  }
+  print("</ul>");
+  print("</nav>");
+}
+
+void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav) {
   _out         = out_file;
   _page_config = page_config;
 
@@ -38,14 +52,7 @@ void TemplateStart(FILE *out_file, PageConfig *page_config) {
         ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"));
   print("<header class=\"gd-header\">");
   print("<h1>%s</h1>", ReadConfig("site-name"));
-  print("<nav>");
-  print("<ul>");
-  print("<li><a href=\"/\">Home</a></li>");
-  print("<li><a href=\"/getting-started/index.html\">Getting started</a></li>");
-  print("<li><a href=\"/setup/index.html\">Setup</a></li>");
-  print("<li><a href=\"\">About</a></li>");
-  print("</ul>");
-  print("</nav>");
+  BuildNav(nav);
   print("</header>");
   print("<main>");
   print("<aside class=\"gd-nav\">");
