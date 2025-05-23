@@ -31,7 +31,7 @@ static size_t saved_len;
 static size_t saved_pos = 0;
 
 static char Peek() { return (pos >= len) ? EOF : input[pos]; }
-static bool Advance() { return (pos + 1 > len) ? false : pos++; }
+static bool Advance() { return ((pos + 1) > len) ? false : ++pos; }
 static bool Expect(char c) { Peek() == c ? Advance() : false; }
 static void ConsumeUntil(char end) { while (Peek() != end && Advance()); }
 
