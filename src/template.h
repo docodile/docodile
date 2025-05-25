@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "config.h"
+#include "directory.h"
 
 typedef struct {
   const char *site_name;
@@ -22,7 +23,7 @@ typedef struct {
   NavItem items[100];
 } Nav;
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav);
+void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory *site_directory);
 void TemplateEnd();
 
 void FreeNav(Nav *nav);

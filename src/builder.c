@@ -1,36 +1,5 @@
 #include "builder.h"
 
-Page *NewPage(const char *name, const char *fullpath) {
-  Page *page = malloc(sizeof(Page));
-  ChangeFilePathExtension(".md", ".html", name, page->out_name);
-  strcpy(page->src_name, name);
-  strcpy(page->full_path, fullpath);
-  return page;
-}
-
-static void FreePage(Page *page) { free(page); }
-
-Directory *NewDirectory(const char *path) {
-  Directory *dir = malloc(sizeof(Directory));
-  strcpy(dir->path, path);
-  dir->num_pages = 0;
-  dir->num_dirs  = 0;
-  dir->hidden    = false;
-  return dir;
-}
-
-void FreeDirectory(Directory *dir) {
-  for (size_t i = 0; i < dir->num_pages; i++) {
-    FreePage(dir->pages[i]);
-  }
-
-  for (size_t i = 0; i < dir->num_dirs; i++) {
-    FreeDirectory(dir->dirs[i]);
-  }
-
-  free(dir);
-}
-
 static void AddPage(Directory *dir, Page *page) {
   assert(dir->num_pages + 1 < MAXPAGESPERDIR);
   dir->pages[dir->num_pages++] = page;
@@ -207,7 +176,7 @@ void BuildSite(Directory *site_directory, const char *base_path, Nav *nav) {
     FILE *html_page        = fopen(path, "w");
     PageConfig page_config = (PageConfig){.page_title = page->src_name};
     LoadConfig();
-    TemplateStart(html_page, &page_config, nav);
+    TemplateStart(html_page, &page_config, nav, site_directory);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);

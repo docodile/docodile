@@ -21,7 +21,11 @@ static void BuildNav(Nav *nav) {
   print("</nav>");
 }
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav) {
+static void BuildSideNav() {
+
+}
+
+void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory *site_directory) {
   _out         = out_file;
   _page_config = page_config;
 
