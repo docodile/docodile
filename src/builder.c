@@ -173,10 +173,10 @@ void BuildSite(Directory *site_directory, const char *base_path, Nav *nav) {
 
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
+    strcpy(page->url, path);
     FILE *html_page        = fopen(path, "w");
-    PageConfig page_config = (PageConfig){.page_title = page->src_name};
     LoadConfig();
-    TemplateStart(html_page, &page_config, nav, site_directory);
+    TemplateStart(html_page, page, nav, site_directory);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);

@@ -3,7 +3,7 @@
 #include "assert.h"
 
 static FILE *_out;
-static PageConfig *_page_config;
+static Page *_page;
 
 #define print(fmt, ...) fprintf(_out, fmt "\n", ##__VA_ARGS__)
 
@@ -14,20 +14,37 @@ static void BuildNav(Nav *nav) {
   print("<ul>");
   for (size_t i = 0; i < nav->items_count; i++) {
     print("<li>");
-    print("<a href=\"/%s/index.html\">%s</a>", nav->items[i].url, nav->items[i].label); // HACK Update server to not need explicit /index.html
+    print("<a href=\"/%s/index.html\">%s</a>", nav->items[i].url,
+          nav->items[i]
+              .label);  // HACK Update server to not need explicit /index.html
     print("</li>");
   }
   print("</ul>");
   print("</nav>");
 }
 
-static void BuildSideNav() {
+static void BuildSideNav(Page *page, Directory *dir) {
+  print("<ul>");
+  if (dir != NULL) {
+    for (size_t i = 0; i < dir->num_pages; i++) {
+      print("<li><a href=\"%s\">%s</a></li>", dir->pages[i]->out_name,
+            dir->pages[i]->src_name);
+    }
 
+    for (size_t i = 0; i < dir->num_dirs; i++) {
+      print("<details>");
+      print("<summary>%s</summary>", dir->dirs[i]->path);
+      BuildSideNav(page, dir->dirs[i]);
+      print("</details>");
+    }
+  }
+  print("</ul>");
 }
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory *site_directory) {
-  _out         = out_file;
-  _page_config = page_config;
+void TemplateStart(FILE *out_file, Page *page, Nav *nav,
+                   Directory *site_directory) {
+  _out  = out_file;
+  _page = page;
 
   print("<!DOCTYPE html>");
   print("<html>");
@@ -35,7 +52,7 @@ void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory 
   print("<meta charset=\"UTF-8\">");
   print("<meta name=\"viewport\" ");
   print("content=\"width=device-width,initial-scale=1.0\">");
-  print("<title>%s</title>", _page_config->page_title);
+  print("<title>%s</title>", _page->out_name);
   print("<meta name=\"description\" content=\"Put description here.\">");
   print("<meta name=\"author\" content=\"Your Name or Company\">");
   print(
@@ -60,12 +77,15 @@ void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory 
   print("</header>");
   print("<main>");
   print("<aside class=\"gd-nav\">");
+  print("<nav>");
+  BuildSideNav(_page, site_directory);
+  print("</nav>");
   print("</aside>");
 }
 
 void TemplateEnd() {
   assert(_out);
-  assert(_page_config);
+  assert(_page);
   print("<aside class=\"gd-toc\">");
   print("</aside>");
   print(

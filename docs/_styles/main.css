@@ -50,3 +50,10 @@ a {
     text-decoration-color: var(--gd-accent-color);
   }
 }
+
+.gd-nav {
+  nav ul {
+    list-style: none;
+    padding-left: 0;
+  }
+}

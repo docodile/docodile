@@ -8,12 +8,6 @@
 #include "directory.h"
 
 typedef struct {
-  const char *site_name;
-  const char *page_title;
-  const char *description;
-} PageConfig;
-
-typedef struct {
   char label[100];
   char url[100];
 } NavItem;
@@ -23,7 +17,7 @@ typedef struct {
   NavItem items[100];
 } Nav;
 
-void TemplateStart(FILE *out_file, PageConfig *page_config, Nav *nav, Directory *site_directory);
+void TemplateStart(FILE *out_file, Page *page, Nav *nav, Directory *site_directory);
 void TemplateEnd();
 
 void FreeNav(Nav *nav);

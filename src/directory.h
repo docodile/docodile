@@ -12,11 +12,13 @@
 #define MAXPAGESPERDIR 1000
 #define MAXFILENAMELEN 1000
 #define MAXFILEPATH    1000
+#define MAXURL         1000
 
 typedef struct {
   char out_name[MAXFILENAMELEN];
   char src_name[MAXFILENAMELEN];
   char full_path[MAXFILEPATH];
+  char url[MAXURL];
 } Page;
 
 Page *NewPage(const char *name, const char *fullpath);
