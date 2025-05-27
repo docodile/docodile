@@ -1,6 +1,7 @@
 :root {
-  --gd-bg-primary: #f1f1f1;
-  --gd-bg-secondary: #c4c4c4;
+  --gd-max-width: 61rem;
+  --gd-bg-primary: #d6ccc2;
+  --gd-bg-secondary: #edede9;
   --gd-fg-primary: #241e2f;
 
   --gd-accent-color: purple;
@@ -26,8 +27,8 @@
   }
 
   [data-gd-color-scheme="dark"] {
-    --gd-bg-primary: #241e2f;
-    --gd-bg-secondary: #14101d;
-    --gd-fg-primary: #f1f1f1;
+    --gd-bg-primary: #0d1b2a;
+    --gd-bg-secondary: #1b263b;
+    --gd-fg-primary: #e0e1dd;
   }
 }

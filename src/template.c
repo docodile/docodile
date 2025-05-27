@@ -117,11 +117,24 @@ void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
       "<link rel=\"stylesheet\" "
       "href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/"
       "bootstrap-icons.min.css\">");
+  // Google fonts
+  print("<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">");
+  print(
+      "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" "
+      "crossorigin>");
+  print(
+      "<link href=\"https://fonts.googleapis.com/css2?family=%s&display=swap\" "
+      "rel=\"stylesheet\">",
+      ReadConfig("font-family"));
+  // Google fonts
   print("</head>");
-  print("<body data-gd-color-scheme=\"%s\" data-gd-accent-color=\"%s\">",
-        ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"));
+  print(
+      "<body data-gd-color-scheme=\"%s\" data-gd-accent-color=\"%s\" "
+      "style=\"font-family: '%s'\">",
+      ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"),
+      ReadConfig("font-family"));
   print("<header class=\"gd-header\">");
-  print("<a href=\"/\"><h1>%s</h1></a>", ReadConfig("site-name"));
+  print("<a href=\"/\" class=\"gd-title\"><h1>%s</h1></a>", ReadConfig("site-name"));
   BuildNav(site_directory, current_directory);
   print("</header>");
   print("<main>");
@@ -133,10 +146,23 @@ void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
   print("</aside>");
 }
 
-void TemplateEnd() {
+static void BuildToc(TOC toc) {
+  print("<nav>");
+  print("<ul>");
+  for (size_t i = 0; i < toc.count; i++) {
+    char link[100];
+    TitleCaseToKebabCase(toc.items[i], link);
+    print("<li><a href=\"#%s\">%s</a></li>", link, toc.items[i]);
+  }
+  print("</ul>");
+  print("</nav>");
+}
+
+void TemplateEnd(Page *page) {
   assert(_out);
   assert(_page);
   print("<aside class=\"gd-toc\">");
+  BuildToc(page->toc);
   print("</aside>");
   print("</main>");
   print(

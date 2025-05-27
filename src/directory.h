@@ -15,12 +15,18 @@
 #define MAXURL         1000
 
 typedef struct {
+  size_t count;
+  char **items;
+} TOC;
+
+typedef struct {
   char out_name[MAXFILENAMELEN];
   char src_name[MAXFILENAMELEN];
   char full_path[MAXFILEPATH];
   char url[MAXURL];
   char url_path[MAXURL];
   char title[MAXURL];
+  TOC toc;
 } Page;
 
 Page *NewPage(const char *name, const char *fullpath);

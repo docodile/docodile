@@ -9,6 +9,6 @@
 
 void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
                    Directory *current_directory);
-void TemplateEnd();
+void TemplateEnd(Page *page);
 
 #endif  // TEMPLATE_H

@@ -55,7 +55,13 @@ static void RenderNodeTag(Node *node, bool closing) {
       print(TAG("article", closing));
       break;
     case NODE_HEADING:
-      print(TAG("h%d", closing), node->data.Heading.level);
+      char title[100];
+      size_t len = node->end - node->start;
+      strncpy(title, &node->input[node->start], len);
+      title[len] = '\0';
+      char id[100];
+      TitleCaseToKebabCase(title, id);
+      print(TAG("h%d id=\"%s\"", closing), node->data.Heading.level, id);
       break;
     case NODE_LINK:
       RenderLink(node, closing);

@@ -40,7 +40,28 @@ void BuildSiteDirectory(Directory *dest, const char *path) {
   closedir(dir);
 }
 
-static void BuildPage(const char *src_path, FILE *out_file) {
+static void BuildToc(Node *doc, Page *page) {
+  if (doc->type == NODE_HEADING) {
+    // TODO Inefficient.
+    size_t len = doc->end - doc->start;
+    page->toc.items =
+        realloc(page->toc.items, (page->toc.count + 1) * sizeof(char *));
+    page->toc.items[page->toc.count] = malloc(len);
+    strncpy(page->toc.items[page->toc.count], &doc->input[doc->start], len);
+    page->toc.items[page->toc.count][len] = '\0';
+    page->toc.count++;
+  }
+
+  if (doc->first_child) {
+    BuildToc(doc->first_child, page);
+  }
+
+  if (doc->next_sibling) {
+    BuildToc(doc->next_sibling, page);
+  }
+}
+
+static void BuildPage(const char *src_path, FILE *out_file, Page *page) {
   FILE *file = fopen(src_path, "r");
   if (!file) {
     perror("Failed to open file");
@@ -88,6 +109,8 @@ static void BuildPage(const char *src_path, FILE *out_file) {
 
   Node *doc = NewNode(NODE_DOCUMENT);
   Parse(&lexer, doc);
+
+  BuildToc(doc, page);
 
   RenderHtml(doc, out_file);
 
@@ -162,8 +185,8 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     FILE *html_page = fopen(path, "w");
     LoadConfig();
     TemplateStart(html_page, page, site_directory, current_directory);
-    BuildPage(page->full_path, html_page);
-    TemplateEnd();
+    BuildPage(page->full_path, html_page, page);
+    TemplateEnd(page);
     fclose(html_page);
   }
 
