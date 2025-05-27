@@ -8,19 +8,23 @@ body {
   color: var(--gd-fg-primary);
   margin: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 main {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 1rem;
+  flex: 1;
 }
 
 .gd-header {
   background-color: var(--gd-bg-secondary);
   position: sticky;
   top: 0;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
+  user-select: none;
 
   h1 {
     margin: 0;
@@ -33,17 +37,23 @@ main {
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 0.5rem;
+    gap: 2rem;
   }
 }
 
 .gd-footer {
   background-color: var(--gd-bg-secondary);
   margin-top: 2rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #b4b4b4;
+  text-align: end;
 }
 
 a {
   text-decoration: none;
+  color: var(--gd-fg-primary);
+
   &:hover {
     text-decoration: underline;
     text-decoration-thickness: 2px;
@@ -51,16 +61,41 @@ a {
   }
 }
 
+.highlight {
+  color: var(--gd-accent-color);
+}
+
+.gd-back::before {
+  content: '\F111';
+  font-family: bootstrap-icons;
+}
+
 .gd-nav {
   user-select: none;
   padding: 0 1rem;
+  padding-top: 1rem;
 
   nav ul {
     list-style: none;
     padding-left: 0;
+    margin: 0;
   }
 
   details ul {
     padding-left: 1rem;
+  }
+
+  details > summary {
+    display: flex;
+  }
+
+  details[open] > summary::before {
+    content: "\F124";
+    font-family: bootstrap-icons;
+  }
+
+  details > summary::before {
+    content: "\F135";
+    font-family: bootstrap-icons;
   }
 }

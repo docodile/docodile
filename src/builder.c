@@ -140,29 +140,14 @@ void InitializeSite(const char *dir) {
   MkDir(buff);
 }
 
-Nav *BuildNav(Directory *dir) {
-  Nav *nav         = malloc(sizeof(Nav));
-  nav->items_count = 0;
-  for (size_t i = 0; i < dir->num_dirs; i++) {
-    if (dir->dirs[i]->path[0] != '_') {  // Ignore hidden directories.
-      NavItem nav_item = {};
-      strcpy(nav_item.url, dir->dirs[i]->path);
-      char label[100];
-      KebabCaseToTitleCase(dir->dirs[i]->path, label);
-      strcpy(nav_item.label, label);
-      nav->items[nav->items_count++] = nav_item;
-    }
-  }
-  return nav;
-}
-
-void BuildSite(Directory *site_directory, const char *base_path, Nav *nav) {
-  if (site_directory->path[0] != '_') {
+void BuildSite(Directory *site_directory, Directory *current_directory,
+               const char *base_path) {
+  if (current_directory->path[0] != '_') {
     MkDir(base_path);
   }
 
-  for (size_t i = 0; i < site_directory->num_pages; i++) {
-    Page *page      = site_directory->pages[i];
+  for (size_t i = 0; i < current_directory->num_pages; i++) {
+    Page *page      = current_directory->pages[i];
     const char *ext = strrchr(page->src_name, '.');
     if (strcmp(".css", ext) == 0) {
       char path[MAXFILEPATH];
@@ -174,18 +159,18 @@ void BuildSite(Directory *site_directory, const char *base_path, Nav *nav) {
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
     strcpy(page->url, path);
-    FILE *html_page        = fopen(path, "w");
+    FILE *html_page = fopen(path, "w");
     LoadConfig();
-    TemplateStart(html_page, page, nav, site_directory);
+    TemplateStart(html_page, page, site_directory, current_directory);
     BuildPage(page->full_path, html_page);
     TemplateEnd();
     fclose(html_page);
   }
 
-  for (size_t i = 0; i < site_directory->num_dirs; i++) {
-    Directory *directory = site_directory->dirs[i];
+  for (size_t i = 0; i < current_directory->num_dirs; i++) {
+    Directory *directory = current_directory->dirs[i];
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, directory->path);
-    BuildSite(directory, path, nav);
+    BuildSite(site_directory, directory, path);
   }
 }

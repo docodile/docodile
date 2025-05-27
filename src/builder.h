@@ -9,18 +9,18 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "directory.h"
 #include "html.h"
 #include "parser.h"
 #include "template.h"
 #include "utils.h"
-#include "directory.h"
 
-#define DOCSDIR        "docs"
-#define DOCSMAXDEPTH   1000
+#define DOCSDIR      "docs"
+#define DOCSMAXDEPTH 1000
 
 void BuildSiteDirectory(Directory *dest, const char *path);
 void InitializeSite(const char *dir);
-void BuildSite(Directory *site_directory, const char *base_path, Nav *nav);
-Nav *BuildNav(Directory *dir);
+void BuildSite(Directory *site_directory, Directory *current_directory,
+               const char *base_path);
 
 #endif  // BUILD_H

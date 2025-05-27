@@ -63,9 +63,7 @@ static void Build() {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR);
   InitializeSite(HIDDENBUILDDIR);
-  Nav *nav = BuildNav(site_directory);
-  BuildSite(site_directory, HIDDENBUILDDIR, nav);
-  FreeNav(nav);
+  BuildSite(site_directory, site_directory, HIDDENBUILDDIR);
   FreeDirectory(site_directory);
 }
 

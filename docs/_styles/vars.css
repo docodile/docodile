@@ -6,11 +6,23 @@
   --gd-accent-color: purple;
 
   [data-gd-accent-color="blue"] {
-    --gd-accent-color: blue;
+    --gd-accent-color: #264653;
+  }
+
+  [data-gd-accent-color="green"] {
+    --gd-accent-color: #2a9d8f;
+  }
+
+  [data-gd-accent-color="yellow"] {
+    --gd-accent-color: #e9c46a;
+  }
+
+  [data-gd-accent-color="orange"] {
+    --gd-accent-color: #f4a261;
   }
 
   [data-gd-accent-color="red"] {
-    --gd-accent-color: red;
+    --gd-accent-color: #e76f51;
   }
 
   [data-gd-color-scheme="dark"] {

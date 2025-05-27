@@ -7,19 +7,8 @@
 #include "config.h"
 #include "directory.h"
 
-typedef struct {
-  char label[100];
-  char url[100];
-} NavItem;
-
-typedef struct {
-  size_t items_count;
-  NavItem items[100];
-} Nav;
-
-void TemplateStart(FILE *out_file, Page *page, Nav *nav, Directory *site_directory);
+void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
+                   Directory *current_directory);
 void TemplateEnd();
-
-void FreeNav(Nav *nav);
 
 #endif  // TEMPLATE_H
