@@ -19,12 +19,15 @@ typedef struct {
   char src_name[MAXFILENAMELEN];
   char full_path[MAXFILEPATH];
   char url[MAXURL];
+  char url_path[MAXURL];
+  char title[MAXURL];
 } Page;
 
 Page *NewPage(const char *name, const char *fullpath);
 
 typedef struct Directory {
   char path[MAXFILEPATH];
+  char title[MAXFILEPATH];
   bool hidden;
   size_t num_pages;
   size_t num_dirs;

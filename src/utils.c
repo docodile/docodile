@@ -12,6 +12,13 @@ void ChangeFilePathExtension(const char *from, const char *to, const char *in,
   }
 }
 
+void RemoveExtension(const char *in, char *out) {
+  char with_ext[1000];
+  strcpy(with_ext, in);
+  char *title = strtok(with_ext, ".");
+  strcpy(out, title);
+}
+
 void KebabCaseToTitleCase(const char *in, char *out) {
   char c;
   int up = 1;

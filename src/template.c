@@ -27,13 +27,20 @@ static void BuildSideNav(Page *page, Directory *dir) {
   print("<ul>");
   if (dir != NULL) {
     for (size_t i = 0; i < dir->num_pages; i++) {
-      print("<li><a href=\"%s\">%s</a></li>", dir->pages[i]->out_name,
-            dir->pages[i]->src_name);
+      char article_link[MAXURL];
+      strcpy(article_link, dir->pages[i]->url_path);
+      strtok(article_link, "/");
+      char *path  = strtok(NULL, "");
+      char *title = dir->pages[i]->title;
+      if (strcmp("index.md", dir->pages[i]->src_name) == 0) {
+        title = dir->title;
+      }
+      print("<li><a href=\"/%s\">%s</a></li>", path, title);
     }
 
     for (size_t i = 0; i < dir->num_dirs; i++) {
       print("<details>");
-      print("<summary>%s</summary>", dir->dirs[i]->path);
+      print("<summary>%s</summary>", dir->dirs[i]->title);
       BuildSideNav(page, dir->dirs[i]);
       print("</details>");
     }

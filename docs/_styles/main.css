@@ -52,8 +52,15 @@ a {
 }
 
 .gd-nav {
+  user-select: none;
+  padding: 0 1rem;
+
   nav ul {
     list-style: none;
     padding-left: 0;
+  }
+
+  details ul {
+    padding-left: 1rem;
   }
 }
