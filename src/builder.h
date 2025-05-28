@@ -13,6 +13,7 @@
 #include "html.h"
 #include "parser.h"
 #include "template.h"
+#include "config.h"
 #include "utils.h"
 
 #define DOCSDIR      "docs"

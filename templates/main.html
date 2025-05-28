@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description" content="{{ model.description }}" />
+    <meta name="author" content="{{ model.author }}" />
+
+    <title>{{ model.title }}</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family={{ model.font_family }}&display=swap"
+    />
+    <link rel="stylesheet" type="text/css" href="/assets/styles/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/styles/vars.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/styles/main.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/assets/styles/default-prism-theme.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body
+    data-gd-color-scheme="{{ model.color_scheme }}"
+    data-gd-accent-color="{{ model.accent_color }}"
+    style="font-family: '{{ model.font_family }}'"
+  >
+    <header class="gd-header">
+      <a href="/" class="gd-title"><h1>{{ model.site_name }}</h1></a>
+      {% nav %}
+    </header>
+    <main>
+      <aside class="gd-nav">
+        <nav>{% nav_back_button %} {% side_nav %}</nav>
+      </aside>
+      {% article %}
+      <aside class="gd-toc">{% toc %}</aside>
+    </main>
+    <footer class="gd-footer">
+      Built with <span class="highlight">gendoc</span>
+    </footer>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-core.min.js"
+      integrity="sha512-Uw06iFFf9hwoN77+kPl/1DZL66tKsvZg6EWm7n6QxInyptVuycfrO52hATXDRozk7KWeXnrSueiglILct8IkkA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/autoloader/prism-autoloader.min.js"
+      integrity="sha512-SkmBfuA2hqjzEVpmnMt/LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </body>
+</html>

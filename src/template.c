@@ -1,13 +1,156 @@
 #include "template.h"
 
-#include "assert.h"
-
 static FILE *_out;
-static Page *_page;
+static Template _template;
 
-#define print(fmt, ...) fprintf(_out, fmt "\n", ##__VA_ARGS__)
+#define print(fmt, ...) fprintf(_out, fmt, ##__VA_ARGS__)
 
-static void BuildNav(Directory *site_dir, Directory *current_dir) {
+void FreeModel(Model model) {
+  //   free(model.accent_color);
+  //   free(model.author);
+  //   free(model.color_scheme);
+  //   free(model.description);
+  //   free(model.font_family);
+  //   free(model.site_name);
+  //   free(model.title);
+}
+
+static char *LoadTemplateFile(const char *filename) {
+  FILE *file = fopen(filename, "r");
+  if (!file) {
+    perror("Couldn't find template file");
+    exit(1);
+  }
+
+  if (fseek(file, 0, SEEK_END) != 0) {
+    perror("Failed to seek to end");
+    fclose(file);
+    exit(1);
+  }
+
+  long length = ftell(file);
+  if (length < 0) {
+    perror("Failed to tell file length");
+    fclose(file);
+    exit(1);
+  }
+
+  if (fseek(file, 0, SEEK_SET) != 0) {
+    perror("Failed to seek to start");
+    fclose(file);
+    exit(1);
+  }
+
+  char *buffer = malloc(length + 1);
+  if (!buffer) {
+    perror("Failed to allocate memory");
+    fclose(file);
+    exit(1);
+  }
+
+  size_t read_bytes = fread(buffer, 1, length, file);
+  if (read_bytes != (size_t)length) {
+    perror("Failed to read full file");
+    free(buffer);
+    fclose(file);
+    exit(1);
+  }
+
+  buffer[length] = '\0';
+
+  fclose(file);
+
+  return buffer;
+}
+
+void TemplateInit(const char *template_file_path, FILE *out_file) {
+  _template =
+      (Template){.pos = 0, .input = LoadTemplateFile(template_file_path)};
+  _out = out_file;
+}
+
+static char Peek() { return _template.input[_template.pos]; }
+static char Advance() { return _template.input[_template.pos++]; }
+static void Put(char c) { fputc(c, _out); }
+
+TemplateState TemplateBuild(Model model) {
+  char c;
+  while ((c = Advance()) != '\0') {
+    if (c == '{') {
+      // Simple template variable.
+      if (Peek() == '{') {
+        Advance();
+
+        char buffer[100];
+        size_t i = 0;
+        while ((c = Advance()) != '\0' && c != '}') {
+          if (c != ' ') buffer[i++] = c;
+        }
+        buffer[i] = '\0';
+        Advance();  // Remaining closing brace
+
+        // TODO - Make this dynamic, for now if-else will suffice
+        if (strcmp("model.description", buffer) == 0) {
+          print("%s", buffer);
+          continue;
+        }
+
+        if (strcmp("model.author", buffer) == 0) {
+          print("%s", model.author);
+          continue;
+        }
+
+        if (strcmp("model.title", buffer) == 0) {
+          print("%s", model.title);
+          continue;
+        }
+
+        if (strcmp("model.font_family", buffer) == 0) {
+          print("%s", model.font_family);
+          continue;
+        }
+
+        if (strcmp("model.color_scheme", buffer) == 0) {
+          print("%s", model.color_scheme);
+          continue;
+        }
+
+        if (strcmp("model.accent_color", buffer) == 0) {
+          print("%s", model.accent_color);
+          continue;
+        }
+
+        if (strcmp("model.site_name", buffer) == 0) {
+          print("%s", model.site_name);
+          continue;
+        }
+
+        continue;
+      }
+
+      // Slot. Consume token and yield.
+      if (Peek() == '%') {
+        Advance();
+        char buffer[100];
+        size_t i = 0;
+        while ((c = Advance()) != '\0' && c != '%') {
+          if (c != ' ') buffer[i++] = c;
+        }
+        buffer[i] = '\0';
+        Advance();
+        char *slot_name = (char *)malloc(i);
+        strcpy(slot_name, buffer);
+        return (TemplateState){.state = TEMPLATE_YIELD, .slot_name = slot_name};
+      }
+    }
+
+    Put(c);
+  }
+
+  return (TemplateState){.state = TEMPLATE_END};
+}
+
+void TemplateNav(Directory *site_dir, Directory *current_dir) {
   print("<nav>");
   print("<ul>");
   for (size_t i = 0; i < site_dir->num_dirs; i++) {
@@ -25,7 +168,7 @@ static void BuildNav(Directory *site_dir, Directory *current_dir) {
   print("</nav>");
 }
 
-Directory *FindParentDirectory(Directory *root, Directory *target, int *level) {
+static Directory *FindParentDirectory(Directory *root, Directory *target, int *level) {
   for (size_t i = 0; i < root->num_dirs; i++) {
     if (root->dirs[i] == target) return root;
 
@@ -39,7 +182,7 @@ Directory *FindParentDirectory(Directory *root, Directory *target, int *level) {
   return NULL;
 }
 
-static void BuildBackButton(Directory *site_dir, Directory *curr_dir) {
+void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
   if (site_dir == NULL) return;
   if (curr_dir == NULL) return;
   if (site_dir == curr_dir) return;
@@ -56,8 +199,8 @@ static void BuildBackButton(Directory *site_dir, Directory *curr_dir) {
   }
 }
 
-static void BuildSideNav(Page *page, Directory *site_directory,
-                         Directory *current_directory) {
+void TemplateSideNav(Page *page, Directory *site_directory,
+                  Directory *current_directory) {
   if (site_directory == NULL) return;
   if (current_directory == NULL) return;
 
@@ -79,78 +222,14 @@ static void BuildSideNav(Page *page, Directory *site_directory,
       if (current_directory->dirs[i]->path[0] == '_') continue;
       print("<details>");
       print("<summary>%s</summary>", current_directory->dirs[i]->title);
-      BuildSideNav(page, site_directory, current_directory->dirs[i]);
+      TemplateSideNav(page, site_directory, current_directory->dirs[i]);
       print("</details>");
     }
   }
   print("</ul>");
 }
 
-void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
-                   Directory *current_directory) {
-  _out  = out_file;
-  _page = page;
-
-  print("<!DOCTYPE html>");
-  print("<html>");
-  print("<head>");
-  print("<meta charset=\"UTF-8\">");
-  print("<meta name=\"viewport\" ");
-  print("content=\"width=device-width,initial-scale=1.0\">");
-  print("<title>%s</title>", _page->out_name);
-  print("<meta name=\"description\" content=\"Put description here.\">");
-  print("<meta name=\"author\" content=\"Your Name or Company\">");
-  print(
-      "<link rel=\"icon\" href=\"/assets/favicon.ico\" type=\"image/x-icon\">");
-  // TODO Open Graph
-  // TODO Twitter Card
-  print(
-      "<link rel=\"stylesheet\" type=\"text/css\" "
-      "href=\"/assets/styles/reset.css\">");
-  print(
-      "<link rel=\"stylesheet\" type=\"text/css\" "
-      "href=\"/assets/styles/vars.css\">");
-  print(
-      "<link rel=\"stylesheet\" type=\"text/css\" "
-      "href=\"/assets/styles/main.css\">");
-  print(
-      "<link rel=\"stylesheet\" "
-      "href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/"
-      "bootstrap-icons.min.css\">");
-  print(
-      "<link rel=\"stylesheet\" type=\"text/css\" "
-      "href=\"/assets/styles/default-prism-theme.css\">");
-  // Google fonts
-  print("<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">");
-  print(
-      "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" "
-      "crossorigin>");
-  print(
-      "<link href=\"https://fonts.googleapis.com/css2?family=%s&display=swap\" "
-      "rel=\"stylesheet\">",
-      ReadConfig("font-family"));
-  // Google fonts
-  print("</head>");
-  print(
-      "<body data-gd-color-scheme=\"%s\" data-gd-accent-color=\"%s\" "
-      "style=\"font-family: '%s'\">",
-      ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"),
-      ReadConfig("font-family"));
-  print("<header class=\"gd-header\">");
-  print("<a href=\"/\" class=\"gd-title\"><h1>%s</h1></a>",
-        ReadConfig("site-name"));
-  BuildNav(site_directory, current_directory);
-  print("</header>");
-  print("<main>");
-  print("<aside class=\"gd-nav\">");
-  print("<nav>");
-  BuildBackButton(site_directory, current_directory);
-  BuildSideNav(_page, site_directory, current_directory);
-  print("</nav>");
-  print("</aside>");
-}
-
-static void BuildToc(TOC toc) {
+void TemplateToc(TOC toc) {
   print("<nav>");
   print("<ul>");
   for (size_t i = 0; i < toc.count; i++) {
@@ -160,32 +239,4 @@ static void BuildToc(TOC toc) {
   }
   print("</ul>");
   print("</nav>");
-}
-
-void TemplateEnd(Page *page) {
-  assert(_out);
-  assert(_page);
-  print("<aside class=\"gd-toc\">");
-  BuildToc(page->toc);
-  print("</aside>");
-  print("</main>");
-  print(
-      "<footer class=\"gd-footer\">Built with <span "
-      "class=\"highlight\">gendoc</span></footer>\n");
-  print(
-      "<script "
-      "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/"
-      "prism-core.min.js\" "
-      "integrity=\"sha512-Uw06iFFf9hwoN77+kPl/"
-      "1DZL66tKsvZg6EWm7n6QxInyptVuycfrO52hATXDRozk7KWeXnrSueiglILct8IkkA==\" "
-      "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
-  print(
-      "<script "
-      "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/"
-      "autoloader/prism-autoloader.min.js\" "
-      "integrity=\"sha512-SkmBfuA2hqjzEVpmnMt/"
-      "LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==\" "
-      "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
-  print("</body>");
-  print("</html>");
 }

@@ -12,7 +12,7 @@
 #include "server.h"
 #include "template.h"
 
-#define BUILDDIR "site"
+#define BUILDDIR ".site"
 
 int main(void) {
   Directory *site_directory = NewDirectory("");
