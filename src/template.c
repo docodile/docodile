@@ -117,6 +117,9 @@ void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
       "<link rel=\"stylesheet\" "
       "href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/"
       "bootstrap-icons.min.css\">");
+  print(
+      "<link rel=\"stylesheet\" type=\"text/css\" "
+      "href=\"/assets/styles/default-prism-theme.css\">");
   // Google fonts
   print("<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">");
   print(
@@ -134,7 +137,8 @@ void TemplateStart(FILE *out_file, Page *page, Directory *site_directory,
       ReadConfig("theme.color-scheme"), ReadConfig("theme.accent-color"),
       ReadConfig("font-family"));
   print("<header class=\"gd-header\">");
-  print("<a href=\"/\" class=\"gd-title\"><h1>%s</h1></a>", ReadConfig("site-name"));
+  print("<a href=\"/\" class=\"gd-title\"><h1>%s</h1></a>",
+        ReadConfig("site-name"));
   BuildNav(site_directory, current_directory);
   print("</header>");
   print("<main>");
@@ -168,5 +172,20 @@ void TemplateEnd(Page *page) {
   print(
       "<footer class=\"gd-footer\">Built with <span "
       "class=\"highlight\">gendoc</span></footer>\n");
+  print(
+      "<script "
+      "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/"
+      "prism-core.min.js\" "
+      "integrity=\"sha512-Uw06iFFf9hwoN77+kPl/"
+      "1DZL66tKsvZg6EWm7n6QxInyptVuycfrO52hATXDRozk7KWeXnrSueiglILct8IkkA==\" "
+      "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
+  print(
+      "<script "
+      "src=\"https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/"
+      "autoloader/prism-autoloader.min.js\" "
+      "integrity=\"sha512-SkmBfuA2hqjzEVpmnMt/"
+      "LINrjop3GKWqsuLSSB3e7iBmYK7JuWw4ldmmxwD9mdm2IRTTi0OxSAfEGvgEi0i2Kw==\" "
+      "crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\"></script>");
+  print("</body>");
   print("</html>");
 }

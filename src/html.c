@@ -45,7 +45,9 @@ static void RenderLink(Node *node, bool closing) {
 
 static void RenderCode(Node *node, bool closing) {
   char *attrs = RenderAttributes(node);
+  if (!closing) print(TAG("pre", closing));
   print(TAG("code %s", closing), attrs);
+  if (closing) print(TAG("pre", closing));
   free(attrs);
 }
 

@@ -1,5 +1,5 @@
 html {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 code {
@@ -106,5 +106,30 @@ a {
   details > summary::before {
     content: "\F135";
     font-family: bootstrap-icons;
+  }
+}
+
+article {
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    &::before {
+      content: "";
+      width: 0.5rem;
+      height: 1.5rem;
+      border-radius: 999px;
+      background: var(--gd-accent-color);
+    }
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    text-decoration: underline;
+    text-decoration-color: var(--gd-accent-color);
+  }
+
+  h3 {
+    color: var(--gd-accent-color);
   }
 }
