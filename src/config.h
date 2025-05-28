@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "utils.h"
+
 typedef struct {
   const char *color_scheme;
   const char *accent_color;

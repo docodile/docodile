@@ -49,3 +49,52 @@ void RemoveExtension(const char *in, char *out) {
   char *title = strtok(with_ext, ".");
   strcpy(out, title);
 }
+
+char *ReadFileToString(const char *filename, size_t *len) {
+  FILE *file = fopen(filename, "r");
+  if (!file) {
+    perror("Couldn't find file");
+    exit(1);
+  }
+
+  if (fseek(file, 0, SEEK_END) != 0) {
+    perror("Failed to seek to end");
+    fclose(file);
+    exit(1);
+  }
+
+  long length = ftell(file);
+  if (length < 0) {
+    perror("Failed to tell file length");
+    fclose(file);
+    exit(1);
+  }
+
+  if (fseek(file, 0, SEEK_SET) != 0) {
+    perror("Failed to seek to start");
+    fclose(file);
+    exit(1);
+  }
+
+  char *buffer = malloc(length + 1);
+  if (!buffer) {
+    perror("Failed to allocate memory");
+    fclose(file);
+    exit(1);
+  }
+
+  size_t read_bytes = fread(buffer, 1, length, file);
+  if (read_bytes != (size_t)length) {
+    perror("Failed to read full file");
+    free(buffer);
+    fclose(file);
+    exit(1);
+  }
+
+  buffer[length] = '\0';
+  *len           = length;
+
+  fclose(file);
+
+  return buffer;
+}
