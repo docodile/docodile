@@ -184,26 +184,10 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     strcpy(page->url, path);
     FILE *html_page = fopen(path, "w");
     LoadConfig();
+
     TemplateInit("templates/main.html", html_page);
     TemplateState state;
-
-    // TODO free
-    // char *description  = ReadConfig("description");
-    char *accent_color = ReadConfig("theme.accent-color");
-    char *author       = ReadConfig("author");
-    char *color_scheme = ReadConfig("theme.color-scheme");
-    char *font_family  = ReadConfig("font-family");
-    char *site_name    = ReadConfig("site-name");
-    char *title        = page->title;
-
-    Model model = (Model){.accent_color = accent_color,
-                          .author       = author,
-                          .color_scheme = color_scheme,
-                          .font_family  = font_family,
-                          .site_name    = site_name,
-                          .title        = title};
-
-    while ((state = TemplateBuild(model)).state != TEMPLATE_END) {
+    while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
       if (state.state == TEMPLATE_YIELD) {
         if (strcmp("article", state.slot_name) == 0)
           BuildPage(page->full_path, html_page, page);
@@ -214,6 +198,10 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
           TemplateBackButton(site_directory, current_directory);
         if (strcmp("side_nav", state.slot_name) == 0)
           TemplateSideNav(page, site_directory, current_directory);
+
+        if (state.slot_name) {
+          free(state.slot_name);
+        }
       }
     }
 

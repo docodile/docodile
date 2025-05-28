@@ -5,16 +5,6 @@ static Template _template;
 
 #define print(fmt, ...) fprintf(_out, fmt, ##__VA_ARGS__)
 
-void FreeModel(Model model) {
-  //   free(model.accent_color);
-  //   free(model.author);
-  //   free(model.color_scheme);
-  //   free(model.description);
-  //   free(model.font_family);
-  //   free(model.site_name);
-  //   free(model.title);
-}
-
 static char *LoadTemplateFile(const char *filename) {
   FILE *file = fopen(filename, "r");
   if (!file) {
@@ -69,11 +59,17 @@ void TemplateInit(const char *template_file_path, FILE *out_file) {
   _out = out_file;
 }
 
+void TemplateDestroy() {
+  if (_template.input) {
+    free(_template.input);
+  }
+}
+
 static char Peek() { return _template.input[_template.pos]; }
 static char Advance() { return _template.input[_template.pos++]; }
 static void Put(char c) { fputc(c, _out); }
 
-TemplateState TemplateBuild(Model model) {
+TemplateState TemplateBuild(Page *page) {
   char c;
   while ((c = Advance()) != '\0') {
     if (c == '{') {
@@ -90,38 +86,20 @@ TemplateState TemplateBuild(Model model) {
         Advance();  // Remaining closing brace
 
         // TODO - Make this dynamic, for now if-else will suffice
-        if (strcmp("model.description", buffer) == 0) {
-          print("%s", buffer);
+        char *prefix = strtok(buffer, ".");
+        char *key    = strtok(NULL, "");
+        if (strcmp("config", prefix) == 0) {
+          char *value = ReadConfig(key);
+          print("%s", value);
+          free(value);
           continue;
         }
 
-        if (strcmp("model.author", buffer) == 0) {
-          print("%s", model.author);
-          continue;
-        }
+        if (strcmp("page", prefix) == 0) {
+          if (strcmp("title", key) == 0) {
+            print("%s", page->title);
+          }
 
-        if (strcmp("model.title", buffer) == 0) {
-          print("%s", model.title);
-          continue;
-        }
-
-        if (strcmp("model.font_family", buffer) == 0) {
-          print("%s", model.font_family);
-          continue;
-        }
-
-        if (strcmp("model.color_scheme", buffer) == 0) {
-          print("%s", model.color_scheme);
-          continue;
-        }
-
-        if (strcmp("model.accent_color", buffer) == 0) {
-          print("%s", model.accent_color);
-          continue;
-        }
-
-        if (strcmp("model.site_name", buffer) == 0) {
-          print("%s", model.site_name);
           continue;
         }
 
@@ -168,7 +146,8 @@ void TemplateNav(Directory *site_dir, Directory *current_dir) {
   print("</nav>");
 }
 
-static Directory *FindParentDirectory(Directory *root, Directory *target, int *level) {
+static Directory *FindParentDirectory(Directory *root, Directory *target,
+                                      int *level) {
   for (size_t i = 0; i < root->num_dirs; i++) {
     if (root->dirs[i] == target) return root;
 
@@ -200,7 +179,7 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
 }
 
 void TemplateSideNav(Page *page, Directory *site_directory,
-                  Directory *current_directory) {
+                     Directory *current_directory) {
   if (site_directory == NULL) return;
   if (current_directory == NULL) return;
 

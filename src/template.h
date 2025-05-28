@@ -6,19 +6,7 @@
 #include <string.h>
 
 #include "directory.h"
-
-// TODO Implement hash table
-typedef struct {
-  char *accent_color;
-  char *author;
-  char *color_scheme;
-  char *description;
-  char *font_family;
-  char *site_name;
-  char *title;
-} Model;
-
-void FreeModel(Model model);
+#include "config.h"
 
 typedef struct {
   const char *input;
@@ -33,7 +21,8 @@ typedef struct {
 } TemplateState;
 
 void TemplateInit(const char *template_file_path, FILE *out_file);
-TemplateState TemplateBuild(Model model);
+TemplateState TemplateBuild(Page *page);
+void TemplateDestroy();
 
 void TemplateNav(Directory *site_dir, Directory *current_dir);
 void TemplateBackButton(Directory *site_dir, Directory *curr_dir);
