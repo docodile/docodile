@@ -49,15 +49,6 @@ main {
   }
 }
 
-.gd-footer {
-  background-color: var(--gd-bg-secondary);
-  margin-top: 2rem;
-  padding: 1rem;
-  font-size: 0.875rem;
-  color: #b4b4b4;
-  text-align: end;
-}
-
 a {
   text-decoration: none;
   color: var(--gd-fg-primary);
@@ -131,5 +122,62 @@ article {
 
   h3 {
     color: var(--gd-accent-color);
+  }
+}
+
+.gd-footer {
+  background-color: var(--gd-bg-secondary);
+  font-size: 0.875rem;
+  color: #b4b4b4;
+  text-align: end;
+  margin-top: 4rem;
+}
+
+.gd-footer-info {
+  padding: 1rem;
+}
+
+.gd-footer-nav {
+  min-height: 5rem;
+  background-color: var(--gd-bg-secondary);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  user-select: none;
+  padding: 0 1rem;
+
+  i {
+    font-size: 2rem;
+    display: inline;
+    height: 100%;
+    display: block;
+  }
+}
+
+.gd-nav-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: fit-content;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  &.next {
+    flex-direction: row;
+
+    > div {
+      align-items: end;
+    }
   }
 }

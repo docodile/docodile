@@ -198,6 +198,8 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
           TemplateBackButton(site_directory, current_directory);
         if (strcmp("side_nav", state.slot_name) == 0)
           TemplateSideNav(page, site_directory, current_directory);
+        if (strcmp("footer_nav", state.slot_name) == 0)
+          TemplateFooterNav(page, site_directory, current_directory);
 
         if (state.slot_name) {
           free(state.slot_name);

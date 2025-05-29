@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "directory.h"
 #include "config.h"
+#include "directory.h"
 
 typedef struct {
   const char *input;
@@ -29,5 +29,7 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir);
 void TemplateSideNav(Page *page, Directory *site_directory,
                      Directory *current_directory);
 void TemplateToc(TOC toc);
+void TemplateFooterNav(Page *page, Directory *site_directory,
+                       Directory *current_directory);
 
 #endif  // TEMPLATE_H

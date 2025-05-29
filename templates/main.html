@@ -45,7 +45,10 @@
       <aside class="gd-toc">{% toc %}</aside>
     </main>
     <footer class="gd-footer">
-      Built with <span class="highlight">gendoc</span>
+      {% footer_nav %}
+      <div class="gd-footer-info">
+        Built with <span class="highlight">gendoc</span>
+      </div>
     </footer>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-core.min.js"

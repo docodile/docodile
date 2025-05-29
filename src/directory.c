@@ -1,11 +1,42 @@
 #include "directory.h"
 
+static void GenerateTitle(const char *in, char *out) {
+  char buffer[1000];
+  strcpy(buffer, in);
+
+  char *first  = strtok(buffer, "/");
+  char *second = strtok(NULL, "/");
+  while (second != NULL) {
+    char *next = strtok(NULL, "/");
+    if (!next) break;
+    first  = second;
+    second = next;
+  }
+
+  if (strcmp("index.md", second) == 0)
+    strcpy(buffer, first);
+  else
+    strcpy(buffer, second);
+
+  RemoveExtension(buffer, out);
+  KebabCaseToTitleCase(out, out);
+}
+
+static void GenerateUrl(const char *in, char *out) {
+  char article_link[MAXURL];
+  strcpy(article_link, in);
+  strtok(article_link, "/");
+  char *path = strtok(NULL, "");
+  ChangeFilePathExtension(".md", ".html", path, out);
+  sprintf(article_link, "/%s", out);
+  strcpy(out, article_link);
+}
+
 Page *NewPage(const char *name, const char *fullpath) {
   Page *page = malloc(sizeof(Page));
   ChangeFilePathExtension(".md", ".html", name, page->out_name);
-  ChangeFilePathExtension(".md", ".html", fullpath, page->url_path);
-  RemoveExtension(name, page->title);
-  KebabCaseToTitleCase(page->title, page->title);
+  GenerateUrl(fullpath, page->url_path);
+  GenerateTitle(fullpath, page->title);
   strcpy(page->src_name, name);
   strcpy(page->full_path, fullpath);
   page->toc = (TOC){.count = 0, .items = malloc(sizeof(char *))};

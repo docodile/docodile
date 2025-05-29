@@ -127,11 +127,8 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
   int level         = 0;
   Directory *parent = FindParentDirectory(site_dir, curr_dir, &level);
   if (parent && level > 0) {
-    char article_link[MAXURL];
-    strcpy(article_link, parent->pages[0]->url_path);
-    strtok(article_link, "/");
-    char *path = strtok(NULL, "");
-    print("<a class=\"gd-back\" href=\"/%s\">%s</a>", path, parent->title);
+    print("<a class=\"gd-back\" href=\"%s\">%s</a>", parent->pages[0]->url_path,
+          parent->title);
   }
 }
 
@@ -142,15 +139,9 @@ void TemplateSideNav(Page *page, Directory *site_directory,
 
   print("<ul>");
   for (size_t i = 0; i < current_directory->num_pages; i++) {
-    char article_link[MAXURL];
-    strcpy(article_link, current_directory->pages[i]->url_path);
-    strtok(article_link, "/");
-    char *path  = strtok(NULL, "");
-    char *title = current_directory->pages[i]->title;
-    if (strcmp("index.md", current_directory->pages[i]->src_name) == 0) {
-      title = current_directory->title;
-    }
-    print("<li><a href=\"/%s\">%s</a></li>", path, title);
+    print("<li><a href=\"%s\">%s</a></li>",
+          current_directory->pages[i]->url_path,
+          current_directory->pages[i]->title);
   }
 
   if (site_directory != current_directory) {
@@ -174,5 +165,61 @@ void TemplateToc(TOC toc) {
     print("<li><a href=\"#%s\">%s</a></li>", link, toc.items[i]);
   }
   print("</ul>");
+  print("</nav>");
+}
+
+// <nav class="gd-footer-nav">
+//   <a class="gd-nav-link prev">
+//     <div>
+//       <small>Prev</small>
+//       <h2>Some article</h2>
+//     </div>
+//     <i class="bi bi-arrow-left-short"></i>
+//   </a>
+//   <a class="gd-nav-link next">
+//     <div>
+//       <small>Next</small>
+//       <h2>Some article</h2>
+//     </div>
+//     <i class="bi bi-arrow-right-short"></i>
+//   </a>
+// </nav>
+
+void TemplateFooterNav(Page *page, Directory *site_directory,
+                       Directory *current_directory) {
+  // int level = 0;
+  // Directory *parent =
+  //     FindParentDirectory(site_directory, current_directory, &level);
+
+  size_t num_siblings =
+      current_directory->num_dirs + current_directory->num_pages;
+  size_t i = 0;
+  for (; i < current_directory->num_pages; i++) {
+    if (current_directory->pages[i] == page) break;
+  }
+
+  if (num_siblings < 2) return;
+
+  print("<nav class=\"gd-footer-nav\">");
+  if (i > 0) {
+    print("<a class=\"gd-nav-link prev\" href=\"%s\">",
+          current_directory->pages[i - 1]->url_path);
+    print("<div>");
+    print("<small>Prev</small>");
+    print("<h2>%s</h2>", current_directory->pages[i - 1]->title);
+    print("</div>");
+    print("<i class=\"bi bi-arrow-left-short\"></i>");
+    print("</a>");
+  }
+  if (i < current_directory->num_pages - 1) {
+    print("<a class=\"gd-nav-link next\" href=\"%s\">",
+          current_directory->pages[i + 1]->url_path);
+    print("<div>");
+    print("<small>Next</small>");
+    print("<h2>%s</h2>", current_directory->pages[i + 1]->title);
+    print("</div>");
+    print("<i class=\"bi bi-arrow-right-short\"></i>");
+    print("</a>");
+  }
   print("</nav>");
 }
