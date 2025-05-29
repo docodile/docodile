@@ -9,7 +9,7 @@
 #include "directory.h"
 
 typedef struct {
-  const char *input;
+  char *input;
   size_t pos;
 } Template;
 

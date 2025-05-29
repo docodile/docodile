@@ -151,7 +151,7 @@ static void MkDir(const char *path) {
   }
 }
 
-static char *BUILDDIR;
+static const char *BUILDDIR;
 
 void InitializeSite(const char *dir) {
   BUILDDIR = dir;
@@ -206,6 +206,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
         }
       }
     }
+    TemplateDestroy();
 
     fclose(html_page);
   }

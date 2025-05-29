@@ -131,7 +131,6 @@ char *ReadConfig(const char *path) {
 
   Token token;
   char current_section[100] = GLOBAL;
-  char *value               = path;
   while ((token = NextToken()).type != TOKEN_NULL) {
     if (token.type == TOKEN_SECTION) {
       if (strcmp(section, GLOBAL) == 0) {
@@ -150,7 +149,7 @@ char *ReadConfig(const char *path) {
       if (strncmp(&input[key_token.start], key, key_length) == 0) {
         Token value_token = NextInlineToken();
         size_t length     = value_token.end - value_token.start;
-        value             = (char *)malloc(length);
+        char *value       = (char *)malloc(length);
         strncpy(value, &input[value_token.start], length);
         value[length] = '\0';
         EndInline();
@@ -160,5 +159,5 @@ char *ReadConfig(const char *path) {
     }
   }
 
-  return value;
+  return NULL;
 }
