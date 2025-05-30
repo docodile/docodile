@@ -15,6 +15,40 @@
 
 #define BUILDDIR ".site"
 
+char *ShiftArg(char ***argv);
+void Help();
+void New();
+
+int main(int argc, char **argv) {
+  char *name    = ShiftArg(&argv);
+  char *command = ShiftArg(&argv);
+  if (!command) command = "help";
+
+  if (strcmp("help", command) == 0) {
+    Help();
+    return 0;
+  }
+
+  if (strcmp("new", command) == 0) {
+    New();
+    return 0;
+  }
+
+  if (strcmp("build", command) == 0) {
+    Directory *site_directory = NewDirectory("");
+    BuildSiteDirectory(site_directory, DOCSDIR);
+    InitializeSite("site");
+    BuildSite(site_directory, site_directory, "site");
+    return 0;
+  }
+
+  if (strcmp("serve", command) == 0) {
+    Serve(BUILDDIR);
+  }
+
+  return 0;
+}
+
 char *ShiftArg(char ***argv) { return *(*argv)++; }
 
 // ╚╔╩╦╠═╬╣║╝╗
@@ -52,27 +86,8 @@ void Help() {
          "╚═════════════════════════════════╝\n" CRESET);
 }
 
-int main(int argc, char **argv) {
-  char *name    = ShiftArg(&argv);
-  char *command = ShiftArg(&argv);
-  if (!command) command = "help";
-
-  if (strcmp("help", command) == 0) {
-    Help();
-    return 0;
-  }
-
-  if (strcmp("build", command) == 0) {
-    Directory *site_directory = NewDirectory("");
-    BuildSiteDirectory(site_directory, DOCSDIR);
-    InitializeSite("site");
-    BuildSite(site_directory, site_directory, "site");
-    return 0;
-  }
-
-  if (strcmp("serve", command) == 0) {
-    Serve(BUILDDIR);
-  }
-
-  return 0;
+void New() {
+  // HACK Being lazy, will come back to this and implement properly.
+  system("cp -r /etc/gendoc/* ./");
+  system("rm gendoc install.sh");
 }
