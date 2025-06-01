@@ -77,7 +77,13 @@ void Serve(const char *dir) {
 
   bind(server_fd, (struct sockaddr *)&addr, sizeof(addr));
   listen(server_fd, 10);
-  printf("Serving on http://localhost:%d\n", PORT);
+  char url[1000];
+  sprintf(url, "http://localhost:%d", PORT);
+  printf("Serving on %s\n", url);
+  // TODO Make cross-platform and move to a platform header
+  char command[1000];
+  sprintf(command, "xdg-open \"%s\"", url);
+  system(command);
 
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);
