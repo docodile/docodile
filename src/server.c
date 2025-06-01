@@ -1,16 +1,5 @@
 #include "server.h"
 
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "builder.h"
-
 #define PORT           6006
 #define BUFFER_SIZE    4096
 #define HIDDENBUILDDIR ".site"
@@ -80,10 +69,7 @@ void Serve(const char *dir) {
   char url[1000];
   sprintf(url, "http://localhost:%d", PORT);
   printf("Serving on %s\n", url);
-  // TODO Make cross-platform and move to a platform header
-  char command[1000];
-  sprintf(command, "xdg-open \"%s\"", url);
-  system(command);
+  OpenBrowser(url);
 
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);
@@ -97,7 +83,7 @@ void Serve(const char *dir) {
 
     if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
     char full_path[1024];
-    snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR"/.%s", path);
+    snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR "/.%s", path);
 
     SendFile(client_fd, full_path);
     close(client_fd);
