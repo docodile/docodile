@@ -42,7 +42,6 @@ TemplateState TemplateBuild(Page *page) {
         buffer[i] = '\0';
         Advance();  // Remaining closing brace
 
-        // TODO - Make this dynamic, for now if-else will suffice
         char *prefix = strtok(buffer, ".");
         char *key    = strtok(NULL, "");
         if (strcmp("config", prefix) == 0) {

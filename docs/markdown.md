@@ -50,3 +50,95 @@ You can use _italics_ and **bold** to emphasise parts of text. You can combine *
 > Nested blockquotes.
 >
 > > This is nested.
+
+## Lists
+
+### Ordered Lists
+
+1. First item
+2. Second item
+3. Third item
+4. Fourth item
+
+```markdown
+1. First item
+2. Second item
+3. Third item
+4. Fourth item
+```
+
+1. First item
+2. Second item
+3. Third item
+   1. Indented item
+   2. Indented item
+4. Fourth item
+
+```markdown
+1. First item
+2. Second item
+3. Third item
+   1. Indented item
+   2. Indented item
+4. Fourth item
+```
+
+### Unordered lists
+
+- First item
+- Second item
+- Third item
+- Fourth item
+
+```markdown
+- First item
+- Second item
+- Third item
+- Fourth item
+```
+
+- First item
+- Second item
+- Third item
+  - Indented item
+  - Indented item
+- Fourth item
+
+```markdown
+- First item
+- Second item
+- Third item
+  - Indented item
+  - Indented item
+- Fourth item
+```
+
+## Code
+
+### Inline code
+
+You can inline `code` snippets.
+
+```markdown
+You can inline `code` snippets.
+```
+
+### Code blocks
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv) {
+    printf("Hello, World!\n");
+}
+```
+
+## Horizontal rules
+
+---
+
+```markdown
+---
+```
+
+## Links

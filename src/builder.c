@@ -41,7 +41,8 @@ void BuildSiteDirectory(Directory *dest, const char *path) {
 }
 
 static void BuildToc(Node *doc, Page *page) {
-  if (doc->type == NODE_HEADING) {
+  // TODO Improve check, this could mistake other elements starting with h.
+  if (doc->type[0] == 'h') {
     // TODO Inefficient.
     size_t len = doc->end - doc->start;
     page->toc.items =
@@ -107,7 +108,7 @@ static void BuildPage(const char *src_path, FILE *out_file, Page *page) {
 
   Lexer lexer = LexerNew(buffer, 0, length);
 
-  Node *doc = NewNode(NODE_DOCUMENT);
+  Node *doc = NewNode("article");
   Parse(&lexer, doc);
 
   BuildToc(doc, page);

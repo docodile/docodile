@@ -429,6 +429,14 @@ static Token LexEmphasis(Lexer *lexer) {
   return token;
 }
 
+static Token LexHorizontalRule(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_HR;
+  token.end   = ConsumeLine(lexer);
+  NewLine(lexer);
+  return token;
+}
+
 Lexer LexerNew(char *input, size_t start, size_t end) {
   return (Lexer){.input = input, .pos = start, .end = end, .current_line = 1};
 }
@@ -450,7 +458,13 @@ Token NextToken(Lexer *lexer) {
   int indent_level = spaces / 2;  // TODO Handle tabs.
   c                = Peek(lexer);
   if (isdigit(c) || c == '-') {
-    token = LexListItem(lexer, indent_level);
+    size_t temp = lexer->pos;
+    if (Repeats(lexer, '-') > 2) {
+      token = LexHorizontalRule(lexer);
+    } else {
+      lexer->pos = temp;
+      token      = LexListItem(lexer, indent_level);
+    }
   } else {
     switch (c) {
       case '`':

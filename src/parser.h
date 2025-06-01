@@ -2,58 +2,19 @@
 #define PARSER_H
 
 #include "lex.h"
+#include "utils.h"
 
 typedef struct {
   const char *input;
 } Parser;
 
-typedef enum {
-  NODE_UNKNOWN,
-  NODE_DOCUMENT,
-  NODE_PARAGRAPH,
-  NODE_LIST,
-  NODE_LISTITEM,
-  NODE_HEADING,
-  NODE_QUOTE,
-  NODE_EMPHASIS,
-  NODE_LINK,
-  NODE_TEXT,
-  NODE_BREAK,
-  NODE_CODE,
-  NODE_INLINECODE,
-} NodeType;
-
-typedef union {
-  struct {
-    int level;
-  } Heading;
-
-  struct {
-  } Paragraph;
-
-  struct {
-    bool ordered;
-  } List;
-
-  struct {
-    bool strong;
-  } Emphasis;
-
-  struct {
-    size_t href_start;
-    size_t href_end;
-    size_t label_start;
-    size_t label_end;
-  } Link;
-} NodeData;
-
 typedef struct {
-  char *name;
+  const char *name;
   char *value;
 } HTMLAttribute;
 
 typedef struct Node {
-  NodeType type;
+  const char *type;
   struct Node *first_child;
   struct Node *next_sibling;
 
@@ -68,12 +29,11 @@ typedef struct Node {
   int attributes_count;
   int max_attributes;
   HTMLAttribute *attributes;
-  NodeData data;
 } Node;
 
 Node *Parse(Lexer *lexer, Node *parent);
 Node *ParseInline(Lexer *lexer, Node *parent);
-Node *NewNode(NodeType type);
+Node *NewNode(const char *type);
 void FreeNode(Node *node);
 Node *NodeAppendSibling(Node *node, Node *sibling);
 Node *NodeAppendChild(Node *node, Node *child);
