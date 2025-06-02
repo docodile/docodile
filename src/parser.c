@@ -279,8 +279,19 @@ Node *ParseLink(Token *token, Lexer *lexer) {
   char *href_value = malloc(1000);
   sprintf(href_value, "%.*s", link_href_token.end - link_href_token.start,
           &n->input[link_href_token.start]);
-  ChangeFilePathExtension(".md", ".html", href_value, href_value);
-  NodeAddAttribute(n, "href", href_value);
+  char *href  = strtok(href_value, " ");
+  char *title = strtok(NULL, "");
+  ChangeFilePathExtension(".md", ".html", href, href);
+  NodeAddAttribute(n, "href", href);
+
+  if (title) {
+    if (title[0] == '"') title++;
+    char *buffer = malloc(strlen(title));
+    strcpy(buffer, title);
+    size_t len = strlen(buffer);
+    if (buffer[len - 1] == '"') buffer[len - 1] = '\0';
+    NodeAddAttribute(n, "title", buffer);
+  }
 
   return n;
 }

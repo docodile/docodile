@@ -123,6 +123,10 @@ article {
   h3 {
     color: var(--gd-accent-color);
   }
+
+  a:not([class]) {
+    color: var(--gd-accent-color);
+  }
 }
 
 .gd-footer {

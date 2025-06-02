@@ -11,12 +11,12 @@ static char *RenderAttributes(Node *node) {
   size_t written     = 0;
   char *buffer       = malloc(buffer_size);
   for (int i = 0; i < node->attributes_count; i++) {
-    if (written >= buffer_size / 2) {
+    if (written > buffer_size / 2) {
       buffer = realloc(buffer, (buffer_size *= 2));
     }
 
     HTMLAttribute attr = node->attributes[i];
-    written += sprintf(buffer, "%s=\"%s\"", attr.name, attr.value);
+    written += sprintf(&buffer[written], "%s=\"%s\"", attr.name, attr.value);
   }
 
   buffer[written] = '\0';

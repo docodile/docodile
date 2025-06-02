@@ -142,3 +142,5 @@ int main(int argc, char **argv) {
 ```
 
 ## Links
+
+My favourite search engine is [Duck Duck Go](https://duckduckgo.com "yeah").
