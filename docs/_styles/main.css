@@ -185,3 +185,66 @@ article {
     }
   }
 }
+
+.admonition {
+  --border-radius: 0.5rem;
+  --color: var(--gd-accent-color);
+  --icon: "\F430";
+
+  &.note {
+    --color: var(--gd-blue);
+    --icon: "\F430";
+  }
+
+  &.success {
+    --color: var(--gd-green);
+    --icon: "\F26A";
+  }
+
+  &.question {
+    --color: var(--gd-yellow);
+    --icon: "\F504";
+  }
+
+  &.warning {
+    --color: var(--gd-orange);
+    --icon: "\F33A";
+  }
+
+  &.critical {
+    --color: var(--gd-red);
+    --icon: "\F33A";
+  }
+
+  margin-top: 1rem;
+  border: 2px solid var(--color);
+  padding-bottom: 0.5rem;
+  border-radius: var(--border-radius);
+
+  p {
+    margin-top: 0;
+  }
+
+  & :not(:first-child) {
+    padding: 0 1rem;
+  }
+
+  .admonition-title {
+    &::before {
+      content: var(--icon);
+      font-family: bootstrap-icons;
+      color: var(--color);
+    }
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    background-color: color-mix(in srgb, var(--color) 30%, transparent);
+  }
+}

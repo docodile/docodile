@@ -69,7 +69,7 @@ void Serve(const char *dir) {
   char url[1000];
   sprintf(url, "http://localhost:%d", PORT);
   printf("Serving on %s\n", url);
-  OpenBrowser(url);
+  // OpenBrowser(url);
 
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);

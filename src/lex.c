@@ -283,6 +283,22 @@ static Token LexQuote(Lexer *lexer) {
   return token;
 }
 
+static Token LexAdmonition(Lexer *lexer) {
+  size_t pos  = lexer->pos;
+  Token token = TokenNew(lexer->input, pos);
+  token.type  = TOKEN_ADMONITION;
+  int count   = Repeats(lexer, '!');
+  if (count != 3) {
+    token.type = TOKEN_P;
+    return token;
+  }
+
+  token.start = lexer->pos;
+  token.end   = ConsumeLine(lexer);
+  NewLine(lexer);
+  return token;
+}
+
 static Token LexParagraph(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_P;
@@ -365,10 +381,9 @@ static Token LexLink(Lexer *lexer) {
   return token;
 }
 
-static Token LexListItem(Lexer *lexer, int indent_level) {
+static Token LexListItem(Lexer *lexer) {
   Token token        = TokenNew(lexer->input, lexer->pos);
   token.type         = TOKEN_TEXT;
-  token.indent_level = indent_level;
 
   char c    = Peek(lexer);
   int count = 0;
@@ -463,7 +478,7 @@ Token NextToken(Lexer *lexer) {
       token = LexHorizontalRule(lexer);
     } else {
       lexer->pos = temp;
-      token      = LexListItem(lexer, indent_level);
+      token      = LexListItem(lexer);
     }
   } else {
     switch (c) {
@@ -479,16 +494,16 @@ Token NextToken(Lexer *lexer) {
       case '>':
         token = LexQuote(lexer);
         break;
+      case '!':
+        token = LexAdmonition(lexer);
+        break;
       default:
         token = LexParagraph(lexer);
         break;
     }
   }
 
-  // NewLine(lexer);
-
-  // DebugInfo(lexer, &token, false);
-  // DebugMini(&token, false);
+  token.indent_level = indent_level;
 
   return token;
 }
@@ -519,10 +534,6 @@ Token NextInlineToken(Lexer *lexer) {
       token = LexText(lexer);
       break;
   }
-
-  // DebugInfo(lexer, &token, true);
-
-  // DebugMini(&token, true);
 
   return token;
 }

@@ -1,4 +1,12 @@
 :root {
+  --gd-red: #d7263d;
+  --gd-orange: #f46036;
+  --gd-yellow: #ffd23f;
+  --gd-green: #3f784c;
+  --gd-blue: #33658a;
+  --gd-indigo: #6c5ce7;
+  --gd-violet: #b45fbb;
+
   --gd-max-width: 61rem;
   --gd-bg-primary: #d6ccc2;
   --gd-bg-secondary: #edede9;
@@ -7,23 +15,31 @@
   --gd-accent-color: purple;
 
   [data-gd-accent-color="blue"] {
-    --gd-accent-color: #264653;
+    --gd-accent-color: var(--gd-blue);
   }
 
   [data-gd-accent-color="green"] {
-    --gd-accent-color: #2a9d8f;
+    --gd-accent-color: var(--gd-green);
   }
 
   [data-gd-accent-color="yellow"] {
-    --gd-accent-color: #e9c46a;
+    --gd-accent-color: var(--gd-yellow);
   }
 
   [data-gd-accent-color="orange"] {
-    --gd-accent-color: #f4a261;
+    --gd-accent-color: var(--gd-orange);
   }
 
   [data-gd-accent-color="red"] {
-    --gd-accent-color: #e76f51;
+    --gd-accent-color: var(--gd-red);
+  }
+
+  [data-gd-accent-color="indigo"] {
+    --gd-accent-color: var(--gd-indigo);
+  }
+
+  [data-gd-accent-color="violet"] {
+    --gd-accent-color: var(--gd-violet);
   }
 
   [data-gd-color-scheme="dark"] {

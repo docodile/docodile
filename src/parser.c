@@ -1,6 +1,7 @@
 #include "parser.h"
 
 Node *ParseInlineCode(Token *token);
+Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent, int indent_level);
 
 Node *NewNode(const char *type) {
   Node *node = (Node *)malloc(sizeof(Node));
@@ -137,6 +138,33 @@ Node *ParseHorizontalRule(Token *token) {
   return n;
 }
 
+Node *ParseAdmonition(Token *token, Lexer *lexer) {
+  Node *n          = NodeFromToken("div", token);
+  char *admonition = malloc(1000);
+  sprintf(admonition, "%.*s", n->end - n->start, &n->input[n->start]);
+  char *admonition_type  = strtok(admonition, " ");
+  char *admonition_title = strtok(NULL, "");
+  Node *title            = NewNode("p");
+  title->input           = n->input;
+  title->start           = n->start + strlen(admonition_type) + 1;
+  title->end             = n->end;
+  if (title->input[title->start] == ' ') title->start++;
+  if (title->input[title->start] == '"') title->start++;
+  if (title->input[title->end - 1] == '"') title->end--;
+  ParseInline(lexer, title);
+  NodeAppendChild(n, title);
+  char *title_class = malloc(sizeof("admonition-title"));
+  strcpy(title_class, "admonition-title");
+  NodeAddAttribute(title, "class", title_class);
+  ParseUntilIndentationResets(lexer, n, token->indent_level);
+  char *class = malloc(100);
+  sprintf(class, "admonition %s", admonition_type);
+  NodeAddAttribute(n, "class", class);
+
+  n->end = n->start;  // HACK prevent the title line being written again.
+  return n;
+}
+
 Node *ParseList(Token *token, Lexer *lexer) {
   Node *n         = NewNode(token->type == TOKEN_LISTITEMORDERED ? "ol" : "ul");
   n->indent_level = token->indent_level;
@@ -201,66 +229,83 @@ Node *ParseCodeBlock(Token *token) {
   return pre;
 }
 
-Node *Parse(Lexer *lexer, Node *parent) {
-  Node *doc   = NewNode("article");
-  Token token = NextToken(lexer);
-
+static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
+  bool skip = false;
   Node *node;
-
-  while (token.type != TOKEN_NULL) {
-    bool skip = false;
-
-    switch (token.type) {
-      case TOKEN_EMPTYLINE:
-        skip = true;
-        break;
-      case TOKEN_H1:
-        node = ParseHeading(&token, 1);
-        break;
-      case TOKEN_H2:
-        node = ParseHeading(&token, 2);
-        break;
-      case TOKEN_H3:
-        node = ParseHeading(&token, 3);
-        break;
-      case TOKEN_H4:
-        node = ParseHeading(&token, 4);
-        break;
-      case TOKEN_H5:
-        node = ParseHeading(&token, 5);
-        break;
-      case TOKEN_H6:
-        node = ParseHeading(&token, 6);
-        break;
-      case TOKEN_QUOTE:
-        node = ParseQuote(&token);
-        break;
-      case TOKEN_LISTITEMORDERED:
-      case TOKEN_LISTITEMUNORDERED:
-        node = ParseList(&token, lexer);
-        break;
-      case TOKEN_CODEBLOCK:
-        node = ParseCodeBlock(&token);
-        break;
-      case TOKEN_HR:
-        node = ParseHorizontalRule(&token);
-        break;
-      case TOKEN_P:
-      default:
-        node = ParseParagraph(&token);
-        break;
-    }
-
-    if (!skip) {
-      NodeAppendChild(parent, node);
-      // HACK Maybe not the nicest way of handling code blocks.
-      if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node);
-    }
-
-    token = NextToken(lexer);
+  switch (token.type) {
+    case TOKEN_EMPTYLINE:
+      skip = true;
+      break;
+    case TOKEN_H1:
+      node = ParseHeading(&token, 1);
+      break;
+    case TOKEN_H2:
+      node = ParseHeading(&token, 2);
+      break;
+    case TOKEN_H3:
+      node = ParseHeading(&token, 3);
+      break;
+    case TOKEN_H4:
+      node = ParseHeading(&token, 4);
+      break;
+    case TOKEN_H5:
+      node = ParseHeading(&token, 5);
+      break;
+    case TOKEN_H6:
+      node = ParseHeading(&token, 6);
+      break;
+    case TOKEN_QUOTE:
+      node = ParseQuote(&token);
+      break;
+    case TOKEN_LISTITEMORDERED:
+    case TOKEN_LISTITEMUNORDERED:
+      node = ParseList(&token, lexer);
+      break;
+    case TOKEN_CODEBLOCK:
+      node = ParseCodeBlock(&token);
+      break;
+    case TOKEN_HR:
+      node = ParseHorizontalRule(&token);
+      break;
+    case TOKEN_ADMONITION:
+      node = ParseAdmonition(&token, lexer);
+      break;
+    case TOKEN_P:
+    default:
+      node = ParseParagraph(&token);
+      break;
   }
 
-  return doc;
+  if (!skip) {
+    NodeAppendChild(parent, node);
+    // HACK Maybe not the nicest way of handling code blocks.
+    if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node);
+  }
+
+  return node;
+}
+
+Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
+                                  int indent_level) {
+  Token token = NextToken(lexer);
+  Node *node;
+  while (token.type != TOKEN_NULL && ((token.type == TOKEN_EMPTYLINE) ||
+                                      (token.type != TOKEN_EMPTYLINE &&
+                                       token.indent_level > indent_level))) {
+    node  = TokenSwitch(lexer, parent, token);
+    token = NextToken(lexer);
+  }
+  return parent;
+}
+
+Node *Parse(Lexer *lexer, Node *parent) {
+  Token token = NextToken(lexer);
+  Node *node;
+  while (token.type != TOKEN_NULL) {
+    node  = TokenSwitch(lexer, parent, token);
+    token = NextToken(lexer);
+  }
+  return parent;
 }
 
 Node *ParseListItem(Token *token) {
