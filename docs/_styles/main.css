@@ -81,6 +81,25 @@ a {
     margin: 0;
   }
 
+  a.active {
+    color: var(--gd-accent-color);
+  }
+
+  a.toc-1 {
+    font-weight: bold;
+  }
+  a.toc-2 {
+  }
+  a.toc-3 {
+    /* font-size: 80%; */
+  }
+  a.toc-4 {
+  }
+  a.toc-5 {
+  }
+  a.toc-6 {
+  }
+
   details ul {
     padding-left: 1rem;
   }

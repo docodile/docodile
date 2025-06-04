@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "utils.h"
 
@@ -15,33 +16,38 @@
 #define MAXURL         1000
 
 typedef struct {
-  size_t count;
-  char **items;
-} TOC;
+  int heading_level;
+  char *link;
+} TOCItem;
 
 typedef struct {
-  char out_name[MAXFILENAMELEN];
-  char src_name[MAXFILENAMELEN];
-  char full_path[MAXFILEPATH];
-  char url[MAXURL];
-  char url_path[MAXURL];
-  char title[MAXURL];
-  TOC toc;
-} Page;
-
-Page *NewPage(const char *name, const char *fullpath);
+  size_t count;
+  TOCItem *items;
+} TOC;
 
 typedef struct Directory {
   char path[MAXFILEPATH];
   char title[MAXFILEPATH];
   bool hidden;
-  size_t num_pages;
   size_t num_dirs;
-  Page *pages[MAXPAGESPERDIR];
   struct Directory *dirs[MAXDIRS];
+
+  bool is_dir;
+  bool is_index;
+
+  char out_name[MAXFILENAMELEN];
+  char src_name[MAXFILENAMELEN];
+  char full_path[MAXFILEPATH];
+  char url[MAXURL];
+  char url_path[MAXURL];
+  TOC toc;
 } Directory;
 
+typedef Directory Page;
+
 Directory *NewDirectory(const char *path);
+void SortDirectory(Directory *dir);
+Page *NewPage(const char *name, const char *fullpath);
 void FreeDirectory(Directory *dir);
 
 #endif  // DIRECTORY_H

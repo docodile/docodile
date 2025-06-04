@@ -51,6 +51,7 @@ static void SendFile(int client_fd, const char *path) {
 static void Build() {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR);
+  SortDirectory(site_directory);
   InitializeSite(HIDDENBUILDDIR);
   BuildSite(site_directory, site_directory, HIDDENBUILDDIR);
   FreeDirectory(site_directory);

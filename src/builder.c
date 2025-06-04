@@ -1,8 +1,8 @@
 #include "builder.h"
 
 static void AddPage(Directory *dir, Page *page) {
-  assert(dir->num_pages + 1 < MAXPAGESPERDIR);
-  dir->pages[dir->num_pages++] = page;
+  assert(dir->num_dirs + 1 < MAXPAGESPERDIR);
+  dir->dirs[dir->num_dirs++] = page;
 }
 
 static void AddDirectory(Directory *dir, Directory *child) {
@@ -40,16 +40,29 @@ void BuildSiteDirectory(Directory *dest, const char *path) {
   closedir(dir);
 }
 
+static int GetHeadingLevel(Node *n) {
+  if (strcmp("h1", n->type) == 0) return 1;
+  if (strcmp("h2", n->type) == 0) return 2;
+  if (strcmp("h3", n->type) == 0) return 3;
+  if (strcmp("h4", n->type) == 0) return 4;
+  if (strcmp("h5", n->type) == 0) return 5;
+  if (strcmp("h6", n->type) == 0) return 6;
+  return 0;
+}
+
 static void BuildToc(Node *doc, Page *page) {
   // TODO Improve check, this could mistake other elements starting with h.
-  if (doc->type[0] == 'h') {
+  int heading_level = GetHeadingLevel(doc);
+  if (heading_level) {
     // TODO Inefficient.
     size_t len = doc->end - doc->start;
     page->toc.items =
-        realloc(page->toc.items, (page->toc.count + 1) * sizeof(char *));
-    page->toc.items[page->toc.count] = malloc(len);
-    strncpy(page->toc.items[page->toc.count], &doc->input[doc->start], len);
-    page->toc.items[page->toc.count][len] = '\0';
+        realloc(page->toc.items, (page->toc.count + 1) * sizeof(TOCItem));
+    page->toc.items[page->toc.count].link = malloc(len);
+    strncpy(page->toc.items[page->toc.count].link, &doc->input[doc->start],
+            len);
+    page->toc.items[page->toc.count].link[len]     = '\0';
+    page->toc.items[page->toc.count].heading_level = heading_level;
     page->toc.count++;
   }
 
@@ -170,8 +183,9 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     MkDir(base_path);
   }
 
-  for (size_t i = 0; i < current_directory->num_pages; i++) {
-    Page *page      = current_directory->pages[i];
+  for (size_t i = 0; i < current_directory->num_dirs; i++) {
+    Page *page = current_directory->dirs[i];
+    if (page->is_dir) continue;
     const char *ext = strrchr(page->src_name, '.');
     if (strcmp(".css", ext) == 0) {
       char path[MAXFILEPATH];

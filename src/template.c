@@ -88,14 +88,12 @@ void TemplateNav(Directory *site_dir, Directory *current_dir) {
   print("<nav>");
   print("<ul>");
   for (size_t i = 0; i < site_dir->num_dirs; i++) {
+    if (!site_dir->dirs[i]->is_dir) continue;
     Directory *dir = site_dir->dirs[i];
     if (dir->path[0] == '_') continue;
-    char label[100];
-    RemoveExtension(dir->path, label);
-    KebabCaseToTitleCase(label, label);
     print("<li>");
     // HACK Update server to not need explicit /index.html
-    print("<a href=\"/%s/index.html\">%s</a>", dir->path, label);
+    print("<a href=\"/%s/index.html\">%s</a>", dir->path, dir->title);
     print("</li>");
   }
   print("</ul>");
@@ -126,8 +124,17 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
   int level         = 0;
   Directory *parent = FindParentDirectory(site_dir, curr_dir, &level);
   if (parent && level > 0) {
-    print("<a class=\"gd-back\" href=\"%s\">%s</a>", parent->pages[0]->url_path,
-          parent->title);
+    Directory *first_index = NULL;
+    for (size_t i = 0; i < parent->num_dirs; i++) {
+      if (!parent->dirs[i]->hidden && parent->dirs[i]->is_index) {
+        first_index = parent->dirs[i];
+        break;
+      }
+    }
+    if (first_index) {
+      print("<a class=\"gd-back\" href=\"%s\">%s</a>", first_index->url_path,
+            parent->title);
+    }
   }
 }
 
@@ -137,19 +144,22 @@ void TemplateSideNav(Page *page, Directory *site_directory,
   if (current_directory == NULL) return;
 
   print("<ul>");
-  for (size_t i = 0; i < current_directory->num_pages; i++) {
-    print("<li><a href=\"%s\">%s</a></li>",
-          current_directory->pages[i]->url_path,
-          current_directory->pages[i]->title);
-  }
-
-  if (site_directory != current_directory) {
-    for (size_t i = 0; i < current_directory->num_dirs; i++) {
+  for (size_t i = 0; i < current_directory->num_dirs; i++) {
+    if (current_directory->dirs[i]->is_dir) {
+      if (current_directory == site_directory) continue;
       if (current_directory->dirs[i]->path[0] == '_') continue;
       print("<details>");
       print("<summary>%s</summary>", current_directory->dirs[i]->title);
       TemplateSideNav(page, site_directory, current_directory->dirs[i]);
       print("</details>");
+    } else {
+      char classes[100] = "";
+      if (page == current_directory->dirs[i]) {
+        sprintf(classes, " class=\"active\"");
+      }
+      print("<li><a href=\"%s\"%s>%s</a></li>",
+            current_directory->dirs[i]->url_path, classes,
+            current_directory->dirs[i]->title);
     }
   }
   print("</ul>");
@@ -159,63 +169,48 @@ void TemplateToc(TOC toc) {
   print("<nav>");
   print("<ul>");
   for (size_t i = 0; i < toc.count; i++) {
+    TOCItem item = toc.items[i];
     char link[100];
-    TitleCaseToKebabCase(toc.items[i], link);
-    print("<li><a href=\"#%s\">%s</a></li>", link, toc.items[i]);
+    TitleCaseToKebabCase(item.link, link);
+
+    print("<li><a class=\"toc-%d\" href=\"#%s\">%s</a></li>",
+          item.heading_level, link, item.link);
   }
   print("</ul>");
   print("</nav>");
 }
 
-// <nav class="gd-footer-nav">
-//   <a class="gd-nav-link prev">
-//     <div>
-//       <small>Prev</small>
-//       <h2>Some article</h2>
-//     </div>
-//     <i class="bi bi-arrow-left-short"></i>
-//   </a>
-//   <a class="gd-nav-link next">
-//     <div>
-//       <small>Next</small>
-//       <h2>Some article</h2>
-//     </div>
-//     <i class="bi bi-arrow-right-short"></i>
-//   </a>
-// </nav>
-
 void TemplateFooterNav(Page *page, Directory *site_directory,
                        Directory *current_directory) {
-  // int level = 0;
-  // Directory *parent =
-  //     FindParentDirectory(site_directory, current_directory, &level);
+  Directory *prev = NULL, *next = NULL;
 
-  size_t num_siblings =
-      current_directory->num_dirs + current_directory->num_pages;
-  size_t i = 0;
-  for (; i < current_directory->num_pages; i++) {
-    if (current_directory->pages[i] == page) break;
+  for (size_t i = 0; i < current_directory->num_dirs; i++) {
+    Directory *this = current_directory->dirs[i];
+    if (this == page) break;
+    if (!this->hidden && !this->is_dir) prev = this;
   }
 
-  if (num_siblings < 2) return;
+  for (size_t i = current_directory->num_dirs - 1; i >= 0; i--) {
+    Directory *this = current_directory->dirs[i];
+    if (this == page) break;
+    if (!this->hidden) next = this;
+  }
 
   print("<nav class=\"gd-footer-nav\">");
-  if (i > 0) {
-    print("<a class=\"gd-nav-link prev\" href=\"%s\">",
-          current_directory->pages[i - 1]->url_path);
+  if (prev) {
+    print("<a class=\"gd-nav-link prev\" href=\"%s\">", prev->url_path);
     print("<div>");
     print("<small>Prev</small>");
-    print("<h2>%s</h2>", current_directory->pages[i - 1]->title);
+    print("<h2>%s</h2>", prev->title);
     print("</div>");
     print("<i class=\"bi bi-arrow-left-short\"></i>");
     print("</a>");
   }
-  if (i < current_directory->num_pages - 1) {
-    print("<a class=\"gd-nav-link next\" href=\"%s\">",
-          current_directory->pages[i + 1]->url_path);
+  if (next) {
+    print("<a class=\"gd-nav-link next\" href=\"%s\">", next->url_path);
     print("<div>");
     print("<small>Next</small>");
-    print("<h2>%s</h2>", current_directory->pages[i + 1]->title);
+    print("<h2>%s</h2>", next->title);
     print("</div>");
     print("<i class=\"bi bi-arrow-right-short\"></i>");
     print("</a>");

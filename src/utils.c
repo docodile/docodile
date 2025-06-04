@@ -47,6 +47,7 @@ void RemoveExtension(const char *in, char *out) {
   char with_ext[1000];
   strcpy(with_ext, in);
   char *title = strtok(with_ext, ".");
+  if (!title) return;
   strcpy(out, title);
 }
 
