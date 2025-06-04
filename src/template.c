@@ -193,7 +193,7 @@ void TemplateFooterNav(Page *page, Directory *site_directory,
   for (size_t i = current_directory->num_dirs - 1; i >= 0; i--) {
     Directory *this = current_directory->dirs[i];
     if (this == page) break;
-    if (!this->hidden) next = this;
+    if (!this->hidden && !this->is_dir) next = this;
   }
 
   print("<nav class=\"gd-footer-nav\">");
