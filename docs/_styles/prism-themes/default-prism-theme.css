@@ -20,7 +20,7 @@ pre[class*="language-"] {
   -moz-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  background: var(--gd-bg-secondary);
+  background: var(--gd-bg-primary);
   color: var(--gd-fg-primary);
 }
 

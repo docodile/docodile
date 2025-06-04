@@ -1,50 +1,186 @@
 :root {
-  --gd-red: #d7263d;
-  --gd-orange: #f46036;
-  --gd-yellow: #ffd23f;
-  --gd-green: #3f784c;
-  --gd-blue: #33658a;
-  --gd-indigo: #6c5ce7;
-  --gd-violet: #b45fbb;
+  --gd-color-black: black;
+  --gd-color-white: white;
 
-  --gd-max-width: 61rem;
-  --gd-bg-primary: #d6ccc2;
-  --gd-bg-secondary: #edede9;
-  --gd-fg-primary: #241e2f;
+  --gd-color-red: #d7263d;
+  --gd-color-orange: #f46036;
+  --gd-color-yellow: #ffd23f;
+  --gd-color-green: #3f784c;
+  --gd-color-blue: #33658a;
+  --gd-color-indigo: #6c5ce7;
+  --gd-color-violet: #b45fbb;
 
-  --gd-accent-color: purple;
+  --gd-color-mocha-mousse: #a47764;
+  --gd-color-peach-fuzz: #febe98;
+  --gd-color-viva-magenta: #bb2648;
+  --gd-color-very-peri: #6767ab;
+  --gd-color-illuminating: #f5df4e;
+  --gd-color-ultimate-gray: #939597;
+  --gd-color-classic-blue: #0f4d81;
+  --gd-color-living-coral: #ff6f62;
+  --gd-color-ultra-violet: #5f4b8b;
+  --gd-color-greenery: #89b04c;
+  --gd-color-rose-quartz: #f7cac9;
+  --gd-color-serenity: #92a9d1;
+  --gd-color-marsala: #96504c;
+  --gd-color-radiant-orchid: #ac5f99;
+  --gd-color-emerald: #009572;
+  --gd-color-tangerine-tango: #de4124;
+  --gd-color-honeysuckle: #d95070;
+  --gd-color-turquoise: #46b5ab;
+  --gd-color-mimosa: #efc05a;
+  --gd-color-blue-iris: #5b5b9f;
+  --gd-color-chili-pepper: #9b1b2f;
+  --gd-color-sand-dollar: #dfcdbe;
+  --gd-color-blue-turquoise: #52b0ae;
+  --gd-color-tigerlily: #e3583e;
+  --gd-color-aqua-sky: #7cc4c5;
+  --gd-color-true-red: #bf1a32;
+  --gd-color-fuchsia-rose: #c64376;
+  --gd-color-cerulean: #9cb7d4;
 
-  [data-gd-accent-color="blue"] {
-    --gd-accent-color: var(--gd-blue);
+  --gd-bg-primary: #fff;
+  --gd-header-fg-color: var(--gd-bg-primary);
+
+  --gd-accent-color: var(--gd-color-emerald);
+
+  [data-gd-accent-color="black"] {
+    --gd-accent-color: var(--gd-color-black);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-white) 80%,
+      var(--gd-accent-color)
+    );
   }
-
-  [data-gd-accent-color="green"] {
-    --gd-accent-color: var(--gd-green);
+  [data-gd-accent-color="white"] {
+    --gd-accent-color: var(--gd-color-white);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-accent-color)
+    );
   }
-
-  [data-gd-accent-color="yellow"] {
-    --gd-accent-color: var(--gd-yellow);
-  }
-
-  [data-gd-accent-color="orange"] {
-    --gd-accent-color: var(--gd-orange);
-  }
-
   [data-gd-accent-color="red"] {
-    --gd-accent-color: var(--gd-red);
+    --gd-accent-color: var(--gd-color-red);
   }
-
+  [data-gd-accent-color="orange"] {
+    --gd-accent-color: var(--gd-color-orange);
+  }
+  [data-gd-accent-color="yellow"] {
+    --gd-accent-color: var(--gd-color-yellow);
+  }
+  [data-gd-accent-color="green"] {
+    --gd-accent-color: var(--gd-color-green);
+  }
+  [data-gd-accent-color="blue"] {
+    --gd-accent-color: var(--gd-color-blue);
+  }
   [data-gd-accent-color="indigo"] {
-    --gd-accent-color: var(--gd-indigo);
+    --gd-accent-color: var(--gd-color-indigo);
+  }
+  [data-gd-accent-color="violet"] {
+    --gd-accent-color: var(--gd-color-violet);
+  }
+  [data-gd-accent-color="mocha mousse"] {
+    --gd-accent-color: var(--gd-color-mocha-mousse);
+  }
+  [data-gd-accent-color="peach fuzz"] {
+    --gd-accent-color: var(--gd-color-peach-fuzz);
+  }
+  [data-gd-accent-color="viva magenta"] {
+    --gd-accent-color: var(--gd-color-viva-magenta);
+  }
+  [data-gd-accent-color="very peri"] {
+    --gd-accent-color: var(--gd-color-very-peri);
+  }
+  [data-gd-accent-color="illuminating"] {
+    --gd-accent-color: var(--gd-color-illuminating);
+  }
+  [data-gd-accent-color="ultimate gray"] {
+    --gd-accent-color: var(--gd-color-ultimate-gray);
+  }
+  [data-gd-accent-color="classic blue"] {
+    --gd-accent-color: var(--gd-color-classic-blue);
+  }
+  [data-gd-accent-color="living coral"] {
+    --gd-accent-color: var(--gd-color-living-coral);
+  }
+  [data-gd-accent-color="ultra violet"] {
+    --gd-accent-color: var(--gd-color-ultra-violet);
+  }
+  [data-gd-accent-color="greenery"] {
+    --gd-accent-color: var(--gd-color-greenery);
+  }
+  [data-gd-accent-color="rose quartz"] {
+    --gd-accent-color: var(--gd-color-rose-quartz);
+  }
+  [data-gd-accent-color="serenity"] {
+    --gd-accent-color: var(--gd-color-serenity);
+  }
+  [data-gd-accent-color="marsala"] {
+    --gd-accent-color: var(--gd-color-marsala);
+  }
+  [data-gd-accent-color="radiant orchid"] {
+    --gd-accent-color: var(--gd-color-radiant-orchid);
+  }
+  [data-gd-accent-color="emerald"] {
+    --gd-accent-color: var(--gd-color-emerald);
+  }
+  [data-gd-accent-color="tangerine tango"] {
+    --gd-accent-color: var(--gd-color-tangerine-tango);
+  }
+  [data-gd-accent-color="honeysuckle"] {
+    --gd-accent-color: var(--gd-color-honeysuckle);
+  }
+  [data-gd-accent-color="turquoise"] {
+    --gd-accent-color: var(--gd-color-turquoise);
+  }
+  [data-gd-accent-color="mimosa"] {
+    --gd-accent-color: var(--gd-color-mimosa);
+  }
+  [data-gd-accent-color="blue iris"] {
+    --gd-accent-color: var(--gd-color-blue-iris);
+  }
+  [data-gd-accent-color="chili pepper"] {
+    --gd-accent-color: var(--gd-color-chili-pepper);
+  }
+  [data-gd-accent-color="sand dollar"] {
+    --gd-accent-color: var(--gd-color-sand-dollar);
+  }
+  [data-gd-accent-color="blue turquoise"] {
+    --gd-accent-color: var(--gd-color-blue-turquoise);
+  }
+  [data-gd-accent-color="tigerlily"] {
+    --gd-accent-color: var(--gd-color-tigerlily);
+  }
+  [data-gd-accent-color="aqua sky"] {
+    --gd-accent-color: var(--gd-color-aqua-sky);
+  }
+  [data-gd-accent-color="true red"] {
+    --gd-accent-color: var(--gd-color-true-red);
+  }
+  [data-gd-accent-color="fuchsia rose"] {
+    --gd-accent-color: var(--gd-color-fuchsia-rose);
+  }
+  [data-gd-accent-color="cerulean"] {
+    --gd-accent-color: var(--gd-color-cerulean);
   }
 
-  [data-gd-accent-color="violet"] {
-    --gd-accent-color: var(--gd-violet);
+  [data-gd-color-scheme="light"] {
+    --gd-bg-primary: var(--gd-color-white);
+    --gd-fg-primary: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-accent-color)
+    );
   }
 
   [data-gd-color-scheme="dark"] {
-    --gd-bg-primary: #0d1b2a;
-    --gd-bg-secondary: #1b263b;
-    --gd-fg-primary: #e0e1dd;
+    --gd-bg-primary: var(--gd-color-black);
+    --gd-fg-primary: color-mix(
+      in srgb,
+      var(--gd-color-white) 80%,
+      var(--gd-accent-color)
+    );
   }
 }

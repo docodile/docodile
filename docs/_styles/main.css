@@ -6,8 +6,16 @@ code {
   font-family: monospace;
 }
 
+* {
+  transition: background-color 0.3s linear, color 0.3s linear, text-decoration-color 0.3s linear;
+}
+
 body {
-  background-color: var(--gd-bg-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--gd-bg-primary) 85%,
+    var(--gd-accent-color)
+  );
   color: var(--gd-fg-primary);
   margin: 0;
   position: relative;
@@ -29,14 +37,18 @@ main {
 }
 
 .gd-header {
-  background-color: var(--gd-bg-secondary);
+  background-color: var(--gd-accent-color);
+  color: var(--gd-header-fg-color);
   position: sticky;
   top: 0;
   padding: 0.5rem 1rem;
   user-select: none;
 
   h1 {
-    color: var(--gd-accent-color);
+    color: var(--gd-header-fg-color);
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   nav > ul {
@@ -45,7 +57,8 @@ main {
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 2rem;
+    gap: 1rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -120,17 +133,12 @@ a {
 }
 
 article {
+  width: 100%;
+
   h1 {
     display: flex;
     align-items: center;
     gap: 1rem;
-    &::before {
-      content: "";
-      width: 0.5rem;
-      height: 1.5rem;
-      border-radius: 999px;
-      background: var(--gd-accent-color);
-    }
   }
 
   h2 {
@@ -149,9 +157,13 @@ article {
 }
 
 .gd-footer {
-  background-color: var(--gd-bg-secondary);
+  background-color: color-mix(
+    in srgb,
+    var(--gd-bg-primary) 90%,
+    var(--gd-accent-color)
+  );
   font-size: 0.875rem;
-  color: #b4b4b4;
+  color: var(--gd-fg-color);
   text-align: end;
   margin-top: 4rem;
 }
@@ -162,7 +174,11 @@ article {
 
 .gd-footer-nav {
   min-height: 5rem;
-  background-color: var(--gd-bg-secondary);
+  background-color: color-mix(
+    in srgb,
+    var(--gd-bg-primary) 90%,
+    var(--gd-accent-color)
+  );
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -211,27 +227,27 @@ article {
   --icon: "\F430";
 
   &.note {
-    --color: var(--gd-blue);
+    --color: var(--gd-color-blue);
     --icon: "\F430";
   }
 
   &.success {
-    --color: var(--gd-green);
+    --color: var(--gd-color-green);
     --icon: "\F26A";
   }
 
   &.question {
-    --color: var(--gd-yellow);
+    --color: var(--gd-color-yellow);
     --icon: "\F504";
   }
 
   &.warning {
-    --color: var(--gd-orange);
+    --color: var(--gd-color-orange);
     --icon: "\F33A";
   }
 
   &.critical {
-    --color: var(--gd-red);
+    --color: var(--gd-color-red);
     --icon: "\F33A";
   }
 

@@ -1,8 +1,8 @@
 author=
 description=
 site-name=gendoc
-font-family=IBM Plex Sans
 
 [theme]
+font-family=IBM Plex Sans
 color-scheme=dark
 accent-color=orange
