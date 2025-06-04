@@ -36,6 +36,7 @@ typedef enum {
   TOKEN_CODEBLOCKINLINE,
   TOKEN_HR,
   TOKEN_ADMONITION,
+  TOKEN_HTML,
 } TokenType;
 
 typedef struct {

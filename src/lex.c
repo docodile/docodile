@@ -382,8 +382,8 @@ static Token LexLink(Lexer *lexer) {
 }
 
 static Token LexListItem(Lexer *lexer) {
-  Token token        = TokenNew(lexer->input, lexer->pos);
-  token.type         = TOKEN_TEXT;
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_TEXT;
 
   char c    = Peek(lexer);
   int count = 0;
@@ -444,6 +444,15 @@ static Token LexEmphasis(Lexer *lexer) {
   return token;
 }
 
+static Token LexHtml(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_HTML;
+  token.end   = ConsumeLine(lexer);
+  NewLine(lexer);
+  token.length = token.end - token.start;
+  return token;
+}
+
 static Token LexHorizontalRule(Lexer *lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_HR;
@@ -493,6 +502,9 @@ Token NextToken(Lexer *lexer) {
         break;
       case '>':
         token = LexQuote(lexer);
+        break;
+      case '<':
+        token = LexHtml(lexer);
         break;
       case '!':
         token = LexAdmonition(lexer);

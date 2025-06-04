@@ -165,6 +165,21 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
   return n;
 }
 
+Node *ParseHtml(Token *token, Lexer *lexer) {
+  Node *n    = NodeFromToken("_html", token);
+  size_t end = n->end;
+  size_t pos = lexer->pos;
+  Token next = NextToken(lexer);
+  while (next.type != TOKEN_NULL && next.type == TOKEN_HTML) {
+    pos  = lexer->pos;
+    next = NextToken(lexer);
+  }
+
+  n->end     = lexer->pos;
+  lexer->pos = pos;
+  return n;
+}
+
 Node *ParseList(Token *token, Lexer *lexer) {
   Node *n         = NewNode(token->type == TOKEN_LISTITEMORDERED ? "ol" : "ul");
   n->indent_level = token->indent_level;
@@ -269,6 +284,9 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
       break;
     case TOKEN_ADMONITION:
       node = ParseAdmonition(&token, lexer);
+      break;
+    case TOKEN_HTML:
+      node = ParseHtml(&token, lexer);
       break;
     case TOKEN_P:
     default:
