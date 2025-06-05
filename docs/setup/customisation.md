@@ -111,6 +111,7 @@ You can also change the primary and secondary accent colors of the site. The opt
     <button class="secondary-color-button" data-gd-secondary-color="ultimate gray" onclick="changeSecondaryColor('ultimate gray')">ultimate gray</button>
     <button class="secondary-color-button" data-gd-secondary-color="black" onclick="changeSecondaryColor('black')">black</button>
     <button class="secondary-color-button" data-gd-secondary-color="white" onclick="changeSecondaryColor('white')">white</button>
+    <button class="color-button" data-gd-primary-color onclick="changeSecondaryColor('primary')">primary</button>
     <style>.secondary-color-button { border: none; color: var(--gd-header-fg-color); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-secondary-color); border-radius: 999px; font-size: 0.875rem; }</style>
     <script>function changeSecondaryColor(color) { document.querySelector('body').setAttribute('data-gd-secondary-color', color); }</script>
 </div>

@@ -6,25 +6,17 @@
 
     This is a note admonition
 
----
-
 !!! success "Success"
 
     This is a success admonition
-
----
 
 !!! question "Question"
 
     This is a question admonition
 
----
-
 !!! warning "Warning"
 
     This is a warning admonition
-
----
 
 !!! critical "Critical"
 

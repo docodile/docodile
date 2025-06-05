@@ -167,6 +167,10 @@
     --gd-primary-color: var(--gd-color-cerulean);
   }
 
+  [data-gd-secondary-color] {
+    --gd-secondary-color: var(--gd-primary-color);
+  }
+
   [data-gd-secondary-color="black"] {
     --gd-secondary-color: var(--gd-color-black);
     --gd-header-fg-color: color-mix(

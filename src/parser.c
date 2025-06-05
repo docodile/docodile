@@ -307,12 +307,15 @@ Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
                                   int indent_level) {
   Token token = NextToken(lexer);
   Node *node;
+  size_t pos = lexer->pos;
   while (token.type != TOKEN_NULL && ((token.type == TOKEN_EMPTYLINE) ||
                                       (token.type != TOKEN_EMPTYLINE &&
                                        token.indent_level > indent_level))) {
+    pos   = lexer->pos;
     node  = TokenSwitch(lexer, parent, token);
     token = NextToken(lexer);
   }
+  lexer->pos = pos;
   return parent;
 }
 

@@ -22,6 +22,9 @@ pre[class*="language-"] {
   hyphens: none;
   background: var(--gd-bg-primary);
   color: var(--gd-fg-primary);
+  /* transition: none;
+  overflow-x: auto;
+  width: 100%; */
 }
 
 pre > code[class*="language-"] {
@@ -91,7 +94,7 @@ pre[class*="language-"] {
 
 code.language-javascript,
 .token.attr-name {
-  color: #7eb6f6;
+  color: var(--gd-primary-color);
 }
 
 code.language-css,
@@ -111,7 +114,7 @@ code.language-scss,
 .token.statement,
 .token.regex,
 .token.atrule {
-  color: var(--gd-primary-color);
+  color: var(--gd-secondary-color);
 }
 
 .token.placeholder,
@@ -138,7 +141,7 @@ code.language-scss,
 }
 
 .token.important {
-  color: #7eb6f6;
+  color: var(--gd-primary-color);
 }
 
 .token.entity {

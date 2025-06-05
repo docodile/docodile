@@ -158,6 +158,7 @@ a {
 
 article {
   width: 100%;
+  overflow: auto;
 
   h1 {
     display: flex;
@@ -254,6 +255,7 @@ article {
   --border-radius: 0.5rem;
   --color: var(--gd-primary-color);
   --icon: "\F430";
+  background-color: color-mix(in srgb, var(--color), transparent 80%);;
 
   &.note {
     --color: var(--gd-color-blue);
@@ -266,7 +268,7 @@ article {
   }
 
   &.question {
-    --color: var(--gd-color-yellow);
+    --color: var(--gd-color-mimosa);
     --icon: "\F504";
   }
 
