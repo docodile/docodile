@@ -302,7 +302,15 @@ static Token LexAdmonition(Lexer *lexer) {
 static Token LexTableRow(Lexer *lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_TABLEROW;
-  token.end   = ConsumeLine(lexer);
+  size_t pos  = lexer->pos;
+  Advance(lexer);
+  Whitespace(lexer);
+  char c = Peek(lexer);
+  if (c == '-') {
+    token.type = TOKEN_TABLESEPARATOR;
+  }
+  lexer->pos = pos;
+  token.end  = ConsumeLine(lexer);
   NewLine(lexer);
   return token;
 }

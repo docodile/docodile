@@ -184,6 +184,10 @@ article {
   a:not([class]) {
     color: var(--gd-secondary-color);
   }
+
+  table {
+    width: 100%;
+  }
 }
 
 .gd-footer {
@@ -255,7 +259,7 @@ article {
   --border-radius: 0.5rem;
   --color: var(--gd-primary-color);
   --icon: "\F430";
-  background-color: color-mix(in srgb, var(--color), transparent 80%);;
+  background-color: color-mix(in srgb, var(--color), transparent 80%);
 
   &.note {
     --color: var(--gd-color-blue);

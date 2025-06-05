@@ -35,3 +35,10 @@
 | Header    | Title       |
 | Paragraph | Text        |
 ```
+
+Because of the way tables are styled you can also use single-row tables to write in columns:
+
+| This is some text on the left colum. | This is some text in the right column. |
+| ------------------------------------ | -------------------------------------- |
+| This is some text on the left colum. |                                        |
+| This is some text on the left colum. | This is some text in the right column. |

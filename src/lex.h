@@ -39,6 +39,7 @@ typedef enum {
   TOKEN_HTML,
   TOKEN_TABLEROW,
   TOKEN_TABLECELL,
+  TOKEN_TABLESEPARATOR,
 } TokenType;
 
 typedef struct {

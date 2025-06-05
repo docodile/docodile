@@ -203,8 +203,9 @@ Node *ParseTable(Token *token, Lexer *lexer) {
   NodeAppendChild(table, header);
   Token next = NextToken(lexer);
   size_t pos = lexer->pos;
-  while (next.type == TOKEN_TABLEROW) {
-    NodeAppendChild(table, ParseTableRow(&next, lexer));
+  while (next.type == TOKEN_TABLEROW || next.type == TOKEN_TABLESEPARATOR) {
+    if (next.type == TOKEN_TABLEROW)
+      NodeAppendChild(table, ParseTableRow(&next, lexer));
     pos  = lexer->pos;
     next = NextToken(lexer);
   }
