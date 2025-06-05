@@ -312,6 +312,7 @@ static Token LexTableRow(Lexer *lexer) {
   lexer->pos = pos;
   token.end  = ConsumeLine(lexer);
   NewLine(lexer);
+  token.end = lexer->pos;
   return token;
 }
 
@@ -443,6 +444,10 @@ static Token LexTableCell(Lexer *lexer) {
   Whitespace(lexer);
   token.start  = lexer->pos;
   token.end    = ConsumeUntilAny(lexer, "|\n", false);
+  if (Peek(lexer) == '\n') {
+    token.type = TOKEN_UNKNOWN;
+    NewLine(lexer);
+  }
   size_t len   = token.end - token.start;
   token.length = len;
   return token;

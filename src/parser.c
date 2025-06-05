@@ -185,9 +185,10 @@ Node *ParseTableHeader(Token *token, Lexer *lexer) {
   Node *row = NodeFromToken("tr", token);
   ParseInline(lexer, row);
   Node *child = row->first_child;
-  do {
+  while (child != NULL) {
     child->type = "th";
-  } while ((child = child->next_sibling) != NULL);
+    child       = child->next_sibling;
+  }
   return row;
 }
 
@@ -466,7 +467,9 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
     }
 
     node->is_inline = true;
-    NodeAppendChild(parent, node);
+    bool discard    = token.type == TOKEN_UNKNOWN;
+
+    if (!discard) NodeAppendChild(parent, node);
 
     // TODO Determine exhaustive list of terminals.
     if (strcmp("_text", node->type) != 0 && strcmp("a", node->type) != 0 &&
