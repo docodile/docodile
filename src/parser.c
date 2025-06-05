@@ -2,6 +2,7 @@
 
 Node *ParseInlineCode(Token *token);
 Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent, int indent_level);
+Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type);
 
 Node *NewNode(const char *type) {
   Node *node = (Node *)malloc(sizeof(Node));
@@ -180,6 +181,38 @@ Node *ParseHtml(Token *token, Lexer *lexer) {
   return n;
 }
 
+Node *ParseTableHeader(Token *token, Lexer *lexer) {
+  Node *row = NodeFromToken("tr", token);
+  ParseInline(lexer, row);
+  Node *child = row->first_child;
+  do {
+    child->type = "th";
+  } while ((child = child->next_sibling) != NULL);
+  return row;
+}
+
+Node *ParseTableRow(Token *token, Lexer *lexer) {
+  Node *row = NodeFromToken("tr", token);
+  ParseInline(lexer, row);
+  return row;
+}
+
+Node *ParseTable(Token *token, Lexer *lexer) {
+  Node *table  = NodeFromToken("table", token);
+  Node *header = ParseTableHeader(token, lexer);
+  NodeAppendChild(table, header);
+  Token next = NextToken(lexer);
+  size_t pos = lexer->pos;
+  while (next.type == TOKEN_TABLEROW) {
+    NodeAppendChild(table, ParseTableRow(&next, lexer));
+    pos  = lexer->pos;
+    next = NextToken(lexer);
+  }
+  lexer->pos = pos;
+  table->end = table->start;
+  return table;
+}
+
 Node *ParseList(Token *token, Lexer *lexer) {
   Node *n         = NewNode(token->type == TOKEN_LISTITEMORDERED ? "ol" : "ul");
   n->indent_level = token->indent_level;
@@ -288,6 +321,9 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
     case TOKEN_HTML:
       node = ParseHtml(&token, lexer);
       break;
+    case TOKEN_TABLEROW:
+      node = ParseTable(&token, lexer);
+      break;
     case TOKEN_P:
     default:
       node = ParseParagraph(&token);
@@ -316,6 +352,16 @@ Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
     token = NextToken(lexer);
   }
   lexer->pos = pos;
+  return parent;
+}
+
+Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type) {
+  Token token = NextToken(lexer);
+  Node *node;
+  while (token.type == token_type) {
+    node  = TokenSwitch(lexer, parent, token);
+    token = NextToken(lexer);
+  }
   return parent;
 }
 
@@ -372,6 +418,11 @@ Node *ParseInlineCode(Token *token) {
   return n;
 }
 
+Node *ParseTableCell(Token *token) {
+  Node *n = NodeFromToken("td", token);
+  return n;
+}
+
 Node *ParseEmphasis(Token *token, bool strong) {
   Node *n = NodeFromToken(strong ? "strong" : "em", token);
   return n;
@@ -403,6 +454,9 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
         break;
       case TOKEN_CODEBLOCKINLINE:
         node = ParseInlineCode(&token);
+        break;
+      case TOKEN_TABLECELL:
+        node = ParseTableCell(&token);
         break;
       case TOKEN_TEXT:
       default:

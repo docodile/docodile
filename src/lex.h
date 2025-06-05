@@ -37,6 +37,8 @@ typedef enum {
   TOKEN_HR,
   TOKEN_ADMONITION,
   TOKEN_HTML,
+  TOKEN_TABLEROW,
+  TOKEN_TABLECELL,
 } TokenType;
 
 typedef struct {

@@ -299,6 +299,14 @@ static Token LexAdmonition(Lexer *lexer) {
   return token;
 }
 
+static Token LexTableRow(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_TABLEROW;
+  token.end   = ConsumeLine(lexer);
+  NewLine(lexer);
+  return token;
+}
+
 static Token LexParagraph(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_P;
@@ -420,6 +428,18 @@ static Token LexBreak(Lexer *lexer) {
   return token;
 }
 
+static Token LexTableCell(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_TABLECELL;
+  Advance(lexer);
+  Whitespace(lexer);
+  token.start  = lexer->pos;
+  token.end    = ConsumeUntilAny(lexer, "|\n", false);
+  size_t len   = token.end - token.start;
+  token.length = len;
+  return token;
+}
+
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
 static Token LexEmphasis(Lexer *lexer) {
@@ -509,6 +529,9 @@ Token NextToken(Lexer *lexer) {
       case '!':
         token = LexAdmonition(lexer);
         break;
+      case '|':
+        token = LexTableRow(lexer);
+        break;
       default:
         token = LexParagraph(lexer);
         break;
@@ -541,6 +564,9 @@ Token NextInlineToken(Lexer *lexer) {
       break;
     case '\n':
       token = LexBreak(lexer);
+      break;
+    case '|':
+      token = LexTableCell(lexer);
       break;
     default:
       token = LexText(lexer);
