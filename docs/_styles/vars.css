@@ -40,130 +40,265 @@
   --gd-color-cerulean: #9cb7d4;
 
   --gd-bg-primary: #fff;
+  --gd-primary-color: var(--gd-color-emerald);
+  --gd-secondary-color: var(--gd-primary-color);
   --gd-header-fg-color: var(--gd-bg-primary);
+  --gd-header-bg-color: var(--gd-primary-color);
 
-  --gd-accent-color: var(--gd-color-emerald);
-
-  [data-gd-accent-color="black"] {
-    --gd-accent-color: var(--gd-color-black);
+  [data-gd-primary-color="black"] {
+    --gd-primary-color: var(--gd-color-black);
     --gd-header-fg-color: color-mix(
       in srgb,
       var(--gd-color-white) 80%,
-      var(--gd-accent-color)
+      var(--gd-primary-color)
     );
   }
-  [data-gd-accent-color="white"] {
-    --gd-accent-color: var(--gd-color-white);
+  [data-gd-primary-color="white"] {
+    --gd-primary-color: var(--gd-color-white);
     --gd-header-fg-color: color-mix(
       in srgb,
       var(--gd-color-black) 80%,
-      var(--gd-accent-color)
+      var(--gd-primary-color)
     );
   }
-  [data-gd-accent-color="red"] {
-    --gd-accent-color: var(--gd-color-red);
+  [data-gd-primary-color="red"] {
+    --gd-primary-color: var(--gd-color-red);
   }
-  [data-gd-accent-color="orange"] {
-    --gd-accent-color: var(--gd-color-orange);
+  [data-gd-primary-color="orange"] {
+    --gd-primary-color: var(--gd-color-orange);
   }
-  [data-gd-accent-color="yellow"] {
-    --gd-accent-color: var(--gd-color-yellow);
+  [data-gd-primary-color="yellow"] {
+    --gd-primary-color: var(--gd-color-yellow);
   }
-  [data-gd-accent-color="green"] {
-    --gd-accent-color: var(--gd-color-green);
+  [data-gd-primary-color="green"] {
+    --gd-primary-color: var(--gd-color-green);
   }
-  [data-gd-accent-color="blue"] {
-    --gd-accent-color: var(--gd-color-blue);
+  [data-gd-primary-color="blue"] {
+    --gd-primary-color: var(--gd-color-blue);
   }
-  [data-gd-accent-color="indigo"] {
-    --gd-accent-color: var(--gd-color-indigo);
+  [data-gd-primary-color="indigo"] {
+    --gd-primary-color: var(--gd-color-indigo);
   }
-  [data-gd-accent-color="violet"] {
-    --gd-accent-color: var(--gd-color-violet);
+  [data-gd-primary-color="violet"] {
+    --gd-primary-color: var(--gd-color-violet);
   }
-  [data-gd-accent-color="mocha mousse"] {
-    --gd-accent-color: var(--gd-color-mocha-mousse);
+  [data-gd-primary-color="mocha mousse"] {
+    --gd-primary-color: var(--gd-color-mocha-mousse);
   }
-  [data-gd-accent-color="peach fuzz"] {
-    --gd-accent-color: var(--gd-color-peach-fuzz);
+  [data-gd-primary-color="peach fuzz"] {
+    --gd-primary-color: var(--gd-color-peach-fuzz);
   }
-  [data-gd-accent-color="viva magenta"] {
-    --gd-accent-color: var(--gd-color-viva-magenta);
+  [data-gd-primary-color="viva magenta"] {
+    --gd-primary-color: var(--gd-color-viva-magenta);
   }
-  [data-gd-accent-color="very peri"] {
-    --gd-accent-color: var(--gd-color-very-peri);
+  [data-gd-primary-color="very peri"] {
+    --gd-primary-color: var(--gd-color-very-peri);
   }
-  [data-gd-accent-color="illuminating"] {
-    --gd-accent-color: var(--gd-color-illuminating);
+  [data-gd-primary-color="illuminating"] {
+    --gd-primary-color: var(--gd-color-illuminating);
   }
-  [data-gd-accent-color="ultimate gray"] {
-    --gd-accent-color: var(--gd-color-ultimate-gray);
+  [data-gd-primary-color="ultimate gray"] {
+    --gd-primary-color: var(--gd-color-ultimate-gray);
   }
-  [data-gd-accent-color="classic blue"] {
-    --gd-accent-color: var(--gd-color-classic-blue);
+  [data-gd-primary-color="classic blue"] {
+    --gd-primary-color: var(--gd-color-classic-blue);
   }
-  [data-gd-accent-color="living coral"] {
-    --gd-accent-color: var(--gd-color-living-coral);
+  [data-gd-primary-color="living coral"] {
+    --gd-primary-color: var(--gd-color-living-coral);
   }
-  [data-gd-accent-color="ultra violet"] {
-    --gd-accent-color: var(--gd-color-ultra-violet);
+  [data-gd-primary-color="ultra violet"] {
+    --gd-primary-color: var(--gd-color-ultra-violet);
   }
-  [data-gd-accent-color="greenery"] {
-    --gd-accent-color: var(--gd-color-greenery);
+  [data-gd-primary-color="greenery"] {
+    --gd-primary-color: var(--gd-color-greenery);
   }
-  [data-gd-accent-color="rose quartz"] {
-    --gd-accent-color: var(--gd-color-rose-quartz);
+  [data-gd-primary-color="rose quartz"] {
+    --gd-primary-color: var(--gd-color-rose-quartz);
   }
-  [data-gd-accent-color="serenity"] {
-    --gd-accent-color: var(--gd-color-serenity);
+  [data-gd-primary-color="serenity"] {
+    --gd-primary-color: var(--gd-color-serenity);
   }
-  [data-gd-accent-color="marsala"] {
-    --gd-accent-color: var(--gd-color-marsala);
+  [data-gd-primary-color="marsala"] {
+    --gd-primary-color: var(--gd-color-marsala);
   }
-  [data-gd-accent-color="radiant orchid"] {
-    --gd-accent-color: var(--gd-color-radiant-orchid);
+  [data-gd-primary-color="radiant orchid"] {
+    --gd-primary-color: var(--gd-color-radiant-orchid);
   }
-  [data-gd-accent-color="emerald"] {
-    --gd-accent-color: var(--gd-color-emerald);
+  [data-gd-primary-color="emerald"] {
+    --gd-primary-color: var(--gd-color-emerald);
   }
-  [data-gd-accent-color="tangerine tango"] {
-    --gd-accent-color: var(--gd-color-tangerine-tango);
+  [data-gd-primary-color="tangerine tango"] {
+    --gd-primary-color: var(--gd-color-tangerine-tango);
   }
-  [data-gd-accent-color="honeysuckle"] {
-    --gd-accent-color: var(--gd-color-honeysuckle);
+  [data-gd-primary-color="honeysuckle"] {
+    --gd-primary-color: var(--gd-color-honeysuckle);
   }
-  [data-gd-accent-color="turquoise"] {
-    --gd-accent-color: var(--gd-color-turquoise);
+  [data-gd-primary-color="turquoise"] {
+    --gd-primary-color: var(--gd-color-turquoise);
   }
-  [data-gd-accent-color="mimosa"] {
-    --gd-accent-color: var(--gd-color-mimosa);
+  [data-gd-primary-color="mimosa"] {
+    --gd-primary-color: var(--gd-color-mimosa);
   }
-  [data-gd-accent-color="blue iris"] {
-    --gd-accent-color: var(--gd-color-blue-iris);
+  [data-gd-primary-color="blue iris"] {
+    --gd-primary-color: var(--gd-color-blue-iris);
   }
-  [data-gd-accent-color="chili pepper"] {
-    --gd-accent-color: var(--gd-color-chili-pepper);
+  [data-gd-primary-color="chili pepper"] {
+    --gd-primary-color: var(--gd-color-chili-pepper);
   }
-  [data-gd-accent-color="sand dollar"] {
-    --gd-accent-color: var(--gd-color-sand-dollar);
+  [data-gd-primary-color="sand dollar"] {
+    --gd-primary-color: var(--gd-color-sand-dollar);
   }
-  [data-gd-accent-color="blue turquoise"] {
-    --gd-accent-color: var(--gd-color-blue-turquoise);
+  [data-gd-primary-color="blue turquoise"] {
+    --gd-primary-color: var(--gd-color-blue-turquoise);
   }
-  [data-gd-accent-color="tigerlily"] {
-    --gd-accent-color: var(--gd-color-tigerlily);
+  [data-gd-primary-color="tigerlily"] {
+    --gd-primary-color: var(--gd-color-tigerlily);
   }
-  [data-gd-accent-color="aqua sky"] {
-    --gd-accent-color: var(--gd-color-aqua-sky);
+  [data-gd-primary-color="aqua sky"] {
+    --gd-primary-color: var(--gd-color-aqua-sky);
   }
-  [data-gd-accent-color="true red"] {
-    --gd-accent-color: var(--gd-color-true-red);
+  [data-gd-primary-color="true red"] {
+    --gd-primary-color: var(--gd-color-true-red);
   }
-  [data-gd-accent-color="fuchsia rose"] {
-    --gd-accent-color: var(--gd-color-fuchsia-rose);
+  [data-gd-primary-color="fuchsia rose"] {
+    --gd-primary-color: var(--gd-color-fuchsia-rose);
   }
-  [data-gd-accent-color="cerulean"] {
-    --gd-accent-color: var(--gd-color-cerulean);
+  [data-gd-primary-color="cerulean"] {
+    --gd-primary-color: var(--gd-color-cerulean);
+  }
+
+  [data-gd-secondary-color="black"] {
+    --gd-secondary-color: var(--gd-color-black);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-white) 80%,
+      var(--gd-secondary-color)
+    );
+  }
+  [data-gd-secondary-color="white"] {
+    --gd-secondary-color: var(--gd-color-white);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-secondary-color)
+    );
+  }
+  [data-gd-secondary-color="red"] {
+    --gd-secondary-color: var(--gd-color-red);
+  }
+  [data-gd-secondary-color="orange"] {
+    --gd-secondary-color: var(--gd-color-orange);
+  }
+  [data-gd-secondary-color="yellow"] {
+    --gd-secondary-color: var(--gd-color-yellow);
+  }
+  [data-gd-secondary-color="green"] {
+    --gd-secondary-color: var(--gd-color-green);
+  }
+  [data-gd-secondary-color="blue"] {
+    --gd-secondary-color: var(--gd-color-blue);
+  }
+  [data-gd-secondary-color="indigo"] {
+    --gd-secondary-color: var(--gd-color-indigo);
+  }
+  [data-gd-secondary-color="violet"] {
+    --gd-secondary-color: var(--gd-color-violet);
+  }
+  [data-gd-secondary-color="mocha mousse"] {
+    --gd-secondary-color: var(--gd-color-mocha-mousse);
+  }
+  [data-gd-secondary-color="peach fuzz"] {
+    --gd-secondary-color: var(--gd-color-peach-fuzz);
+  }
+  [data-gd-secondary-color="viva magenta"] {
+    --gd-secondary-color: var(--gd-color-viva-magenta);
+  }
+  [data-gd-secondary-color="very peri"] {
+    --gd-secondary-color: var(--gd-color-very-peri);
+  }
+  [data-gd-secondary-color="illuminating"] {
+    --gd-secondary-color: var(--gd-color-illuminating);
+  }
+  [data-gd-secondary-color="ultimate gray"] {
+    --gd-secondary-color: var(--gd-color-ultimate-gray);
+  }
+  [data-gd-secondary-color="classic blue"] {
+    --gd-secondary-color: var(--gd-color-classic-blue);
+  }
+  [data-gd-secondary-color="living coral"] {
+    --gd-secondary-color: var(--gd-color-living-coral);
+  }
+  [data-gd-secondary-color="ultra violet"] {
+    --gd-secondary-color: var(--gd-color-ultra-violet);
+  }
+  [data-gd-secondary-color="greenery"] {
+    --gd-secondary-color: var(--gd-color-greenery);
+  }
+  [data-gd-secondary-color="rose quartz"] {
+    --gd-secondary-color: var(--gd-color-rose-quartz);
+  }
+  [data-gd-secondary-color="serenity"] {
+    --gd-secondary-color: var(--gd-color-serenity);
+  }
+  [data-gd-secondary-color="marsala"] {
+    --gd-secondary-color: var(--gd-color-marsala);
+  }
+  [data-gd-secondary-color="radiant orchid"] {
+    --gd-secondary-color: var(--gd-color-radiant-orchid);
+  }
+  [data-gd-secondary-color="emerald"] {
+    --gd-secondary-color: var(--gd-color-emerald);
+  }
+  [data-gd-secondary-color="tangerine tango"] {
+    --gd-secondary-color: var(--gd-color-tangerine-tango);
+  }
+  [data-gd-secondary-color="honeysuckle"] {
+    --gd-secondary-color: var(--gd-color-honeysuckle);
+  }
+  [data-gd-secondary-color="turquoise"] {
+    --gd-secondary-color: var(--gd-color-turquoise);
+  }
+  [data-gd-secondary-color="mimosa"] {
+    --gd-secondary-color: var(--gd-color-mimosa);
+  }
+  [data-gd-secondary-color="blue iris"] {
+    --gd-secondary-color: var(--gd-color-blue-iris);
+  }
+  [data-gd-secondary-color="chili pepper"] {
+    --gd-secondary-color: var(--gd-color-chili-pepper);
+  }
+  [data-gd-secondary-color="sand dollar"] {
+    --gd-secondary-color: var(--gd-color-sand-dollar);
+  }
+  [data-gd-secondary-color="blue turquoise"] {
+    --gd-secondary-color: var(--gd-color-blue-turquoise);
+  }
+  [data-gd-secondary-color="tigerlily"] {
+    --gd-secondary-color: var(--gd-color-tigerlily);
+  }
+  [data-gd-secondary-color="aqua sky"] {
+    --gd-secondary-color: var(--gd-color-aqua-sky);
+  }
+  [data-gd-secondary-color="true red"] {
+    --gd-secondary-color: var(--gd-color-true-red);
+  }
+  [data-gd-secondary-color="fuchsia rose"] {
+    --gd-secondary-color: var(--gd-color-fuchsia-rose);
+  }
+  [data-gd-secondary-color="cerulean"] {
+    --gd-secondary-color: var(--gd-color-cerulean);
+  }
+
+  [data-gd-primary-color] {
+    --gd-header-bg-color: var(--gd-primary-color);
+  }
+
+  [data-gd-decorations~="glass"] {
+    --gd-header-bg-color: color-mix(
+      in srgb,
+      var(--gd-primary-color) 70%,
+      transparent
+    );
   }
 
   [data-gd-color-scheme="light"] {
@@ -171,16 +306,15 @@
     --gd-fg-primary: color-mix(
       in srgb,
       var(--gd-color-black) 80%,
-      var(--gd-accent-color)
+      var(--gd-primary-color)
     );
   }
-
   [data-gd-color-scheme="dark"] {
     --gd-bg-primary: var(--gd-color-black);
     --gd-fg-primary: color-mix(
       in srgb,
       var(--gd-color-white) 80%,
-      var(--gd-accent-color)
+      var(--gd-primary-color)
     );
   }
 }

@@ -7,14 +7,21 @@ code {
 }
 
 * {
-  transition: background-color 0.3s linear, color 0.3s linear, text-decoration-color 0.3s linear;
+  transition: background-color 0.3s linear, color 0.3s linear,
+    text-decoration-color 0.3s linear;
+}
+
+hr {
+  color: var(--gd-primary-color);
+  border: 1px solid;
+  margin: 2rem 0;
 }
 
 body {
   background-color: color-mix(
     in srgb,
     var(--gd-bg-primary) 85%,
-    var(--gd-accent-color)
+    var(--gd-primary-color)
   );
   color: var(--gd-fg-primary);
   margin: 0;
@@ -37,12 +44,17 @@ main {
 }
 
 .gd-header {
-  background-color: var(--gd-accent-color);
+  background-color: var(--gd-header-bg-color);
   color: var(--gd-header-fg-color);
   position: sticky;
   top: 0;
   padding: 0.5rem 1rem;
   user-select: none;
+  z-index: 1;
+
+  [data-gd-decorations~="glass"] & {
+    backdrop-filter: blur(12px);
+  }
 
   h1 {
     color: var(--gd-header-fg-color);
@@ -64,17 +76,19 @@ main {
 
 a {
   text-decoration: none;
+  text-decoration-color: var(--gd-secondary-color);
+  text-decoration-thickness: 2px;
   color: var(--gd-fg-primary);
 
   &:hover {
     text-decoration: underline;
+    text-decoration-color: var(--gd-secondary-color);
     text-decoration-thickness: 2px;
-    text-decoration-color: var(--gd-accent-color);
   }
 }
 
 .highlight {
-  color: var(--gd-accent-color);
+  color: var(--gd-secondary-color);
 }
 
 .gd-back::before {
@@ -87,6 +101,12 @@ a {
   user-select: none;
   padding: 0 1rem;
   padding-top: 1rem;
+  position: relative;
+
+  nav {
+    position: sticky;
+    top: 98px;
+  }
 
   nav ul {
     list-style: none;
@@ -95,7 +115,7 @@ a {
   }
 
   a.active {
-    color: var(--gd-accent-color);
+    color: var(--gd-secondary-color);
   }
 
   a.toc-1 {
@@ -132,6 +152,10 @@ a {
   }
 }
 
+.gd-toc {
+  font-size: 0.875rem;
+}
+
 article {
   width: 100%;
 
@@ -139,20 +163,25 @@ article {
     display: flex;
     align-items: center;
     gap: 1rem;
+    text-align: center;
   }
 
   h2 {
     font-size: 1.25rem;
     text-decoration: underline;
-    text-decoration-color: var(--gd-accent-color);
+    text-decoration-color: var(--gd-secondary-color);
   }
 
   h3 {
-    color: var(--gd-accent-color);
+    color: var(--gd-secondary-color);
+  }
+
+  h4 {
+    margin-bottom: 1rem;
   }
 
   a:not([class]) {
-    color: var(--gd-accent-color);
+    color: var(--gd-secondary-color);
   }
 }
 
@@ -160,7 +189,7 @@ article {
   background-color: color-mix(
     in srgb,
     var(--gd-bg-primary) 90%,
-    var(--gd-accent-color)
+    var(--gd-primary-color)
   );
   font-size: 0.875rem;
   color: var(--gd-fg-color);
@@ -177,7 +206,7 @@ article {
   background-color: color-mix(
     in srgb,
     var(--gd-bg-primary) 90%,
-    var(--gd-accent-color)
+    var(--gd-primary-color)
   );
   display: flex;
   flex-direction: row;
@@ -223,7 +252,7 @@ article {
 
 .admonition {
   --border-radius: 0.5rem;
-  --color: var(--gd-accent-color);
+  --color: var(--gd-primary-color);
   --icon: "\F430";
 
   &.note {

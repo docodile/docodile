@@ -111,12 +111,12 @@ code.language-scss,
 .token.statement,
 .token.regex,
 .token.atrule {
-  color: var(--gd-accent-color);
+  color: var(--gd-primary-color);
 }
 
 .token.placeholder,
 .token.variable {
-  color: var(--gd-accent-color);
+  color: var(--gd-primary-color);
 }
 
 .token.deleted {

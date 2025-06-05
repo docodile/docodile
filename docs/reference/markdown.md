@@ -18,16 +18,22 @@
 ###### Heading level 6
 ```
 
+---
+
 ## Paragraphs
 
 This is a paragraph.
 
 This is a separate paragraph.
 
+---
+
 ## Line breaks
 
 This is a line
 break within a paragraph.
+
+---
 
 ## Emphasis
 
@@ -36,6 +42,8 @@ You can use _italics_ and **bold** to emphasise parts of text. You can combine *
 ```markdown
 You can use _italics_ and **bold** to emphasise parts of text. You can combine **_bold and italics_**.
 ```
+
+---
 
 ## Blockquotes
 
@@ -50,6 +58,8 @@ You can use _italics_ and **bold** to emphasise parts of text. You can combine *
 > Nested blockquotes.
 >
 > > This is nested.
+
+---
 
 ## Lists
 
@@ -113,6 +123,8 @@ You can use _italics_ and **bold** to emphasise parts of text. You can combine *
 - Fourth item
 ```
 
+---
+
 ## Code
 
 ### Inline code
@@ -133,13 +145,15 @@ int main(int argc, char **argv) {
 }
 ```
 
-## Horizontal rules
-
 ---
+
+## Horizontal rules
 
 ```markdown
 ---
 ```
+
+--- 
 
 ## Links
 

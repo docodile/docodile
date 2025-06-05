@@ -46,7 +46,9 @@ TemplateState TemplateBuild(Page *page) {
         char *key    = strtok(NULL, "");
         if (strcmp("config", prefix) == 0) {
           char *value = ReadConfig(key);
-          print("%s", value);
+          if (value) {
+            print("%s", value);
+          }
           free(value);
           continue;
         }
