@@ -7,6 +7,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "parser.h"
 #include "utils.h"
 
 #define MAXDIRS        1000
@@ -34,6 +35,8 @@ typedef struct Directory {
 
   bool is_dir;
   bool is_index;
+
+  int nav_index;
 
   char out_name[MAXFILENAMELEN];
   char src_name[MAXFILENAMELEN];
