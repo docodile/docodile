@@ -44,7 +44,7 @@ main {
 }
 
 .gd-header {
-  background-color: var(--gd-header-bg-color);
+  background: var(--gd-header-bg-color);
   color: var(--gd-header-fg-color);
   position: sticky;
   top: 0;

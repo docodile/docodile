@@ -23,6 +23,15 @@ decorations=glass
     <script>function changeScheme(color) { document.querySelector('body').setAttribute('data-gd-color-scheme', color); }</script>
 </div>
 
+### Decorations
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <button class="decoration-button" onclick="toggleDecoration('glass')">glass</button>
+    <button class="decoration-button" onclick="toggleDecoration('blend')">blend</button>
+    <style>.decoration-button { border: none; color: var(--gd-header-fg-color); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-header-bg-color); border-radius: 999px; font-size: 0.875rem; }</style>
+    <script>function toggleDecoration(decoration) {const body = document.querySelector("body");let decorations = body.getAttribute("data-gd-decorations");if (decorations.includes(decoration)) decorations = decorations.replace(decoration, "");else decorations = decorations.concat(" " + decoration);body.setAttribute("data-gd-decorations", decorations);}</script>
+</div>
+
 ### Accent colors
 
 You can also change the primary and secondary accent colors of the site. The options currently available are:

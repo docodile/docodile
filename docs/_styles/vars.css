@@ -44,6 +44,8 @@
   --gd-secondary-color: var(--gd-primary-color);
   --gd-header-fg-color: var(--gd-bg-primary);
   --gd-header-bg-color: var(--gd-primary-color);
+  --gd-header-bg-primary: var(--gd-primary-color);
+  --gd-header-bg-secondary: var(--gd-secondary-color);
 
   [data-gd-primary-color="black"] {
     --gd-primary-color: var(--gd-color-black);
@@ -295,6 +297,8 @@
 
   [data-gd-primary-color] {
     --gd-header-bg-color: var(--gd-primary-color);
+    --gd-header-bg-primary: var(--gd-primary-color);
+    --gd-header-bg-secondary: var(--gd-secondary-color);
   }
 
   [data-gd-decorations~="glass"] {
@@ -302,6 +306,24 @@
       in srgb,
       var(--gd-primary-color) 70%,
       transparent
+    );
+    --gd-header-bg-primary: color-mix( 
+      in srgb,
+      var(--gd-primary-color) 70%,
+      transparent
+    );
+    --gd-header-bg-secondary: color-mix(
+      in srgb,
+      var(--gd-secondary-color) 70%,
+      transparent
+    );
+  }
+
+  [data-gd-decorations~="blend"] {
+    --gd-header-bg-color: linear-gradient(
+      90deg,
+      var(--gd-header-bg-primary) 0%,
+      var(--gd-header-bg-secondary) 100%
     );
   }
 
