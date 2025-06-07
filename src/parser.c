@@ -171,7 +171,8 @@ Node *ParseHtml(Token *token, Lexer *lexer) {
   size_t end = n->end;
   size_t pos = lexer->pos;
   Token next = NextToken(lexer);
-  while (next.type != TOKEN_NULL && next.type == TOKEN_HTML) {
+  while (next.type != TOKEN_NULL &&
+         (next.type == TOKEN_HTML || next.indent_level > 0)) {
     pos  = lexer->pos;
     next = NextToken(lexer);
   }
@@ -335,7 +336,8 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
   if (!skip) {
     NodeAppendChild(parent, node);
     // HACK Maybe not the nicest way of handling code blocks.
-    if (token.type != TOKEN_CODEBLOCK) ParseInline(lexer, node);
+    if (token.type != TOKEN_CODEBLOCK && token.type != TOKEN_HTML)
+      ParseInline(lexer, node);
   }
 
   return node;

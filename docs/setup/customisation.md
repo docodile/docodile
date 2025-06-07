@@ -16,7 +16,7 @@ decorations=glass
 
 `gendoc` currently offers two main color schemes, `dark` and `light`.
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="scheme-button" data-gd-color-scheme="dark" onclick="changeScheme('dark')">dark</button>
     <button class="scheme-button" data-gd-color-scheme="light" onclick="changeScheme('light')">light</button>
     <style>.scheme-button { border: none; color: var(--gd-fg-primary); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-bg-primary); border-radius: 999px; font-size: 0.875rem; }</style>
@@ -25,12 +25,41 @@ decorations=glass
 
 ### Decorations
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+Decorations are toggles that can change the appearance of your site in interesting ways. Decorations can usually be combined.
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="decoration-button" onclick="toggleDecoration('glass')">glass</button>
     <button class="decoration-button" onclick="toggleDecoration('blend')">blend</button>
-    <style>.decoration-button { border: none; color: var(--gd-header-fg-color); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-header-bg-color); border-radius: 999px; font-size: 0.875rem; }</style>
-    <script>function toggleDecoration(decoration) {const body = document.querySelector("body");let decorations = body.getAttribute("data-gd-decorations");if (decorations.includes(decoration)) decorations = decorations.replace(decoration, "");else decorations = decorations.concat(" " + decoration);body.setAttribute("data-gd-decorations", decorations);}</script>
+    <style>
+        .decoration-button {
+            border: none;
+            color: var(--gd-header-fg-color);
+            font-weight: bold;
+            padding: 0.25rem 1rem;
+            background: var(--gd-header-bg-color);
+            border-radius: 999px;
+            font-size: 0.875rem;
+        }
+    </style>
+    <script>
+        function toggleDecoration(decoration) {
+            const body = document.querySelector("body");
+            let decorations = body.getAttribute("data-gd-decorations");
+            decorations = decorations.includes(decoration)
+                ? decorations.replace(decoration, "")
+                : decorations.concat(" " + decoration);
+            body.setAttribute("data-gd-decorations", decorations.trim());
+        }
+    </script>
 </div>
+
+#### Glass
+
+The `glass` decoration makes the header translucent and applies a backdrop blur to give it a glass-like appearance.
+
+#### Blend
+
+The `blend` decoration gives the header a gradient between the primary and secondary accent colors.
 
 ### Accent colors
 
@@ -38,7 +67,7 @@ You can also change the primary and secondary accent colors of the site. The opt
 
 #### Primary
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="color-button" data-gd-primary-color="red" onclick="changeColor('red')">red</button>
     <button class="color-button" data-gd-primary-color="fuchsia rose" onclick="changeColor('fuchsia rose')">fuchsia rose</button>
     <button class="color-button" data-gd-primary-color="marsala" onclick="changeColor('marsala')">marsala</button>
@@ -76,13 +105,27 @@ You can also change the primary and secondary accent colors of the site. The opt
     <button class="color-button" data-gd-primary-color="ultimate gray" onclick="changeColor('ultimate gray')">ultimate gray</button>
     <button class="color-button" data-gd-primary-color="black" onclick="changeColor('black')">black</button>
     <button class="color-button" data-gd-primary-color="white" onclick="changeColor('white')">white</button>
-    <style>.color-button { border: none; color: var(--gd-header-fg-color); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-primary-color); border-radius: 999px; font-size: 0.875rem; }</style>
-    <script>function changeColor(color) { document.querySelector('body').setAttribute('data-gd-primary-color', color); }</script>
+    <style>
+        .color-button {
+            border: none;
+            color: var(--gd-header-fg-color);
+            font-weight: bold;
+            padding: 0.25rem 1rem;
+            background: var(--gd-primary-color);
+            border-radius: 999px;
+            font-size: 0.875rem;
+        }
+    </style>
+    <script>
+        function changeColor(color) {
+            document.querySelector("body").setAttribute("data-gd-primary-color", color);
+        }
+    </script>
 </div>
 
 #### Secondary
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="secondary-color-button" data-gd-secondary-color="red" onclick="changeSecondaryColor('red')">red</button>
     <button class="secondary-color-button" data-gd-secondary-color="fuchsia rose" onclick="changeSecondaryColor('fuchsia rose')">fuchsia rose</button>
     <button class="secondary-color-button" data-gd-secondary-color="marsala" onclick="changeSecondaryColor('marsala')">marsala</button>
@@ -121,6 +164,22 @@ You can also change the primary and secondary accent colors of the site. The opt
     <button class="secondary-color-button" data-gd-secondary-color="black" onclick="changeSecondaryColor('black')">black</button>
     <button class="secondary-color-button" data-gd-secondary-color="white" onclick="changeSecondaryColor('white')">white</button>
     <button class="color-button" data-gd-primary-color onclick="changeSecondaryColor('primary')">primary</button>
-    <style>.secondary-color-button { border: none; color: var(--gd-header-fg-color); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-secondary-color); border-radius: 999px; font-size: 0.875rem; }</style>
-    <script>function changeSecondaryColor(color) { document.querySelector('body').setAttribute('data-gd-secondary-color', color); }</script>
+    <style>
+        .secondary-color-button {
+            border: none;
+            color: var(--gd-header-fg-color);
+            font-weight: bold;
+            padding: 0.25rem 1rem;
+            background: var(--gd-secondary-color);
+            border-radius: 999px;
+            font-size: 0.875rem;
+        }
+    </style>
+    <script>
+        function changeSecondaryColor(color) {
+            document
+            .querySelector("body")
+            .setAttribute("data-gd-secondary-color", color);
+        }
+    </script>
 </div>

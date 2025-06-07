@@ -35,7 +35,7 @@ static void RenderNodeTag(Node *node, bool closing) {
 
 void RenderNodeContent(Node *node) {
   if (strcmp("a", node->type) == 0 || strcmp("_text", node->type) == 0 ||
-      strcmp("code", node->type) == 0) {
+      strcmp("code", node->type) == 0 || strcmp("_html", node->type) == 0) {
     size_t length = node->end - node->start;
     assert(length >= 0);
     print("%.*s", length, &node->input[node->start]);
@@ -62,17 +62,20 @@ static void RenderNode(Node *node, int indent, bool should_indent) {
   if (node == NULL) return;
 
   if (strcmp("_html", node->type) == 0) {
-    Node *child = node->first_child;
-    while (child && strcmp("_text", child->type) == 0) {
-      RenderNodeContent(child);
-      child = child->next_sibling;
-      if (child && strcmp("br", child->type) == 0) {
-        child = child->next_sibling;
-      }
-    }
-
+    RenderNodeContent(node);
     RenderNode(node->next_sibling, indent, false);
     return;
+    //   Node *child = node->first_child;
+    //   while (child && strcmp("_text", child->type) == 0) {
+    //     RenderNodeContent(child);
+    //     child = child->next_sibling;
+    //     if (child && strcmp("br", child->type) == 0) {
+    //       child = child->next_sibling;
+    //     }
+    //   }
+
+    //   RenderNode(node->next_sibling, indent, false);
+    //   return;
   }
 
   if (strcmp("br", node->type) == 0) {

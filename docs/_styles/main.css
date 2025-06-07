@@ -6,6 +6,13 @@ code {
   font-family: monospace;
 }
 
+code:not([class^="language-"]) {
+  background-color: color-mix(in srgb, var(--gd-secondary-color), transparent);
+  padding: 0 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
 * {
   transition: background-color 0.3s linear, color 0.3s linear,
     text-decoration-color 0.3s linear;
@@ -124,9 +131,11 @@ a {
   a.toc-2 {
   }
   a.toc-3 {
-    /* font-size: 80%; */
+    font-size: 0.9em;
   }
   a.toc-4 {
+    font-size: 0.8em;
+    padding-left: 0.5rem;
   }
   a.toc-5 {
   }

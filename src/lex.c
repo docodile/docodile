@@ -353,7 +353,7 @@ static Token LexText(Lexer *lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_TEXT;
   size_t start = lexer->pos;
-  size_t end   = ConsumeUntilAny(lexer, "[*_\n", false);
+  size_t end   = ConsumeUntilAny(lexer, "[*_`\n", false);
   token.start  = start;
   token.end    = end;
   token.length = end - start;
@@ -585,6 +585,8 @@ Token NextInlineToken(Lexer *lexer) {
       token = LexText(lexer);
       break;
   }
+
+  DebugMini(&token, true);
 
   return token;
 }

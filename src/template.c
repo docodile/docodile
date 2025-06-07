@@ -155,6 +155,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       TemplateSideNav(page, site_directory, current_directory->dirs[i]);
       print("</details>");
     } else {
+      if (strcmp("_nav.md", current_directory->dirs[i]->src_name) == 0) continue;
       char classes[100] = "";
       if (page == current_directory->dirs[i]) {
         sprintf(classes, " class=\"active\"");
@@ -174,7 +175,6 @@ void TemplateToc(TOC toc) {
     TOCItem item = toc.items[i];
     char link[100];
     TitleCaseToKebabCase(item.link, link);
-
     print("<li><a class=\"toc-%d\" href=\"#%s\">%s</a></li>",
           item.heading_level, link, item.link);
   }
