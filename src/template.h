@@ -22,6 +22,8 @@ typedef struct {
 
 void TemplateInit(const char *template_file_path, FILE *out_file);
 TemplateState TemplateBuild(Page *page);
+TemplateState TemplatePage(Page *page, Directory *site_directory,
+                           Directory *current_directory);
 void TemplateDestroy();
 
 void TemplateNav(Directory *site_dir, Directory *current_dir);
@@ -31,7 +33,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
 void TemplateToc(TOC toc);
 void TemplateFooterNav(Page *page, Directory *site_directory,
                        Directory *current_directory);
-void TemplatePartial(const char *partial_name, Page *page, Directory *site_directory,
-                Directory *current_directory);
+void TemplatePartial(const char *partial_name, Page *page,
+                     Directory *site_directory, Directory *current_directory);
 
 #endif  // TEMPLATE_H

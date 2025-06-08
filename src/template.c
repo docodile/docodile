@@ -86,6 +86,33 @@ TemplateState TemplateBuild(Page *page) {
   return (TemplateState){.state = TEMPLATE_END};
 }
 
+TemplateState TemplatePage(Page *page, Directory *site_directory,
+                           Directory *current_directory) {
+  TemplateState state;
+  while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
+    if (state.state == TEMPLATE_YIELD) {
+      if (strcmp("article", state.slot_name) == 0) return state;
+      if (strcmp("toc", state.slot_name) == 0) TemplateToc(page->toc);
+      if (strcmp("nav", state.slot_name) == 0)
+        TemplateNav(site_directory, current_directory);
+      if (strcmp("nav_back_button", state.slot_name) == 0)
+        TemplateBackButton(site_directory, current_directory);
+      if (strcmp("side_nav", state.slot_name) == 0)
+        TemplateSideNav(page, site_directory, current_directory);
+      if (strcmp("footer_nav", state.slot_name) == 0)
+        TemplateFooterNav(page, site_directory, current_directory);
+      if (HasExtension(state.slot_name, ".html"))
+        TemplatePartial(state.slot_name, page, site_directory,
+                        current_directory);
+
+      if (state.slot_name) {
+        free(state.slot_name);
+      }
+    }
+  }
+  return state;
+}
+
 void TemplateNav(Directory *site_dir, Directory *current_dir) {
   print("<nav>");
   print("<ul>");
@@ -231,7 +258,7 @@ void TemplatePartial(const char *partial_name, Page *page,
   char *template_source = ReadFileToString(file_path, &len);
   _template.pos         = 0;
   _template.input       = template_source;
-  TemplateBuild(page);
-  _template.pos = saved_pos;
+  TemplatePage(page, site_directory, current_directory);
+  _template.pos   = saved_pos;
   _template.input = saved_input;
 }

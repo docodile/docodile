@@ -586,8 +586,6 @@ Token NextInlineToken(Lexer *lexer) {
       break;
   }
 
-  DebugMini(&token, true);
-
   return token;
 }
 

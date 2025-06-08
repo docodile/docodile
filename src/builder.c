@@ -167,6 +167,7 @@ static void MkDir(const char *path) {
 
 static const char *BUILDDIR;
 
+// TODO Make this better
 void InitializeSite(const char *dir) {
   BUILDDIR = dir;
   MkDir(dir);
@@ -201,29 +202,12 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     LoadConfig();
 
     TemplateInit("templates/main.html", html_page);
-    TemplateState state;
-    while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
-      if (state.state == TEMPLATE_YIELD) {
-        if (strcmp("article", state.slot_name) == 0)
-          BuildPage(page->full_path, html_page, page);
-        if (strcmp("toc", state.slot_name) == 0) TemplateToc(page->toc);
-        if (strcmp("nav", state.slot_name) == 0)
-          TemplateNav(site_directory, current_directory);
-        if (strcmp("nav_back_button", state.slot_name) == 0)
-          TemplateBackButton(site_directory, current_directory);
-        if (strcmp("side_nav", state.slot_name) == 0)
-          TemplateSideNav(page, site_directory, current_directory);
-        if (strcmp("footer_nav", state.slot_name) == 0)
-          TemplateFooterNav(page, site_directory, current_directory);
-        if (HasExtension(state.slot_name, ".html")) {
-          TemplatePartial(state.slot_name, page, site_directory,
-                          current_directory);
-        }
+    TemplateState state = TemplatePage(page, site_directory, current_directory);
+    while (state.state != TEMPLATE_END) {
+      if (strcmp("article", state.slot_name) == 0)
+        BuildPage(page->full_path, html_page, page);
 
-        if (state.slot_name) {
-          free(state.slot_name);
-        }
-      }
+      state = TemplatePage(page, site_directory, current_directory);
     }
     TemplateDestroy();
 
