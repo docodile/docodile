@@ -1,4 +1,4 @@
-<form class="gd-search" onsubmit="search(event)">
+<form class="gd-search" onsubmit="search(event)" oninput="search(event)">
   <div class="gd-search-box"></div>
   <div class="gd-search-bar">
     <input
@@ -45,16 +45,25 @@
 
     const resultsEl = document.querySelector("#results");
 
+    let timeoutHandle;
     function search(ev) {
-      ev.preventDefault();
+      clearTimeout(timeoutHandle);
+      if (ev.type === "submit") ev.preventDefault();
       resultsEl.innerHTML = "";
-      const results = idx.search(ev.target.query.value);
-      for (let result of results) {
-        const resultEl = document.createElement("div");
-        resultEl.tabIndex = 0;
-        resultEl.innerText = result.ref;
-        resultsEl.appendChild(resultEl);
-      }
+
+      const value =
+        ev.type === "input" ? ev.target.value : ev.target.query.value;
+
+      if (value?.trim() === "") return;
+
+      timeoutHandle = setTimeout(() => {
+        for (let result of idx.search(value)) {
+          const resultEl = document.createElement("div");
+          resultEl.tabIndex = 0;
+          resultEl.innerText = result.ref;
+          resultsEl.appendChild(resultEl);
+        }
+      }, 300);
     }
   </script>
 </form>
