@@ -31,5 +31,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
 void TemplateToc(TOC toc);
 void TemplateFooterNav(Page *page, Directory *site_directory,
                        Directory *current_directory);
+void TemplatePartial(const char *partial_name, Page *page, Directory *site_directory,
+                Directory *current_directory);
 
 #endif  // TEMPLATE_H

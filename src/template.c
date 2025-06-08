@@ -155,7 +155,8 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       TemplateSideNav(page, site_directory, current_directory->dirs[i]);
       print("</details>");
     } else {
-      if (strcmp("_nav.md", current_directory->dirs[i]->src_name) == 0) continue;
+      if (strcmp("_nav.md", current_directory->dirs[i]->src_name) == 0)
+        continue;
       char classes[100] = "";
       if (page == current_directory->dirs[i]) {
         sprintf(classes, " class=\"active\"");
@@ -218,4 +219,19 @@ void TemplateFooterNav(Page *page, Directory *site_directory,
     print("</a>");
   }
   print("</nav>");
+}
+
+void TemplatePartial(const char *partial_name, Page *page,
+                     Directory *site_directory, Directory *current_directory) {
+  size_t saved_pos  = _template.pos;
+  char *saved_input = _template.input;
+  size_t len;
+  char file_path[100];
+  sprintf(file_path, "templates/%s", partial_name);
+  char *template_source = ReadFileToString(file_path, &len);
+  _template.pos         = 0;
+  _template.input       = template_source;
+  TemplateBuild(page);
+  _template.pos = saved_pos;
+  _template.input = saved_input;
 }

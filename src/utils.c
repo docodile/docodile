@@ -99,3 +99,9 @@ char *ReadFileToString(const char *filename, size_t *len) {
 
   return buffer;
 }
+
+bool HasExtension(const char *str, const char *ext) {
+  size_t len     = strlen(str);
+  size_t ext_len = strlen(ext);
+  return strcmp(str + len - ext_len, ext) == 0;
+}

@@ -89,12 +89,12 @@ pre[class*="language-"] {
 .token.tag-id,
 .token.selector,
 .token.atrule-id {
-  color: #ebf4ff;
+  color: var(--gd-fg-primary);
 }
 
 code.language-javascript,
 .token.attr-name {
-  color: var(--gd-primary-color);
+  color: var(--gd-fg-primary);
 }
 
 code.language-css,

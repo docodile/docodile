@@ -37,7 +37,10 @@
   >
     <header class="gd-header">
       <a href="/" class="gd-title"><h1>{{ config.site-name }}</h1></a>
-      {% nav %}
+      <div class="gd-nav-bar">
+        {% nav %}
+        {% partials/search-input.html %}
+      </div>
     </header>
     <main>
       <aside class="gd-nav">

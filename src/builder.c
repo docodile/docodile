@@ -215,6 +215,10 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
           TemplateSideNav(page, site_directory, current_directory);
         if (strcmp("footer_nav", state.slot_name) == 0)
           TemplateFooterNav(page, site_directory, current_directory);
+        if (HasExtension(state.slot_name, ".html")) {
+          TemplatePartial(state.slot_name, page, site_directory,
+                          current_directory);
+        }
 
         if (state.slot_name) {
           free(state.slot_name);
