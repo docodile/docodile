@@ -150,6 +150,11 @@
   }
   [data-gd-primary-color="sand dollar"] {
     --gd-primary-color: var(--gd-color-sand-dollar);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-secondary-color)
+    );
   }
   [data-gd-primary-color="blue turquoise"] {
     --gd-primary-color: var(--gd-color-blue-turquoise);
@@ -279,6 +284,11 @@
   }
   [data-gd-secondary-color="sand dollar"] {
     --gd-secondary-color: var(--gd-color-sand-dollar);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-secondary-color)
+    );
   }
   [data-gd-secondary-color="blue turquoise"] {
     --gd-secondary-color: var(--gd-color-blue-turquoise);
@@ -311,7 +321,7 @@
       var(--gd-primary-color) 70%,
       transparent
     );
-    --gd-header-bg-primary: color-mix( 
+    --gd-header-bg-primary: color-mix(
       in srgb,
       var(--gd-primary-color) 70%,
       transparent
