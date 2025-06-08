@@ -39,6 +39,7 @@
   --gd-color-fuchsia-rose: #c64376;
   --gd-color-cerulean: #9cb7d4;
   --gd-color-jet-black: #2d2d2d;
+  --gd-color-midnight: #0f0f1a;
 
   --gd-bg-primary: #fff;
   --gd-primary-color: var(--gd-color-emerald);
@@ -117,6 +118,11 @@
   }
   [data-gd-primary-color="rose quartz"] {
     --gd-primary-color: var(--gd-color-rose-quartz);
+    --gd-header-fg-color: color-mix(
+      in srgb,
+      var(--gd-color-black) 80%,
+      var(--gd-secondary-color)
+    );
   }
   [data-gd-primary-color="serenity"] {
     --gd-primary-color: var(--gd-color-serenity);
@@ -177,6 +183,9 @@
   [data-gd-primary-color="jet black"] {
     --gd-primary-color: var(--gd-color-jet-black);
   }
+  [data-gd-primary-color="midnight"] {
+    --gd-primary-color: var(--gd-color-midnight);
+  }
 
   [data-gd-secondary-color] {
     --gd-secondary-color: var(--gd-primary-color);
@@ -184,19 +193,9 @@
 
   [data-gd-secondary-color="black"] {
     --gd-secondary-color: var(--gd-color-black);
-    --gd-header-fg-color: color-mix(
-      in srgb,
-      var(--gd-color-white) 80%,
-      var(--gd-secondary-color)
-    );
   }
   [data-gd-secondary-color="white"] {
     --gd-secondary-color: var(--gd-color-white);
-    --gd-header-fg-color: color-mix(
-      in srgb,
-      var(--gd-color-black) 80%,
-      var(--gd-secondary-color)
-    );
   }
   [data-gd-secondary-color="red"] {
     --gd-secondary-color: var(--gd-color-red);
@@ -284,11 +283,6 @@
   }
   [data-gd-secondary-color="sand dollar"] {
     --gd-secondary-color: var(--gd-color-sand-dollar);
-    --gd-header-fg-color: color-mix(
-      in srgb,
-      var(--gd-color-black) 80%,
-      var(--gd-secondary-color)
-    );
   }
   [data-gd-secondary-color="blue turquoise"] {
     --gd-secondary-color: var(--gd-color-blue-turquoise);
@@ -307,6 +301,9 @@
   }
   [data-gd-secondary-color="cerulean"] {
     --gd-secondary-color: var(--gd-color-cerulean);
+  }
+  [data-gd-secondary-color="midnight"] {
+    --gd-secondary-color: var(--gd-color-midnight);
   }
 
   [data-gd-primary-color] {

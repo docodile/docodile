@@ -343,24 +343,32 @@ article {
 }
 
 .gd-search {
+  --focus-background: white;
+
   position: relative;
   color: var(--gd-header-fg-color);
   min-width: 10rem;
   width: 15rem;
   height: 2rem;
   border-radius: 0.25rem;
+  transition: width 0.3s ease-in-out;
 
   &:focus-within {
     color: black;
+    width: 20rem;
 
     .gd-search-box {
-      background-color: white;
+      background-color: var(--focus-background);
       mix-blend-mode: normal;
     }
 
     .gd-search-spotlight {
       background-color: rgba(0, 0, 0, 0.3);
       pointer-events: all;
+    }
+
+    #results {
+      display: block;
     }
   }
 
@@ -423,5 +431,17 @@ article {
     background-color: transparent;
     pointer-events: none;
     transition: all 0.3s ease-in-out;
+  }
+
+  #results {
+    display: none;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    margin-top: 0.5rem;
+    background-color: var(--focus-background);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    z-index: 1;
   }
 }

@@ -1,10 +1,60 @@
-<div class="gd-search">
+<form class="gd-search" onsubmit="search(event)">
   <div class="gd-search-box"></div>
   <div class="gd-search-bar">
-    <input type="text" placeholder="Search..." class="gd-search-input" />
-    <button type="button" class="gd-search-button">
+    <input
+      type="text"
+      name="query"
+      placeholder="Search..."
+      class="gd-search-input"
+      autocomplete="off"
+    />
+    <button type="submit" class="gd-search-button" tabindex="-1">
       <i class="bi bi-search"></i>
     </button>
   </div>
+  <div id="results"></div>
   <div class="gd-search-spotlight"></div>
-</div>
+  <script src="https://unpkg.com/lunr/lunr.js"></script>
+  <script>
+    const documents = [
+      {
+        name: "Lunr",
+        text: "Like Solr, but much smaller, and not as bright.",
+      },
+      {
+        name: "Getting started",
+        url: "Ye",
+        text: "A JavaScript library for building user interfaces.",
+      },
+      {
+        name: "Lodash",
+        text: "A modern JavaScript utility library delivering modularity, performance & extras.",
+      },
+    ];
+
+    const idx = lunr(function () {
+      this.ref("name");
+      this.field("url");
+      this.field("text");
+      this.metadataWhitelist = ["position"];
+
+      documents.forEach(function (doc) {
+        this.add(doc);
+      }, this);
+    });
+
+    const resultsEl = document.querySelector("#results");
+
+    function search(ev) {
+      ev.preventDefault();
+      resultsEl.innerHTML = "";
+      const results = idx.search(ev.target.query.value);
+      for (let result of results) {
+        const resultEl = document.createElement("div");
+        resultEl.tabIndex = 0;
+        resultEl.innerText = result.ref;
+        resultsEl.appendChild(resultEl);
+      }
+    }
+  </script>
+</form>
