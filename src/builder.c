@@ -210,6 +210,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
       state = TemplatePage(page, site_directory, current_directory);
     }
     TemplateDestroy();
+    UnloadConfig();
 
     fclose(html_page);
   }

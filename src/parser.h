@@ -9,7 +9,7 @@ typedef struct {
 } Parser;
 
 typedef struct {
-  const char *name;
+  char *name;
   char *value;
 } HTMLAttribute;
 

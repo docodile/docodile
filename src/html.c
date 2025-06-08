@@ -7,19 +7,19 @@ static FILE *out;
 #define print(...) fprintf(out, __VA_ARGS__)
 
 static char *RenderAttributes(Node *node) {
-  size_t buffer_size = node->attributes_count * 32;
-  size_t written     = 0;
-  char *buffer       = malloc(buffer_size);
-  for (int i = 0; i < node->attributes_count; i++) {
-    if (written > buffer_size / 2) {
-      buffer = realloc(buffer, (buffer_size *= 2));
-    }
+  if (node->attributes_count == 0) return NULL;
 
+  size_t required_mem = 0;
+  for (int i = 0; i < node->attributes_count; i++)
+    required_mem += strlen(node->attributes[i].name) +
+                    strlen(node->attributes[i].value) + 3;
+  required_mem++;
+  size_t written = 0;
+  char *buffer   = malloc(required_mem);
+  for (int i = 0; i < node->attributes_count; i++) {
     HTMLAttribute attr = node->attributes[i];
     written += sprintf(&buffer[written], "%s=\"%s\"", attr.name, attr.value);
   }
-
-  buffer[written] = '\0';
 
   return buffer;
 }
@@ -29,7 +29,13 @@ static void RenderNodeTag(Node *node, bool closing) {
   print("<");
   if (closing) print("/");
   print("%s", node->type);
-  if (!closing) print(" %s", RenderAttributes(node));
+  if (!closing) {
+    char *attrs = RenderAttributes(node);
+    if (attrs) {
+      print(" %s", attrs);
+      free(attrs);
+    }
+  }
   print(">");
 }
 

@@ -34,6 +34,7 @@ void FreeNode(Node *node) {
   }
 
   for (size_t i = 0; i < node->attributes_count; i++) {
+    free(node->attributes[i].name);
     free(node->attributes[i].value);
   }
 
@@ -58,7 +59,9 @@ Node *NodeAddAttribute(Node *node, char *name, char *value) {
   }
 
   node->attributes[node->attributes_count] =
-      (HTMLAttribute){.name = name, .value = value};
+      (HTMLAttribute){.name = malloc(1000), .value = malloc(1000)};
+  strcpy(node->attributes[node->attributes_count].name, name);
+  strcpy(node->attributes[node->attributes_count].value, value);
   node->attributes_count++;
 
   return node;
