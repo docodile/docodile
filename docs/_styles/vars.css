@@ -38,6 +38,7 @@
   --gd-color-true-red: #bf1a32;
   --gd-color-fuchsia-rose: #c64376;
   --gd-color-cerulean: #9cb7d4;
+  --gd-color-jet-black: #2d2d2d;
 
   --gd-bg-primary: #fff;
   --gd-primary-color: var(--gd-color-emerald);
@@ -167,6 +168,9 @@
   }
   [data-gd-primary-color="cerulean"] {
     --gd-primary-color: var(--gd-color-cerulean);
+  }
+  [data-gd-primary-color="jet black"] {
+    --gd-primary-color: var(--gd-color-jet-black);
   }
 
   [data-gd-secondary-color] {

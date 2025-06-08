@@ -103,6 +103,7 @@ You can also change the primary and secondary accent colors of the site. The opt
     <button class="color-button" data-gd-primary-color="violet" onclick="changeColor('violet')">violet</button>
     <button class="color-button" data-gd-primary-color="radiant orchid" onclick="changeColor('radiant orchid')">radiant orchid</button>
     <button class="color-button" data-gd-primary-color="ultimate gray" onclick="changeColor('ultimate gray')">ultimate gray</button>
+    <button class="color-button" data-gd-primary-color="jet black" onclick="changeColor('jet black')">jet black</button>
     <button class="color-button" data-gd-primary-color="black" onclick="changeColor('black')">black</button>
     <button class="color-button" data-gd-primary-color="white" onclick="changeColor('white')">white</button>
     <style>
