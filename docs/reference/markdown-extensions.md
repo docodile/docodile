@@ -2,7 +2,7 @@
 
 ## Admonitions
 
-!!! note "Admonition"
+!!! note "Note"
 
     This is a note admonition
 

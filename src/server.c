@@ -57,6 +57,16 @@ static void Build() {
   FreeDirectory(site_directory);
 }
 
+void SigchildHandler(int s) {
+  LOG_DEBUG("Handling SIGCHLD signal.");
+
+  int saved_errno = errno;
+
+  while (waitpid(-1, NULL, WNOHANG) > 0);
+
+  errno = saved_errno;
+}
+
 void Serve(const char *dir) {
   int server_fd = socket(AF_INET, SOCK_STREAM, 0);
   int opt       = 1;
@@ -72,22 +82,39 @@ void Serve(const char *dir) {
   printf("Serving on %s\n", url);
   // OpenBrowser(url);
 
+  struct sigaction sa;
+  sa.sa_handler = SigchildHandler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+  if (sigaction(SIGCHLD, &sa, NULL) < 0) {
+    perror("Failed to set up sigaction");
+    exit(1);
+  }
+
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);
-    // TODO only build if change detected
-    Build();
-    char request[BUFFER_SIZE];
-    read(client_fd, request, BUFFER_SIZE - 1);
+    pid_t pid = fork();
+    if (pid == 0) {
+      close(server_fd);
+      
+      // TODO only build if change detected
+      Build();
+      char request[BUFFER_SIZE];
+      read(client_fd, request, BUFFER_SIZE - 1);
 
-    char method[8], path[1024];
-    sscanf(request, "%s %s", method, path);
+      char method[8], path[1024];
+      sscanf(request, "%s %s", method, path);
 
-    if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
-    char full_path[1024];
-    snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR "/.%s", path);
+      if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
+      char full_path[1024];
+      snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR "/.%s", path);
 
-    SendFile(client_fd, full_path);
-    close(client_fd);
+      SendFile(client_fd, full_path);
+      close(client_fd);
+      exit(0);
+    } else {
+      close(client_fd);
+    }
   }
 
   close(server_fd);

@@ -71,17 +71,6 @@ static void RenderNode(Node *node, int indent, bool should_indent) {
     RenderNodeContent(node);
     RenderNode(node->next_sibling, indent, false);
     return;
-    //   Node *child = node->first_child;
-    //   while (child && strcmp("_text", child->type) == 0) {
-    //     RenderNodeContent(child);
-    //     child = child->next_sibling;
-    //     if (child && strcmp("br", child->type) == 0) {
-    //       child = child->next_sibling;
-    //     }
-    //   }
-
-    //   RenderNode(node->next_sibling, indent, false);
-    //   return;
   }
 
   if (strcmp("br", node->type) == 0) {

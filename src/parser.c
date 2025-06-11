@@ -147,7 +147,6 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
   char *admonition = malloc(1000);
   sprintf(admonition, "%.*s", n->end - n->start, &n->input[n->start]);
   char *admonition_type  = strtok(admonition, " ");
-  char *admonition_title = strtok(NULL, "");
   Node *title            = NewNode("p");
   title->input           = n->input;
   title->start           = n->start + strlen(admonition_type) + 1;
@@ -164,6 +163,7 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
   char *class = malloc(100);
   sprintf(class, "admonition %s", admonition_type);
   NodeAddAttribute(n, "class", class);
+  free(admonition);
 
   n->end = n->start;  // HACK prevent the title line being written again.
   return n;

@@ -187,10 +187,20 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
     Page *page = current_directory->dirs[i];
     if (page->is_dir) continue;
+
     const char *ext = strrchr(page->src_name, '.');
     if (strcmp(".css", ext) == 0) {
       char path[MAXFILEPATH];
       sprintf(path, "%s/assets/styles/%s", BUILDDIR, page->src_name);
+
+      struct stat source_stat, target_stat;
+      bool source_exists = stat(page->full_path, &source_stat) == 0;
+      bool target_exists = stat(path, &target_stat) == 0;
+      if (source_exists && target_exists &&
+          difftime(source_stat.st_mtime, target_stat.st_mtime) <= 0) {
+        continue;  // Target is up-to-date
+      }
+
       CopyFile(page->full_path, path);
       continue;
     }
@@ -198,6 +208,15 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     char path[MAXFILEPATH];
     sprintf(path, "%s/%s", base_path, page->out_name);
     strcpy(page->url, path);
+
+    struct stat source_stat, target_stat;
+    bool source_exists = stat(page->full_path, &source_stat) == 0;
+    bool target_exists = stat(path, &target_stat) == 0;
+    if (source_exists && target_exists &&
+        difftime(source_stat.st_mtime, target_stat.st_mtime) <= 0) {
+      continue;  // Target is up-to-date
+    }
+
     FILE *html_page = fopen(path, "w");
     LoadConfig();
 
