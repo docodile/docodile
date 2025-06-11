@@ -180,7 +180,7 @@ a {
 
 article {
   width: 100%;
-  overflow: auto;
+  overflow: none;
 
   h1 {
     display: flex;
@@ -210,6 +210,29 @@ article {
   table {
     width: 100%;
     table-layout: fixed;
+  }
+
+  details {
+    summary {
+      display: flex;
+      border-bottom: 1px solid var(--gd-fg-primary);
+      padding-bottom: 1rem;
+      align-items: baseline;
+      justify-content: space-between;
+
+      &::after {
+        font-family: bootstrap-icons;
+        content: "\F285";
+      }
+    }
+
+    &:open {
+      summary {
+        &::after {
+          content: "\F282";
+        }
+      }
+    }
   }
 }
 

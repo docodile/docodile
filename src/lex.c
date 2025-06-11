@@ -184,28 +184,30 @@ static size_t ConsumeLine(Lexer *lexer) {
   return ConsumeUntilAny(lexer, "\n", false);
 }
 
-static Token LexHeading(Lexer *lexer) {
+static Token LexHeading(Lexer *lexer, bool collapsing) {
   Token token = TokenNew(lexer->input, lexer->pos);
 
-  int count = Repeats(lexer, '#');
+  int count;
+  if (collapsing) count = Repeats(lexer, '?');
+  if (!collapsing) count = Repeats(lexer, '#');
   switch (count) {
     case 1:
-      token.type = TOKEN_H1;
+      token.type = collapsing ? TOKEN_H1_COLLAPSING : TOKEN_H1;
       break;
     case 2:
-      token.type = TOKEN_H2;
+      token.type = collapsing ? TOKEN_H2_COLLAPSING : TOKEN_H2;
       break;
     case 3:
-      token.type = TOKEN_H3;
+      token.type = collapsing ? TOKEN_H3_COLLAPSING : TOKEN_H3;
       break;
     case 4:
-      token.type = TOKEN_H4;
+      token.type = collapsing ? TOKEN_H4_COLLAPSING : TOKEN_H4;
       break;
     case 5:
-      token.type = TOKEN_H5;
+      token.type = collapsing ? TOKEN_H5_COLLAPSING : TOKEN_H5;
       break;
     default:
-      token.type = TOKEN_H6;
+      token.type = collapsing ? TOKEN_H6_COLLAPSING : TOKEN_H6;
       break;
   }
 
@@ -442,8 +444,8 @@ static Token LexTableCell(Lexer *lexer) {
   token.type  = TOKEN_TABLECELL;
   Advance(lexer);
   Whitespace(lexer);
-  token.start  = lexer->pos;
-  token.end    = ConsumeUntilAny(lexer, "|\n", false);
+  token.start = lexer->pos;
+  token.end   = ConsumeUntilAny(lexer, "|\n", false);
   if (Peek(lexer) == '\n') {
     token.type = TOKEN_UNKNOWN;
     NewLine(lexer);
@@ -531,7 +533,10 @@ Token NextToken(Lexer *lexer) {
         token = LexEmptyLine(lexer);
         break;
       case '#':
-        token = LexHeading(lexer);
+        token = LexHeading(lexer, false);
+        break;
+      case '?':
+        token = LexHeading(lexer, true);
         break;
       case '>':
         token = LexQuote(lexer);

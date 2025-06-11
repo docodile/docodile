@@ -94,7 +94,7 @@ Node *NodeAppendChild(Node *node, Node *child) {
   return NodeAppendSibling(node->first_child, child);
 }
 
-Node *ParseHeading(Token *token, int level) {
+Node *ParseHeading(Token *token, int level, Lexer *lexer) {
   const char *heading = "h1";
   switch (level) {
     case 6:
@@ -124,6 +124,29 @@ Node *ParseHeading(Token *token, int level) {
   TitleCaseToKebabCase(id, id);
   id[len] = '\0';
   NodeAddAttribute(n, "id", id);
+
+  size_t saved_pos = lexer->pos;
+  Token next       = NextToken(lexer);
+  while (next.type == TOKEN_EMPTYLINE) {
+    next = NextToken(lexer);
+  }
+
+  lexer->pos = saved_pos;
+
+  if (next.indent_level > token->indent_level) {
+    ParseInline(lexer, n);
+
+    Node *details = NewNode("details");
+    NodeAddAttribute(details, "open", "");
+
+    Node *summary = NewNode("summary");
+    NodeAppendChild(summary, n);
+    NodeAppendChild(details, summary);
+
+    ParseUntilIndentationResets(lexer, details, token->indent_level);
+    return details;
+  }
+
   return n;
 }
 
@@ -146,11 +169,11 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
   Node *n          = NodeFromToken("div", token);
   char *admonition = malloc(1000);
   sprintf(admonition, "%.*s", n->end - n->start, &n->input[n->start]);
-  char *admonition_type  = strtok(admonition, " ");
-  Node *title            = NewNode("p");
-  title->input           = n->input;
-  title->start           = n->start + strlen(admonition_type) + 1;
-  title->end             = n->end;
+  char *admonition_type = strtok(admonition, " ");
+  Node *title           = NewNode("p");
+  title->input          = n->input;
+  title->start          = n->start + strlen(admonition_type) + 1;
+  title->end            = n->end;
   if (title->input[title->start] == ' ') title->start++;
   if (title->input[title->start] == '"') title->start++;
   if (title->input[title->end - 1] == '"') title->end--;
@@ -291,22 +314,22 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
       skip = true;
       break;
     case TOKEN_H1:
-      node = ParseHeading(&token, 1);
+      node = ParseHeading(&token, 1, lexer);
       break;
     case TOKEN_H2:
-      node = ParseHeading(&token, 2);
+      node = ParseHeading(&token, 2, lexer);
       break;
     case TOKEN_H3:
-      node = ParseHeading(&token, 3);
+      node = ParseHeading(&token, 3, lexer);
       break;
     case TOKEN_H4:
-      node = ParseHeading(&token, 4);
+      node = ParseHeading(&token, 4, lexer);
       break;
     case TOKEN_H5:
-      node = ParseHeading(&token, 5);
+      node = ParseHeading(&token, 5, lexer);
       break;
     case TOKEN_H6:
-      node = ParseHeading(&token, 6);
+      node = ParseHeading(&token, 6, lexer);
       break;
     case TOKEN_QUOTE:
       node = ParseQuote(&token);
