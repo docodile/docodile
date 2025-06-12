@@ -94,30 +94,26 @@ Node *NodeAppendChild(Node *node, Node *child) {
   return NodeAppendSibling(node->first_child, child);
 }
 
-Node *ParseHeading(Token *token, int level, Lexer *lexer) {
-  const char *heading = "h1";
+static const char *GetHeadingTag(int level) {
   switch (level) {
     case 6:
-      heading = "h6";
-      break;
+      return "h6";
     case 5:
-      heading = "h5";
-      break;
+      return "h5";
     case 4:
-      heading = "h4";
-      break;
+      return "h4";
     case 3:
-      heading = "h3";
-      break;
+      return "h3";
     case 2:
-      heading = "h2";
-      break;
+      return "h2";
     case 1:
     default:
-      heading = "h1";
-      break;
+      return "h1";
   }
-  Node *n    = NodeFromToken(heading, token);
+}
+
+Node *ParseHeading(Token *token, int level, Lexer *lexer) {
+  Node *n    = NodeFromToken(GetHeadingTag(level), token);
   size_t len = n->end - n->start;
   char *id   = malloc(len + 1);
   snprintf(id, len + 1, "%s", &n->input[n->start]);
@@ -125,13 +121,14 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
   id[len] = '\0';
   NodeAddAttribute(n, "id", id);
 
-  size_t saved_pos = lexer->pos;
-  Token next       = NextToken(lexer);
+  size_t last_token = lexer->pos;
+  Token next        = NextToken(lexer);
   while (next.type == TOKEN_EMPTYLINE) {
-    next = NextToken(lexer);
+    last_token = lexer->pos;
+    next       = NextToken(lexer);
   }
 
-  lexer->pos = saved_pos;
+  lexer->pos = last_token;
 
   if (next.indent_level > token->indent_level) {
     ParseInline(lexer, n);
@@ -377,8 +374,8 @@ Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
   while (token.type != TOKEN_NULL && ((token.type == TOKEN_EMPTYLINE) ||
                                       (token.type != TOKEN_EMPTYLINE &&
                                        token.indent_level > indent_level))) {
-    pos   = lexer->pos;
     node  = TokenSwitch(lexer, parent, token);
+    pos   = lexer->pos;
     token = NextToken(lexer);
   }
   lexer->pos = pos;

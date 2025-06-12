@@ -210,6 +210,8 @@ article {
   table {
     width: 100%;
     table-layout: fixed;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   details {
@@ -232,6 +234,10 @@ article {
           content: "\F282";
         }
       }
+    }
+
+    & > :not(:is(summary)) {
+      margin-left: 1rem;
     }
   }
 }

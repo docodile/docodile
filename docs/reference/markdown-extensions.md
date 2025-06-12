@@ -36,22 +36,16 @@
 | Paragraph | Text        |
 ```
 
-## Collapsing sections
+## Collapsible headings
 
-# Heading 1
-
-    This is hidden until you open the collapsed section.
-
-    You can write multiple paragraphs in here.
+    A simple addition to the basic Markdown syntax is the ability to indent content below a heading to make it a collapsible area. The heading will become an interactive collapse toggle and all indented content will be hidden away when the reader clicks it.
 
     !!! note "Note"
 
-        You can even use other extended Markdown syntax in here!
+        You can use any Markdown inside these collapsed sections, including other Markdown extensions such as admonitions.
 
-    ## You can use headings within
+    ### Nested collapsible headings
 
-    These inner heading won't collapse
+        You can nest collapsing headings, but it is not recommended as it can become quite hard for the reader to understand the hierarchy of content. Try to stick to one level of nesting. If within a collapsing area you want to de-emphasise the importance of something, or indicate that it is an aside, use admonitions instead.
 
-    ## But they will
-
-        If you do multiple levels of indentation
+    By default collapsible will be open.
