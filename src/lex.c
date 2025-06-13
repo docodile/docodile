@@ -354,11 +354,9 @@ static Token LexText(Lexer *lexer) {
 
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_TEXT;
-  size_t start = lexer->pos;
-  size_t end   = ConsumeUntilAny(lexer, "[*_`\n", false);
-  token.start  = start;
-  token.end    = end;
-  token.length = end - start;
+  token.start  = lexer->pos;
+  token.end    = ConsumeUntilAny(lexer, "[*_`{\n", false);
+  token.length = token.end - token.start;
   return token;
 }
 
@@ -452,6 +450,19 @@ static Token LexTableCell(Lexer *lexer) {
   }
   size_t len   = token.end - token.start;
   token.length = len;
+  return token;
+}
+
+static Token LexAttributes(Lexer *lexer) {
+  Token token = TokenNew(lexer->input, lexer->pos);
+  token.type  = TOKEN_ATTRIBUTES;
+  Advance(lexer);
+  Whitespace(lexer);
+  token.start = lexer->pos;
+  token.end   = ConsumeUntilAny(lexer, "}\n", false);
+  if (Peek(lexer) == '}') Advance(lexer);
+  NewLine(lexer);
+  token.length = token.end - token.start;
   return token;
 }
 
@@ -585,6 +596,9 @@ Token NextInlineToken(Lexer *lexer) {
       break;
     case '|':
       token = LexTableCell(lexer);
+      break;
+    case '{':
+      token = LexAttributes(lexer);
       break;
     default:
       token = LexText(lexer);

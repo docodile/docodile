@@ -116,7 +116,7 @@ a {
 
   nav {
     position: sticky;
-    top: 98px;
+    top: 111px;
   }
 
   nav ul {
@@ -178,7 +178,7 @@ a {
   font-size: 0.875rem;
 }
 
-article {
+article.gd-article {
   width: 100%;
   overflow: none;
 
@@ -229,7 +229,7 @@ article {
     }
 
     &:open {
-      summary {
+      & > summary {
         &::after {
           content: "\F282";
         }
@@ -239,6 +239,16 @@ article {
     & > :not(:is(summary)) {
       margin-left: 1rem;
     }
+  }
+
+  blockquote {
+    border-left: 2px solid var(--gd-primary-color);
+    padding-left: 2rem;
+    margin-left: 0;
+  }
+
+  pre {
+    margin-top: 1rem;
   }
 }
 
@@ -338,6 +348,11 @@ article {
     --icon: "\F33A";
   }
 
+  &.custom {
+    --color: var(--gd-color-very-peri);
+    --icon: "\F328";
+  }
+
   margin-top: 1rem;
   border: 2px solid var(--color);
   padding-bottom: 0.5rem;
@@ -345,6 +360,7 @@ article {
 
   p {
     margin-top: 0;
+    color: color-mix(in srgb, var(--color), white 70%);
   }
 
   & :not(:first-child) {

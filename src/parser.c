@@ -117,9 +117,12 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
   size_t len = n->end - n->start;
   char *id   = malloc(len + 1);
   snprintf(id, len + 1, "%s", &n->input[n->start]);
-  TitleCaseToKebabCase(id, id);
-  id[len] = '\0';
-  NodeAddAttribute(n, "id", id);
+  char *heading = strtok(id, "{");
+  len           = strlen(heading);
+  if (heading[len - 1] == ' ') heading[len - 1] = '\0';
+  TitleCaseToKebabCase(heading, heading);
+  heading[len] = '\0';
+  NodeAddAttribute(n, "id", heading);
 
   size_t last_token = lexer->pos;
   Token next        = NextToken(lexer);
@@ -134,11 +137,22 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
     ParseInline(lexer, n);
 
     Node *details = NewNode("details");
-    NodeAddAttribute(details, "open", "");
-
     Node *summary = NewNode("summary");
     NodeAppendChild(summary, n);
     NodeAppendChild(details, summary);
+
+    Node *attrs = n->first_child;
+    while (attrs != NULL && strcmp("_attrs", attrs->type) != 0) {
+      attrs = attrs->next_sibling;
+    }
+
+    if (attrs != NULL && strcmp("_attrs", attrs->type) == 0) {
+      size_t len   = attrs->end - attrs->start + 1;
+      char *buffer = malloc(len);
+      snprintf(buffer, len, "%.*s", len, &attrs->input[attrs->start]);
+      buffer[len] = '\0';
+      NodeAddAttribute(details, "_attrs", buffer);
+    }
 
     ParseUntilIndentationResets(lexer, details, token->indent_level);
     return details;
@@ -450,6 +464,11 @@ Node *ParseTableCell(Token *token) {
   return n;
 }
 
+Node *ParseAttributes(Token *token) {
+  Node *n = NodeFromToken("_attrs", token);
+  return n;
+}
+
 Node *ParseEmphasis(Token *token, bool strong) {
   Node *n = NodeFromToken(strong ? "strong" : "em", token);
   return n;
@@ -485,6 +504,9 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
       case TOKEN_TABLECELL:
         node = ParseTableCell(&token);
         break;
+      case TOKEN_ATTRIBUTES:
+        node = ParseAttributes(&token);
+        break;
       case TOKEN_TEXT:
       default:
         node = ParseText(&token);
@@ -498,7 +520,8 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
 
     // TODO Determine exhaustive list of terminals.
     if (strcmp("_text", node->type) != 0 && strcmp("a", node->type) != 0 &&
-        strcmp("br", node->type) != 0 && strcmp("code", node->type) != 0) {
+        strcmp("br", node->type) != 0 && strcmp("code", node->type) != 0 &&
+        strcmp("_attrs", node->type) == 0) {
       ParseInline(&inline_lexer, node);
     }
 

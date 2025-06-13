@@ -122,6 +122,7 @@ static void BuildPage(const char *src_path, FILE *out_file, Page *page) {
   Lexer lexer = LexerNew(buffer, 0, length);
 
   Node *doc = NewNode("article");
+  NodeAddAttribute(doc, "class", "gd-article");
   Parse(&lexer, doc);
 
   BuildToc(doc, page);

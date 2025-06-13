@@ -203,8 +203,9 @@ void TemplateToc(TOC toc) {
     TOCItem item = toc.items[i];
     char link[100];
     TitleCaseToKebabCase(item.link, link);
+    char *label = strtok(item.link, "{");
     print("<li><a class=\"toc-%d\" href=\"#%s\">%s</a></li>",
-          item.heading_level, link, item.link);
+          item.heading_level, link, label);
   }
   print("</ul>");
   print("</nav>");

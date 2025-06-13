@@ -46,6 +46,7 @@ typedef enum {
   TOKEN_TABLEROW,
   TOKEN_TABLECELL,
   TOKEN_TABLESEPARATOR,
+  TOKEN_ATTRIBUTES
 } TokenType;
 
 typedef struct {

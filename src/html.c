@@ -18,7 +18,11 @@ static char *RenderAttributes(Node *node) {
   char *buffer   = malloc(required_mem);
   for (int i = 0; i < node->attributes_count; i++) {
     HTMLAttribute attr = node->attributes[i];
-    written += sprintf(&buffer[written], "%s=\"%s\"", attr.name, attr.value);
+    if (strcmp("_attrs", attr.name) == 0) {
+      written += sprintf(&buffer[written], "%s", attr.value);
+    } else {
+      written += sprintf(&buffer[written], "%s=\"%s\"", attr.name, attr.value);
+    }
   }
 
   return buffer;
@@ -66,6 +70,10 @@ void Indent(int indent) {
 
 static void RenderNode(Node *node, int indent, bool should_indent) {
   if (node == NULL) return;
+
+  if (strcmp("_attrs", node->type) == 0) {
+    return;
+  }
 
   if (strcmp("_html", node->type) == 0) {
     RenderNodeContent(node);

@@ -53,12 +53,6 @@ You can use _italics_ and **bold** to emphasise parts of text. You can combine *
 > This is a block quote.
 ```
 
-### Nested blockquotes
-
-> Nested blockquotes.
->
-> > This is nested.
-
 ---
 
 ## Lists
@@ -153,7 +147,7 @@ int main(int argc, char **argv) {
 ---
 ```
 
---- 
+---
 
 ## Links
 

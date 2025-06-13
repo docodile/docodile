@@ -37,5 +37,6 @@ Node *NewNode(const char *type);
 void FreeNode(Node *node);
 Node *NodeAppendSibling(Node *node, Node *sibling);
 Node *NodeAppendChild(Node *node, Node *child);
+Node *NodeAddAttribute(Node *node, char *name, char *value);
 
 #endif  // PARSER_H
