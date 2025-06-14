@@ -10,7 +10,7 @@ SRC := $(wildcard $(SRC_DIR)/*.c)
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)
-	@gcc -m64 -g -o $@ $^ -DLOG_LEVEL=4
+	@gcc -m64 -fsanitize=address -g -o $@ $^ -DLOG_LEVEL=4
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)

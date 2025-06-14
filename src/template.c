@@ -74,7 +74,7 @@ TemplateState TemplateBuild(Page *page) {
         }
         buffer[i] = '\0';
         Advance();
-        char *slot_name = (char *)malloc(i);
+        char *slot_name = (char *)malloc(i + 1);
         strcpy(slot_name, buffer);
         return (TemplateState){.state = TEMPLATE_YIELD, .slot_name = slot_name};
       }

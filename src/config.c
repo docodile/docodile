@@ -149,7 +149,7 @@ char *ReadConfig(const char *path) {
       if (strncmp(&input[key_token.start], key, key_length) == 0) {
         Token value_token = NextInlineToken();
         size_t length     = value_token.end - value_token.start;
-        char *value       = (char *)malloc(length);
+        char *value       = (char *)malloc(length + 1);
         strncpy(value, &input[value_token.start], length);
         value[length] = '\0';
         EndInline();

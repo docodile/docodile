@@ -13,12 +13,14 @@ static void GenerateTitle(const char *in, char *out) {
     second = next;
   }
 
-  if (strcmp("index.md", second) == 0)
-    strcpy(buffer, first);
-  else
-    strcpy(buffer, second);
+  char title[1000];
 
-  RemoveExtension(buffer, out);
+  if (strcmp("index.md", second) == 0)
+    strcpy(title, first);
+  else
+    strcpy(title, second);
+
+  RemoveExtension(title, out);
   KebabCaseToTitleCase(out, out);
 }
 
@@ -41,7 +43,7 @@ Page *NewPage(const char *name, const char *fullpath) {
   strcpy(page->src_name, name);
   strcpy(page->full_path, fullpath);
   strcpy(page->path, fullpath);
-  page->hidden = name[0] == '_';
+  page->hidden    = name[0] == '_';
   page->nav_index = __INT_MAX__;
   page->is_dir    = false;
   page->num_dirs  = 0;

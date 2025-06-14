@@ -58,7 +58,7 @@ static void BuildToc(Node *doc, Page *page) {
     size_t len = doc->end - doc->start;
     page->toc.items =
         realloc(page->toc.items, (page->toc.count + 1) * sizeof(TOCItem));
-    page->toc.items[page->toc.count].link = malloc(len);
+    page->toc.items[page->toc.count].link = malloc(len + 1);
     strncpy(page->toc.items[page->toc.count].link, &doc->input[doc->start],
             len);
     page->toc.items[page->toc.count].link[len]     = '\0';

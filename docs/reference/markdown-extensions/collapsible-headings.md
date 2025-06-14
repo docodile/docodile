@@ -22,14 +22,14 @@ By default collapsible headings will be closed. But you can override this behavi
 
 Sometimes you might want to have a set of collapsing headings where only one can be open at a time. If you give multiple collapsing headings the same name attribute.
 
-### Graduation Requirements { name="requirement" }
+### Graduation Requirements { name="requirements" }
 
     Requires 40 credits, including a passing grade in health, geography, history, economics, and wood shop.
 
-### System Requirements { name="requirement" }
+### System Requirements { name="requirements" }
 
     Requires a computer running an operating system. The computer must have some memory and ideally some kind of long-term storage. An input device as well as some form of output device is recommended.
 
-### Job Requirements { name="requirementss" }
+### Job Requirements { name="requirements" }
 
     Requires knowledge of HTML, CSS, JavaScript, accessibility, web performance, privacy, security, and internationalization, as well as a dislike of broccoli.

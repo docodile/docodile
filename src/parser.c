@@ -116,7 +116,7 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
   Node *n    = NodeFromToken(GetHeadingTag(level), token);
   size_t len = n->end - n->start;
   char *id   = malloc(len + 1);
-  snprintf(id, len + 1, "%s", &n->input[n->start]);
+  snprintf(id, len + 1, "%.*s", len, &n->input[n->start]);
   char *heading = strtok(id, "{");
   len           = strlen(heading);
   if (heading[len - 1] == ' ') heading[len - 1] = '\0';
@@ -147,8 +147,8 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
     }
 
     if (attrs != NULL && strcmp("_attrs", attrs->type) == 0) {
-      size_t len   = attrs->end - attrs->start + 1;
-      char *buffer = malloc(len);
+      size_t len   = attrs->end - attrs->start;
+      char *buffer = malloc(len + 1);
       snprintf(buffer, len, "%.*s", len, &attrs->input[attrs->start]);
       buffer[len] = '\0';
       NodeAddAttribute(details, "_attrs", buffer);
