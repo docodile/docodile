@@ -65,11 +65,16 @@ main {
     backdrop-filter: blur(12px);
   }
 
+  [data-gd-layout~="compact"] & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   h1 {
     color: var(--gd-header-fg-color);
     font-weight: bold;
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
   }
 
   nav > ul {
@@ -117,6 +122,10 @@ a {
   nav {
     position: sticky;
     top: 111px;
+
+    [data-gd-layout~="compact"] & {
+      top: 72px;
+    }
   }
 
   nav ul {

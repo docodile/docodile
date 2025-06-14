@@ -10,6 +10,7 @@ font-family=IBM Plex Sans
 color-scheme=light
 primary-color=emerald
 decorations=glass
+layout=compact
 ```
 
 ### Color schemes
@@ -26,7 +27,6 @@ decorations=glass
     };
     function updateConfig() {
         const el = document.querySelector("#config-output");
-        console.log(Object.entries(config));
         const text = Object.entries(config).reduce((prev, curr) => prev + `${curr[0]}=${curr[1]}\n`, "");
         el.innerText = text;
     }
@@ -41,6 +41,35 @@ decorations=glass
             config['color-scheme'] = color;
             updateConfig();
             document.querySelector('body').setAttribute('data-gd-color-scheme', color);
+        }
+    </script>
+</div>
+
+### Layout options
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+    <button class="layout-button" onclick="toggleLayout('compact')">compact</button>
+    <style>
+        .layout-button {
+            border: none;
+            color: var(--gd-header-fg-color);
+            font-weight: bold;
+            padding: 0.25rem 1rem;
+            background: var(--gd-header-bg-color);
+            border-radius: 999px;
+            font-size: 0.875rem;
+        }
+    </style>
+    <script>
+        function toggleLayout(layoutOption) {
+            const body = document.querySelector("body");
+            let layout = body.getAttribute("data-gd-layout");
+            layout = layout.includes(layoutOption)
+                ? layout.replace(layoutOption, "")
+                : layout.concat(" " + layoutOption);
+            config.layout = layout.trim();
+            updateConfig();
+            body.setAttribute("data-gd-layout", layout.trim());
         }
     </script>
 </div>
