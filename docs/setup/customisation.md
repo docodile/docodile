@@ -16,11 +16,33 @@ decorations=glass
 
 `gendoc` currently offers two main color schemes, `dark` and `light`.
 
+<script>
+    const bodyEl = document.querySelector("body");
+    let config = {
+        'color-scheme': bodyEl.getAttribute('data-gd-color-scheme'),
+        'primary-color': bodyEl.getAttribute('data-gd-primary-color'),
+        'secondary-color': bodyEl.getAttribute('data-gd-secondary-color'),
+        'decorations': bodyEl.getAttribute('data-gd-decorations')
+    };
+    function updateConfig() {
+        const el = document.querySelector("#config-output");
+        console.log(Object.entries(config));
+        const text = Object.entries(config).reduce((prev, curr) => prev + `${curr[0]}=${curr[1]}\n`, "");
+        el.innerText = text;
+    }
+</script>
+
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="scheme-button" data-gd-color-scheme="dark" onclick="changeScheme('dark')">dark</button>
     <button class="scheme-button" data-gd-color-scheme="light" onclick="changeScheme('light')">light</button>
     <style>.scheme-button { border: none; color: var(--gd-fg-primary); font-weight: bold; padding: 0.25rem 1rem; background: var(--gd-bg-primary); border-radius: 999px; font-size: 0.875rem; }</style>
-    <script>function changeScheme(color) { document.querySelector('body').setAttribute('data-gd-color-scheme', color); }</script>
+    <script>
+        function changeScheme(color) {
+            config['color-scheme'] = color;
+            updateConfig();
+            document.querySelector('body').setAttribute('data-gd-color-scheme', color);
+        }
+    </script>
 </div>
 
 ### Decorations
@@ -48,6 +70,8 @@ Decorations are toggles that can change the appearance of your site in interesti
             decorations = decorations.includes(decoration)
                 ? decorations.replace(decoration, "")
                 : decorations.concat(" " + decoration);
+            config.decorations = decorations.trim();
+            updateConfig();
             body.setAttribute("data-gd-decorations", decorations.trim());
         }
     </script>
@@ -120,6 +144,8 @@ You can also change the primary and secondary accent colors of the site. The opt
     </style>
     <script>
         function changeColor(color) {
+            config['primary-color'] = color;
+            updateConfig();
             document.querySelector("body").setAttribute("data-gd-primary-color", color);
         }
     </script>
@@ -179,9 +205,19 @@ You can also change the primary and secondary accent colors of the site. The opt
     </style>
     <script>
         function changeSecondaryColor(color) {
+            config['secondary-color'] = color;
+            updateConfig();
             document
             .querySelector("body")
             .setAttribute("data-gd-secondary-color", color);
         }
     </script>
 </div>
+
+## Config
+
+For convenience you can copy and paste the output below into the theme section of your config file.
+
+<pre id="config-output"></pre>
+
+<script>updateConfig()</script>

@@ -8,9 +8,11 @@
 
         You can use any Markdown inside these collapsed sections, including other Markdown extensions such as admonitions.
 
-    ### Nested collapsible headings
+    ### Nesting example
 
         You can nest collapsing headings, but it is not recommended as it can become quite hard for the reader to understand the hierarchy of content. Try to stick to one level of nesting. If within a collapsing area you want to de-emphasise the importance of something, or indicate that it is an aside, use admonitions instead.
+
+## Default behaviour
 
 By default collapsible headings will be closed. But you can override this behaviour using inline attributes.
 
