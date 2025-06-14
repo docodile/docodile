@@ -5,4 +5,5 @@
 ## TODO
 
 - Refactor styles to be placed in a separate static folder instead of inside the docs folder.
-- Fix html-in-markdown
+- Home page.
+- Merge nav items when a folder has an index page.

@@ -521,7 +521,7 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
     // TODO Determine exhaustive list of terminals.
     if (strcmp("_text", node->type) != 0 && strcmp("a", node->type) != 0 &&
         strcmp("br", node->type) != 0 && strcmp("code", node->type) != 0 &&
-        strcmp("_attrs", node->type) == 0) {
+        strcmp("_attrs", node->type) != 0) {
       ParseInline(&inline_lexer, node);
     }
 
