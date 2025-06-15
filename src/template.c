@@ -113,22 +113,6 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
   return state;
 }
 
-void TemplateNav(Directory *site_dir, Directory *current_dir) {
-  print("<nav>");
-  print("<ul>");
-  for (size_t i = 0; i < site_dir->num_dirs; i++) {
-    if (!site_dir->dirs[i]->is_dir) continue;
-    Directory *dir = site_dir->dirs[i];
-    if (dir->path[0] == '_') continue;
-    print("<li>");
-    // HACK Update server to not need explicit /index.html
-    print("<a href=\"/%s/index.html\">%s</a>", dir->path, dir->title);
-    print("</li>");
-  }
-  print("</ul>");
-  print("</nav>");
-}
-
 static Directory *FindParentDirectory(Directory *root, Directory *target,
                                       int *level) {
   for (size_t i = 0; i < root->num_dirs; i++) {
@@ -142,6 +126,31 @@ static Directory *FindParentDirectory(Directory *root, Directory *target,
   }
 
   return NULL;
+}
+
+static bool IsActive(Directory *dir, Directory *current_dir) {
+  if (dir == current_dir) return true;
+  int level;
+  Directory *match = FindParentDirectory(dir, current_dir, &level);
+  return match != NULL;
+}
+
+void TemplateNav(Directory *site_dir, Directory *current_dir) {
+  print("<nav>");
+  print("<menu>");
+  for (size_t i = 0; i < site_dir->num_dirs; i++) {
+    Directory *dir = site_dir->dirs[i];
+    if (!dir->is_dir) continue;
+    if (dir->path[0] == '_') continue;
+    if (IsActive(dir, current_dir))
+      print("<li class=\"active\">");
+    else
+      print("<li>");
+    print("<a href=\"/%s/index.html\">%s</a>", dir->path, dir->title);
+    print("</li>");
+  }
+  print("</menu>");
+  print("</nav>");
 }
 
 void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
