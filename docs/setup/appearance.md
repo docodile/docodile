@@ -1,6 +1,4 @@
-# Customisation
-
-## Appearance
+# Appearance
 
 In `gendoc.config` you have a few ways to quickly change the appearance of your docs site.
 
@@ -13,7 +11,7 @@ decorations=glass
 layout=compact
 ```
 
-### Color schemes
+## Color schemes
 
 `gendoc` currently offers two main color schemes, `dark` and `light`.
 
@@ -45,7 +43,7 @@ layout=compact
     </script>
 </div>
 
-### Layout options
+## Layout options
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="layout-button" onclick="toggleLayout('compact')">compact</button>
@@ -74,13 +72,14 @@ layout=compact
     </script>
 </div>
 
-### Decorations
+## Decorations
 
-Decorations are toggles that can change the appearance of your site in interesting ways. Decorations can usually be combined.
+Decorations are toggles that can change the appearance of your site in interesting ways. Decorations can usually be combined but sometimes a decoration might override another.
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="decoration-button" onclick="toggleDecoration('glass')">glass</button>
     <button class="decoration-button" onclick="toggleDecoration('blend')">blend</button>
+    <button class="decoration-button" data-gd-decorations="pride" onclick="toggleDecoration('pride')">pride</button>
     <style>
         .decoration-button {
             border: none;
@@ -106,19 +105,19 @@ Decorations are toggles that can change the appearance of your site in interesti
     </script>
 </div>
 
-#### Glass
+### Glass
 
 The `glass` decoration makes the header translucent and applies a backdrop blur to give it a glass-like appearance.
 
-#### Blend
+### Blend
 
 The `blend` decoration gives the header a gradient between the primary and secondary accent colors.
 
-### Accent colors
+## Accent colors
 
 You can also change the primary and secondary accent colors of the site. The options currently available are:
 
-#### Primary
+### Primary
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="color-button" data-gd-primary-color="red" onclick="changeColor('red')">red</button>
@@ -180,7 +179,7 @@ You can also change the primary and secondary accent colors of the site. The opt
     </script>
 </div>
 
-#### Secondary
+### Secondary
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
     <button class="secondary-color-button" data-gd-secondary-color="red" onclick="changeSecondaryColor('red')">red</button>

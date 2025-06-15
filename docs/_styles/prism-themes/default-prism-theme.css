@@ -22,9 +22,10 @@ pre[class*="language-"] {
   hyphens: none;
   background: var(--gd-bg-primary);
   color: var(--gd-fg-primary);
-  /* transition: none;
-  overflow-x: auto;
-  width: 100%; */
+  transition: none;
+  overflow-x: scroll;
+  width: 100%;
+  max-width: 100%;
 }
 
 pre > code[class*="language-"] {
@@ -51,7 +52,8 @@ code[class*="language-"] ::selection {
 pre[class*="language-"] {
   padding: 0 1em;
   margin: 0.5em 0;
-  overflow: auto;
+  overflow: scroll;
+  max-width: 100%;
 }
 
 /* Inline code */

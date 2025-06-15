@@ -29,11 +29,13 @@ void TemplateDestroy();
 void TemplateNav(Directory *site_dir, Directory *current_dir);
 void TemplateBackButton(Directory *site_dir, Directory *curr_dir);
 void TemplateSideNav(Page *page, Directory *site_directory,
-                     Directory *current_directory);
+                     Directory *current_directory, bool hide_index);
 void TemplateToc(TOC toc);
 void TemplateFooterNav(Page *page, Directory *site_directory,
                        Directory *current_directory);
 void TemplatePartial(const char *partial_name, Page *page,
                      Directory *site_directory, Directory *current_directory);
+void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
+                         Directory *current_directory);
 
 #endif  // TEMPLATE_H

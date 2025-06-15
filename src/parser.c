@@ -299,6 +299,10 @@ Node *ParseCodeBlock(Token *token) {
 
   Lexer inline_lexer = LexerNew(token->input, token->start, token->end);
   Token inline_token = NextInlineToken(&inline_lexer);
+
+  Node *pre = NodeFromToken("pre", token);
+  NodeAppendChild(pre, n);
+
   if (inline_token.type == TOKEN_TEXT && token->length > 0) {
     char *buffer = malloc(100);
     int written  = snprintf(buffer, inline_token.length + 10, "language-%.*s",
@@ -308,11 +312,8 @@ Node *ParseCodeBlock(Token *token) {
     buffer[written] = '\0';
     n->start        = n->start + inline_token.length + 1;
 
-    NodeAddAttribute(n, "class", buffer);
+    NodeAddAttribute(pre, "class", buffer);
   }
-
-  Node *pre = NodeFromToken("pre", token);
-  NodeAppendChild(pre, n);
 
   return pre;
 }

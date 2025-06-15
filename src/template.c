@@ -98,9 +98,15 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
       if (strcmp("nav_back_button", state.slot_name) == 0)
         TemplateBackButton(site_directory, current_directory);
       if (strcmp("side_nav", state.slot_name) == 0)
-        TemplateSideNav(page, site_directory, current_directory);
+        TemplateSideNav(page, site_directory, current_directory, false);
       if (strcmp("footer_nav", state.slot_name) == 0)
         TemplateFooterNav(page, site_directory, current_directory);
+      if (strcmp("breadcrumbs", state.slot_name) == 0) {
+        char *breadcrumbs_config = ReadConfig("navigation.breadcrumbs");
+        if (breadcrumbs_config && strcmp("true", breadcrumbs_config) == 0) {
+          TemplateBreadcrumbs(page, site_directory, current_directory);
+        }
+      }
       if (HasExtension(state.slot_name, ".html"))
         TemplatePartial(state.slot_name, page, site_directory,
                         current_directory);
@@ -122,6 +128,16 @@ static Directory *FindParentDirectory(Directory *root, Directory *target,
     if (maybe) {
       (*level)++;
       return maybe;
+    }
+  }
+
+  return NULL;
+}
+
+static Directory *FindIndexPage(Directory *dir) {
+  for (size_t j = 0; j < dir->num_dirs; j++) {
+    if (dir->dirs[j]->is_index) {
+      return dir->dirs[j];
     }
   }
 
@@ -177,29 +193,35 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
 }
 
 void TemplateSideNav(Page *page, Directory *site_directory,
-                     Directory *current_directory) {
+                     Directory *current_directory, bool hide_index) {
   if (site_directory == NULL) return;
   if (current_directory == NULL) return;
 
   print("<ul>");
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
-    if (current_directory->dirs[i]->is_dir) {
+    Directory *dir = current_directory->dirs[i];
+    if (dir->is_dir) {
       if (current_directory == site_directory) continue;
-      if (current_directory->dirs[i]->path[0] == '_') continue;
+      if (dir->path[0] == '_') continue;
       print("<details>");
-      print("<summary>%s</summary>", current_directory->dirs[i]->title);
-      TemplateSideNav(page, site_directory, current_directory->dirs[i]);
+
+      Directory *index_page = FindIndexPage(dir);
+
+      if (index_page != NULL) {
+        print("<summary><a href=\"%s\">%s</a></summary>", index_page->url_path,
+              dir->title);
+      } else {
+        print("<summary>%s</summary>", dir->title);
+      }
+      TemplateSideNav(page, site_directory, dir, true);
       print("</details>");
     } else {
-      if (strcmp("_nav.md", current_directory->dirs[i]->src_name) == 0)
-        continue;
+      if (strcmp("_nav.md", dir->src_name) == 0) continue;
+      if (hide_index && dir->is_index) continue;
       char classes[100] = "";
-      if (page == current_directory->dirs[i]) {
-        sprintf(classes, " class=\"active\"");
-      }
-      print("<li><a href=\"%s\"%s>%s</a></li>",
-            current_directory->dirs[i]->url_path, classes,
-            current_directory->dirs[i]->title);
+      if (page == dir) sprintf(classes, " class=\"active\"");
+      print("<li><a href=\"%s\"%s>%s</a></li>", dir->url_path, classes,
+            dir->title);
     }
   }
   print("</ul>");
@@ -271,4 +293,26 @@ void TemplatePartial(const char *partial_name, Page *page,
   TemplatePage(page, site_directory, current_directory);
   _template.pos   = saved_pos;
   _template.input = saved_input;
+}
+
+void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
+                         Directory *current_directory) {
+  print("<nav class=\"gd-breadcrumbs\">");
+  print("<menu>");
+  print("<li><span>%s</span></li>", page->title);
+  int level;
+  Directory *parent = FindParentDirectory(site_directory, page, &level);
+  while (parent != NULL) {
+    Directory *index_page = FindIndexPage(parent);
+    if (index_page != page) {
+      if (parent->title[0] == '\0') {
+      } else {
+        print("<li><a href=\"%s\">%s</a></li>", index_page->url_path,
+              parent->title);
+      }
+    }
+    parent = FindParentDirectory(site_directory, parent, &level);
+  }
+  print("</menu>");
+  print("</nav>");
 }

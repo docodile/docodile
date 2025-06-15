@@ -338,6 +338,19 @@
     );
   }
 
+  [data-gd-decorations~="pride"] {
+    --gd-header-bg-color: linear-gradient(
+      90deg,
+      var(--gd-color-red) 0%,
+      var(--gd-color-orange) 15%,
+      var(--gd-color-yellow) 30%,
+      var(--gd-color-green) 45%,
+      var(--gd-color-blue) 60%,
+      var(--gd-color-indigo) 75%,
+      var(--gd-color-violet) 90%
+    );
+  }
+
   [data-gd-color-scheme="light"] {
     --gd-bg-primary: var(--gd-color-white);
     --gd-fg-primary: color-mix(

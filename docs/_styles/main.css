@@ -111,9 +111,15 @@ a {
   color: var(--gd-secondary-color);
 }
 
-.gd-back::before {
-  content: "\F111";
-  font-family: bootstrap-icons;
+.gd-back {
+}
+
+.gd-nav {
+  margin-left: auto;
+}
+
+.gd-toc {
+  margin-right: auto;
 }
 
 .gd-nav,
@@ -160,20 +166,22 @@ a {
   }
 
   details ul {
-    padding-left: 1rem;
+    /* padding-left: 0.5rem; */
   }
 
   details > summary {
     display: flex;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
-  details[open] > summary::before {
-    content: "\F124";
+  details[open] > summary::after {
+    content: "\F282";
     font-family: bootstrap-icons;
   }
 
-  details > summary::before {
-    content: "\F135";
+  details > summary::after {
+    content: "\F285";
     font-family: bootstrap-icons;
   }
 }
@@ -193,7 +201,10 @@ a {
 
 article.gd-article {
   width: 100%;
+  max-width: 40rem;
   overflow: none;
+  margin-left: auto;
+  margin-right: auto;
 
   h1 {
     display: flex;
@@ -397,6 +408,28 @@ article.gd-article {
     margin-bottom: 0.5rem;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     background-color: color-mix(in srgb, var(--color) 30%, transparent);
+  }
+}
+
+.gd-breadcrumbs {
+  menu {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    list-style: none;
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    color: color-mix(in srgb, var(--gd-fg-primary) 80%, transparent);
+
+    li {
+      display: flex;
+      flex-direction: row;
+    }
+
+    li:not(:first-of-type)::after {
+      content: "\F285";
+      font-family: bootstrap-icons;
+    }
   }
 }
 

@@ -22,7 +22,7 @@ By default collapsible headings will be closed. But you can override this behavi
 
 ## Mutually exclusive collapsing
 
-Sometimes you might want to have a set of collapsing headings where only one can be open at a time. If you give multiple collapsing headings the same name attribute.
+Sometimes you might want to have a set of collapsing headings where only one can be open at a time. If you give multiple collapsing headings the same name attribute the browser will automatically close the others when one is opened.
 
 ### Graduation Requirements { name="requirements" }
 
@@ -35,3 +35,17 @@ Sometimes you might want to have a set of collapsing headings where only one can
 ### Job Requirements { name="requirements" }
 
     Requires knowledge of HTML, CSS, JavaScript, accessibility, web performance, privacy, security, and internationalization, as well as a dislike of broccoli.
+
+```markdown
+### Graduation Requirements { name="requirements" }
+
+    Requires 40 credits, including a passing grade in health, geography, history, economics, and wood shop.
+
+### System Requirements { name="requirements" }
+
+    Requires a computer running an operating system. The computer must have some memory and ideally some kind of long-term storage. An input device as well as some form of output device is recommended.
+
+### Job Requirements { name="requirements" }
+
+    Requires knowledge of HTML, CSS, JavaScript, accessibility, web performance, privacy, security, and internationalization, as well as a dislike of broccoli.
+```
