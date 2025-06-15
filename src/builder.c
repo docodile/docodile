@@ -3,14 +3,16 @@
 static void AddPage(Directory *dir, Page *page) {
   assert(dir->num_dirs + 1 < MAXPAGESPERDIR);
   dir->dirs[dir->num_dirs++] = page;
+  page->parent               = dir;
 }
 
 static void AddDirectory(Directory *dir, Directory *child) {
   assert(dir->num_dirs + 1 < MAXPAGESPERDIR);
   dir->dirs[dir->num_dirs++] = child;
+  child->parent              = dir;
 }
 
-void BuildSiteDirectory(Directory *dest, const char *path) {
+void BuildSiteDirectory(Directory *dest, const char *path, int level) {
   DIR *dir = opendir(path);
   if (!dir) {
     perror("opendir");
@@ -29,12 +31,15 @@ void BuildSiteDirectory(Directory *dest, const char *path) {
     struct stat statbuf;
     if (stat(fullpath, &statbuf) == 0 && S_ISDIR(statbuf.st_mode)) {
       Directory *child_dir = NewDirectory(entry->d_name);
+      child_dir->level     = level;
       AddDirectory(dest, child_dir);
-      BuildSiteDirectory(child_dir, fullpath);
+      BuildSiteDirectory(child_dir, fullpath, level + 1);
       continue;
     }
 
-    AddPage(dest, NewPage(entry->d_name, fullpath));
+    Directory *page = NewPage(entry->d_name, fullpath);
+    page->level     = level + 1;
+    AddPage(dest, page);
   }
 
   closedir(dir);

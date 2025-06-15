@@ -19,7 +19,7 @@
 #define DOCSDIR      "docs"
 #define DOCSMAXDEPTH 1000
 
-void BuildSiteDirectory(Directory *dest, const char *path);
+void BuildSiteDirectory(Directory *dest, const char *path, int level);
 void InitializeSite(const char *dir);
 void BuildSite(Directory *site_directory, Directory *current_directory,
                const char *base_path);

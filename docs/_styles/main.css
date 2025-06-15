@@ -412,6 +412,8 @@ article.gd-article {
 }
 
 .gd-breadcrumbs {
+  min-height: 40px;
+
   menu {
     display: inline-flex;
     flex-direction: row-reverse;

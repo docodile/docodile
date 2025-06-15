@@ -50,7 +50,7 @@ static void SendFile(int client_fd, const char *path) {
 
 static void Build() {
   Directory *site_directory = NewDirectory("");
-  BuildSiteDirectory(site_directory, DOCSDIR);
+  BuildSiteDirectory(site_directory, DOCSDIR, 0);
   SortDirectory(site_directory);
   InitializeSite(HIDDENBUILDDIR);
   BuildSite(site_directory, site_directory, HIDDENBUILDDIR);
@@ -93,10 +93,10 @@ void Serve(const char *dir) {
 
   while (1) {
     int client_fd = accept(server_fd, NULL, NULL);
-    pid_t pid = fork();
+    pid_t pid     = fork();
     if (pid == 0) {
       close(server_fd);
-      
+
       // TODO only build if change detected
       Build();
       char request[BUFFER_SIZE];

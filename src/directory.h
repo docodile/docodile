@@ -31,6 +31,8 @@ typedef struct Directory {
   char title[MAXFILEPATH];
   bool hidden;
   size_t num_dirs;
+  int level;
+  struct Directory *parent;
   struct Directory *dirs[MAXDIRS];
 
   bool is_dir;

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
   if (strcmp("build", command) == 0) {
     Directory *site_directory = NewDirectory("");
-    BuildSiteDirectory(site_directory, DOCSDIR);
+    BuildSiteDirectory(site_directory, DOCSDIR, 0);
     SortDirectory(site_directory);
     InitializeSite("site");
     BuildSite(site_directory, site_directory, "site");

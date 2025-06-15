@@ -119,21 +119,6 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
   return state;
 }
 
-static Directory *FindParentDirectory(Directory *root, Directory *target,
-                                      int *level) {
-  for (size_t i = 0; i < root->num_dirs; i++) {
-    if (root->dirs[i] == target) return root;
-
-    Directory *maybe = FindParentDirectory(root->dirs[i], target, level);
-    if (maybe) {
-      (*level)++;
-      return maybe;
-    }
-  }
-
-  return NULL;
-}
-
 static Directory *FindIndexPage(Directory *dir) {
   for (size_t j = 0; j < dir->num_dirs; j++) {
     if (dir->dirs[j]->is_index) {
@@ -146,9 +131,14 @@ static Directory *FindIndexPage(Directory *dir) {
 
 static bool IsActive(Directory *dir, Directory *current_dir) {
   if (dir == current_dir) return true;
-  int level;
-  Directory *match = FindParentDirectory(dir, current_dir, &level);
-  return match != NULL;
+
+  Directory *parent = current_dir->parent;
+  while (parent != NULL) {
+    if (parent == dir) return true;
+    parent = parent->parent;
+  }
+
+  return false;
 }
 
 void TemplateNav(Directory *site_dir, Directory *current_dir) {
@@ -174,10 +164,8 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
   if (curr_dir == NULL) return;
   if (site_dir == curr_dir) return;
 
-  // Find parent directory.
-  int level         = 0;
-  Directory *parent = FindParentDirectory(site_dir, curr_dir, &level);
-  if (parent && level > 0) {
+  Directory *parent = curr_dir->parent;
+  if (parent && curr_dir->level > 0) {
     Directory *first_index = NULL;
     for (size_t i = 0; i < parent->num_dirs; i++) {
       if (!parent->dirs[i]->hidden && parent->dirs[i]->is_index) {
@@ -299,19 +287,22 @@ void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
                          Directory *current_directory) {
   print("<nav class=\"gd-breadcrumbs\">");
   print("<menu>");
-  print("<li><span>%s</span></li>", page->title);
-  int level;
-  Directory *parent = FindParentDirectory(site_directory, page, &level);
-  while (parent != NULL) {
-    Directory *index_page = FindIndexPage(parent);
-    if (index_page != page) {
-      if (parent->title[0] == '\0') {
-      } else {
-        print("<li><a href=\"%s\">%s</a></li>", index_page->url_path,
-              parent->title);
+  int level         = 0;
+  Directory *parent = page->parent;
+  bool skip         = page->level < 3 && page->is_index;
+  if (!skip) {
+    print("<li><span>%s</span></li>", page->title);
+    while (parent != NULL) {
+      Directory *index_page = FindIndexPage(parent);
+      if (index_page != page) {
+        if (parent->title[0] == '\0') {
+        } else {
+          print("<li><a href=\"%s\">%s</a></li>", index_page->url_path,
+                parent->title);
+        }
       }
+      parent = parent->parent;
     }
-    parent = FindParentDirectory(site_directory, parent, &level);
   }
   print("</menu>");
   print("</nav>");
