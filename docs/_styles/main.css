@@ -436,10 +436,15 @@ article.gd-article {
 }
 
 .gd-search {
-  --focus-background: white;
+  --focus-background: color-mix(
+    in srgb,
+    var(--gd-bg-primary) 85%,
+    var(--gd-primary-color)
+  );
+  --color: var(--gd-fg-primary);
 
   position: relative;
-  color: var(--gd-header-fg-color);
+  color: var(--color);
   min-width: 10rem;
   width: 15rem;
   height: 2rem;
@@ -447,7 +452,6 @@ article.gd-article {
   transition: width 0.3s ease-in-out;
 
   &:focus-within {
-    color: black;
     width: 20rem;
 
     .gd-search-box {
@@ -462,6 +466,10 @@ article.gd-article {
 
     #results {
       display: block;
+
+      &[hidden=""] {
+        display: none;
+      }
     }
   }
 
@@ -536,5 +544,31 @@ article.gd-article {
     border-radius: 0.25rem;
     padding: 0.5rem;
     z-index: 1;
+
+    a {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 1rem;
+      }
+
+      p {
+        margin-top: 0;
+        font-size: 0.875rem;
+        color: color-mix(in srgb, var(--color), transparent);
+
+        strong {
+          color: var(--color);
+        }
+      }
+    }
   }
 }

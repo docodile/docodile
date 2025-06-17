@@ -14,5 +14,6 @@ void TitleCaseToKebabCase(const char *in, char *out);
 void RemoveExtension(const char *in, char *out);
 char *ReadFileToString(const char *filename, size_t *len);
 bool HasExtension(const char *str, const char *ext);
+void EscapeString(const char *str, char *out);
 
 #endif  // UTILS_H

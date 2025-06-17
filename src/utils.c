@@ -106,3 +106,29 @@ bool HasExtension(const char *str, const char *ext) {
   if (len < ext_len) return false;
   return strcmp(str + len - ext_len, ext) == 0;
 }
+
+void EscapeString(const char *str, char *out) {
+  char c;
+  while ((c = *str++) != '\0') {
+    if (c == '\n') {
+      *out++ = ' ';
+      continue;
+    }
+
+    if (c == '"') {
+      *out++ = '\\';
+      *out++ = '"';
+      continue;
+    }
+
+    if (c == '\\') {
+      *out++ = '\\';
+      *out++ = '\\';
+      continue;
+    }
+
+    *out++ = c;
+  }
+
+  *out = '\0';
+}

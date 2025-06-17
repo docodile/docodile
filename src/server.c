@@ -1,7 +1,7 @@
 #include "server.h"
 
 #define PORT           6006
-#define BUFFER_SIZE    4096
+#define BUFFER_SIZE    4096 / 2
 #define HIDDENBUILDDIR ".site"
 
 void Send404(int client_fd) {
@@ -28,6 +28,8 @@ static void SendFile(int client_fd, const char *path) {
   const char *ext       = strrchr(path, '.');
   if (ext && strcmp(ext, ".css") == 0) {
     mime_type = "text/css";
+  } else if (ext && strcmp(ext, ".json") == 0) {
+    mime_type = "application/json; charset=utf-8";
   }
 
   char header[256];
@@ -53,6 +55,12 @@ static void Build() {
   BuildSiteDirectory(site_directory, DOCSDIR, 0);
   SortDirectory(site_directory);
   InitializeSite(HIDDENBUILDDIR);
+  const char *index_file_path = HIDDENBUILDDIR "/assets/search.json";
+  if (access(index_file_path, F_OK) != 0) {
+    SearchIndex index = BuildSearchIndex(site_directory);
+    WriteSearchIndex(index, index_file_path);
+    FreeSearchIndex(index);
+  }
   BuildSite(site_directory, site_directory, HIDDENBUILDDIR);
   FreeDirectory(site_directory);
 }

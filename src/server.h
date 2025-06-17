@@ -15,6 +15,7 @@
 
 #include "builder.h"
 #include "platform.h"
+#include "search.h"
 
 void Serve(const char *dir);
 

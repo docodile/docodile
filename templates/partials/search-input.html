@@ -12,36 +12,29 @@
       <i class="bi bi-search"></i>
     </button>
   </div>
-  <div id="results"></div>
+  <div id="results" hidden></div>
   <div class="gd-search-spotlight"></div>
   <script src="https://unpkg.com/lunr/lunr.js"></script>
   <script>
-    const documents = [
-      {
-        name: "Lunr",
-        text: "Like Solr, but much smaller, and not as bright.",
-      },
-      {
-        name: "Getting started",
-        url: "Ye",
-        text: "A JavaScript library for building user interfaces.",
-      },
-      {
-        name: "Lodash",
-        text: "A modern JavaScript utility library delivering modularity, performance & extras.",
-      },
-    ];
+    let idx;
+    const docs = {};
 
-    const idx = lunr(function () {
-      this.ref("name");
-      this.field("url");
-      this.field("text");
-      this.metadataWhitelist = ["position"];
+    async function initialiseSearch() {
+      const response = await fetch("/assets/search.json");
+      const documents = await response.json();
+      idx = lunr(function () {
+        this.ref("path");
+        this.field("text");
+        this.metadataWhitelist = ["position"];
 
-      documents.forEach(function (doc) {
-        this.add(doc);
-      }, this);
-    });
+        documents.forEach(function (doc) {
+          this.add(doc);
+          docs[doc.path] = doc;
+        }, this);
+      });
+    }
+
+    initialiseSearch();
 
     const resultsEl = document.querySelector("#results");
 
@@ -57,11 +50,41 @@
       if (value?.trim() === "") return;
 
       timeoutHandle = setTimeout(() => {
-        for (let result of idx.search(value)) {
-          const resultEl = document.createElement("div");
+        const results = idx?.search(value);
+        for (let result of results) {
+          const doc = docs[result.ref];
+
+          const resultEl = document.createElement("a");
           resultEl.tabIndex = 0;
-          resultEl.innerText = result.ref;
+          resultEl.href = doc.path;
+
+          const titleEl = document.createElement("h1");
+          titleEl.innerText = doc.name;
+
+          resultEl.appendChild(titleEl);
+
+          const textEl = document.createElement("p");
+          const metadata = result?.matchData?.metadata ?? {};
+          const [pos, length] = Object.values(metadata)[0]?.text
+            ?.position?.[0] ?? [0, 0];
+          const contextSize = 100;
+          const start = pos;
+          const end = pos + length;
+          const contextStart =
+            start - contextSize < 0 ? 0 : start - contextSize;
+          const contextEnd = pos + length + contextSize;
+          const beforeContext = doc.text.slice(contextStart, start);
+          const match = doc.text.slice(start, end);
+          const afterContext = doc.text.slice(end, contextEnd);
+          textEl.innerHTML = `${beforeContext}<strong>${match}</strong>${afterContext}`;
+
+          resultEl.appendChild(textEl);
+
           resultsEl.appendChild(resultEl);
+        }
+
+        if (results?.length > 0) {
+          resultsEl.toggleAttribute("hidden");
         }
       }, 300);
     }

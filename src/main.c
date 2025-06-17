@@ -10,6 +10,7 @@
 #include "lex.h"
 #include "logger.h"
 #include "parser.h"
+#include "search.h"
 #include "server.h"
 #include "template.h"
 
@@ -39,6 +40,9 @@ int main(int argc, char **argv) {
     BuildSiteDirectory(site_directory, DOCSDIR, 0);
     SortDirectory(site_directory);
     InitializeSite("site");
+    SearchIndex index = BuildSearchIndex(site_directory);
+    WriteSearchIndex(index, "site/assets/search.json");
+    FreeSearchIndex(index);
     BuildSite(site_directory, site_directory, "site");
     return 0;
   }
