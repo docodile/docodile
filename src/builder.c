@@ -226,13 +226,11 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     FILE *html_page = fopen(path, "w");
     LoadConfig();
 
-    TemplateInit("templates/main.html", html_page);
-    TemplateState state = TemplatePage(page, site_directory, current_directory);
+    TemplateInit("templates/index.html", html_page);
+    TemplateState state =
+        TemplatePage(page, site_directory, current_directory, BuildPage);
     while (state.state != TEMPLATE_END) {
-      if (strcmp("article", state.slot_name) == 0)
-        BuildPage(page->full_path, html_page, page);
-
-      state = TemplatePage(page, site_directory, current_directory);
+      state = TemplatePage(page, site_directory, current_directory, BuildPage);
     }
     TemplateDestroy();
     UnloadConfig();

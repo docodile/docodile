@@ -23,7 +23,7 @@ watch:
 	@find src docs gendoc.config | entr -rs "make build && ./src/build/gendoc serve"
 
 clean:
-	@rm -rf $(BUILD_DIR) $(DIST_DIR) ./.site ./*.tar.gz
+	@rm -rf $(BUILD_DIR) $(DIST_DIR) ./site ./.site ./*.tar.gz
 
 package: build
 	@mkdir -p $(DIST_DIR)

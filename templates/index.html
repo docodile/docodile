@@ -40,14 +40,7 @@
       <a href="/" class="gd-title"><h1>{{ config.site-name }}</h1></a>
       <div class="gd-nav-bar">{% nav %} {% partials/search-input.html %}</div>
     </header>
-    {% breadcrumbs %}
-    <main>
-      <aside class="gd-nav">
-        <nav>{% nav_back_button %} {% side_nav %}</nav>
-      </aside>
-      {% article %}
-      <aside class="gd-toc">{% toc %}</aside>
-    </main>
+    {% main %}
     <footer class="gd-footer">
       {% footer_nav %}
       <div class="gd-footer-info">

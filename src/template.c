@@ -87,11 +87,13 @@ TemplateState TemplateBuild(Page *page) {
 }
 
 TemplateState TemplatePage(Page *page, Directory *site_directory,
-                           Directory *current_directory) {
+                           Directory *current_directory,
+                           BuildPageFunc build_page_func) {
   TemplateState state;
   while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
     if (state.state == TEMPLATE_YIELD) {
-      if (strcmp("article", state.slot_name) == 0) return state;
+      if (strcmp("article", state.slot_name) == 0)
+        build_page_func(page->full_path, _out, page);
       if (strcmp("toc", state.slot_name) == 0) TemplateToc(page->toc);
       if (strcmp("nav", state.slot_name) == 0)
         TemplateNav(site_directory, current_directory);
@@ -107,9 +109,18 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
           TemplateBreadcrumbs(page, site_directory, current_directory);
         }
       }
+      if (strcmp("main", state.slot_name) == 0) {
+        if (page->is_index && page->level == 1) {
+          TemplatePartial("partials/home.html", page, site_directory,
+                          current_directory, build_page_func);
+        } else {
+          TemplatePartial("partials/main.html", page, site_directory,
+                          current_directory, build_page_func);
+        }
+      }
       if (HasExtension(state.slot_name, ".html"))
         TemplatePartial(state.slot_name, page, site_directory,
-                        current_directory);
+                        current_directory, build_page_func);
 
       if (state.slot_name) {
         free(state.slot_name);
@@ -269,7 +280,8 @@ void TemplateFooterNav(Page *page, Directory *site_directory,
 }
 
 void TemplatePartial(const char *partial_name, Page *page,
-                     Directory *site_directory, Directory *current_directory) {
+                     Directory *site_directory, Directory *current_directory,
+                     BuildPageFunc build_page_func) {
   size_t saved_pos  = _template.pos;
   char *saved_input = _template.input;
   size_t len;
@@ -278,7 +290,7 @@ void TemplatePartial(const char *partial_name, Page *page,
   char *template_source = ReadFileToString(file_path, &len);
   _template.pos         = 0;
   _template.input       = template_source;
-  TemplatePage(page, site_directory, current_directory);
+  TemplatePage(page, site_directory, current_directory, build_page_func);
   _template.pos   = saved_pos;
   _template.input = saved_input;
 }

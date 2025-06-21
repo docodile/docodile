@@ -1,0 +1,156 @@
+<main class="gd-homepage">
+  <h1>gendoc</h1>
+  <div class="gd-headlines">
+    <section>
+      <i class="bi bi-lightning-fill"></i>
+      <h2>Fast</h2>
+      <p>
+        Written in C for blazingly fast build times. Whether you are building
+        your site for production or running the built-in server, gendoc never
+        breaks a sweat.
+      </p>
+    </section>
+    <section>
+      <i class="bi bi-markdown-fill"></i>
+      <h2>Simple</h2>
+      <p>
+        Markdown with advanced syntax available out of the gate. No plugins
+        required. Write your docs, run build and enjoy a static site you'll love
+        right out of the box.
+      </p>
+    </section>
+    <section>
+      <i class="bi bi-gear-wide-connected"></i>
+      <h2>Configurable</h2>
+      <p>
+        Access to all templates and CSS files means you can truly make your site
+        look however you want. With great defaults for when you don't want to
+        tinker.
+      </p>
+    </section>
+  </div>
+  <h2>Features</h2>
+  <div class="gd-features">
+    <section>
+      <header>
+        <i class="bi bi-search"></i>
+        <h2>Search</h2>
+      </header>
+      <p>
+        Quickly navigate your documentation with accurate client-side search.
+      </p>
+      <div class="gd-feature-buttons"></div>
+    </section>
+    <section>
+      <header>
+        <i class="bi bi-paint-bucket"></i>
+        <h2>Customisation</h2>
+      </header>
+      <p>
+        Customise the look and feel of your site with dozens of built-in colors,
+        and several decorations. There are literally thousands of combinations
+        out of the box.
+      </p>
+      <div class="gd-feature-buttons">
+        <a href="/setup/appearance.html">Learn more</a>
+        <a onclick="randomTheme()">Roll the dice</a>
+      </div>
+    </section>
+    <section>
+      <header>
+        <i class="bi bi-markdown"></i>
+        <h2>Extended Markdown</h2>
+      </header>
+      <p>
+        gendoc's custom Markdown processor provides all the syntax you know and
+        love, along with some unique extensions that make sense.
+      </p>
+      <div class="gd-feature-buttons">
+        <a href="/reference/markdown.html">Learn more</a>
+      </div>
+    </section>
+  </div>
+  {% article %}
+</main>
+<script>
+  function getRandomItem(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  const schemes = ["dark", "light"];
+  const decorations = [
+    "glass",
+    "blend",
+    "",
+    "glass blend",
+    "glass blend",
+    "glass blend",
+    "glass blend",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "blend",
+    "blend",
+    "blend",
+    "blend",
+    "pride",
+  ];
+  const colors = [
+    "red",
+    "fuchsia rose",
+    "marsala",
+    "honeysuckle",
+    "chili pepper",
+    "true red",
+    "viva magenta",
+    "mocha mousse",
+    "sand dollar",
+    "rose quartz",
+    "living coral",
+    "orange",
+    "tangerine tango",
+    "tigerlily",
+    "peach fuzz",
+    "mimosa",
+    "yellow",
+    "illuminating",
+    "greenery",
+    "green",
+    "emerald",
+    "turquoise",
+    "blue turquoise",
+    "aqua sky",
+    "blue",
+    "serenity",
+    "cerulean",
+    "classic blue",
+    "blue iris",
+    "very peri",
+    "indigo",
+    "ultra violet",
+    "violet",
+    "radiant orchid",
+    "ultimate gray",
+    "jet black",
+    "midnight",
+    "black",
+    "white",
+  ];
+
+  function randomTheme() {
+    const body = document.querySelector("body");
+
+    const scheme = getRandomItem(schemes);
+    const primary = getRandomItem(colors);
+    const secondary = getRandomItem(colors);
+    const decoration = getRandomItem(decorations);
+
+    body.setAttribute("data-gd-color-scheme", scheme);
+    body.setAttribute("data-gd-primary-color", primary);
+    body.setAttribute("data-gd-secondary-color", secondary);
+    body.setAttribute("data-gd-decorations", decoration);
+  }
+</script>
