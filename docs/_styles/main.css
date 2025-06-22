@@ -2,6 +2,18 @@ html {
   font-size: 18px;
 }
 
+.gd-header-title {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1rem;
+
+  .gd-logo {
+    width: 1rem;
+    fill: var(--gd-header-fg-color);
+  }
+}
+
 code {
   font-family: monospace;
 }

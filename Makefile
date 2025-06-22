@@ -7,14 +7,15 @@ SCRIPTS_DIR := scripts
 DOCS_DIR := docs
 TEMPLATES_DIR := templates
 SRC := $(wildcard $(SRC_DIR)/*.c)
+DEPS := -lc -lssl -lcrypto
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)
-	@gcc -m64 -g -o $@ $^ -DLOG_LEVEL=4
+	@gcc -m64 -g -o $@ $^ -DLOG_LEVEL=4 $(DEPS)
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	@gcc -m64 -o $@ $^ -lc
+	@gcc -m64 -o $@ $^ $(DEPS)
 
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)
