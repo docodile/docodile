@@ -190,6 +190,8 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     MkDir(base_path);
   }
 
+  bool config_updated = false;
+
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
     Page *page = current_directory->dirs[i];
     if (page->is_dir) continue;
@@ -204,7 +206,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
       bool target_exists = stat(path, &target_stat) == 0;
       if (source_exists && target_exists &&
           difftime(source_stat.st_mtime, target_stat.st_mtime) <= 0) {
-        continue;  // Target is up-to-date
+        continue;
       }
 
       CopyFile(page->full_path, path);
@@ -215,12 +217,21 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     sprintf(path, "%s/%s", base_path, page->out_name);
     strcpy(page->url, path);
 
-    struct stat source_stat, target_stat;
-    bool source_exists = stat(page->full_path, &source_stat) == 0;
-    bool target_exists = stat(path, &target_stat) == 0;
-    if (source_exists && target_exists &&
-        difftime(source_stat.st_mtime, target_stat.st_mtime) <= 0) {
-      continue;  // Target is up-to-date
+    if (!config_updated) {
+      struct stat source_stat, target_stat, config_stat;
+      bool source_exists = stat(page->full_path, &source_stat) == 0;
+      bool target_exists = stat(path, &target_stat) == 0;
+      bool config_exists = stat("gendoc.config", &config_stat) == 0;
+      if (source_exists && config_exists &&
+          difftime(target_stat.st_mtime, config_stat.st_mtime) <= 0) {
+        config_updated = true;
+      }
+      if (source_exists && target_exists &&
+          difftime(source_stat.st_mtime, target_stat.st_mtime) <= 0) {
+        if (!config_updated) {
+          continue;
+        }
+      }
     }
 
     FILE *html_page = fopen(path, "w");
