@@ -92,6 +92,8 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
   TemplateState state;
   while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
     if (state.state == TEMPLATE_YIELD) {
+      if (strcmp("styles", state.slot_name) == 0)
+        TemplateStyles(site_directory);
       if (strcmp("logo", state.slot_name) == 0) TemplateLogo();
       if (strcmp("article", state.slot_name) == 0)
         build_page_func(page->full_path, _out, page);
@@ -300,6 +302,37 @@ void TemplateLogo() {
   }
 
   free(logo_opt);
+}
+
+static void TemplateStyleLinks(Directory *dir, char *path) {
+  for (size_t i = 0; i < dir->num_dirs; i++) {
+    if (dir->dirs[i]->is_dir) {
+      char buffer[MAXFILEPATH];
+      snprintf(buffer, MAXFILEPATH, "%s/%s", path, dir->dirs[i]->path);
+      TemplateStyleLinks(dir->dirs[i], buffer);
+      continue;
+    }
+
+    print("<link rel=\"stylesheet\" type=\"text/css\" href=\"%s/%s\" />\n",
+          path, dir->dirs[i]->src_name);
+  }
+}
+
+void TemplateStyles(Directory *site_directory) {
+  Directory *dir = NULL;
+
+  for (size_t i = 0; i < site_directory->num_dirs; i++) {
+    if (strcmp("_styles", site_directory->dirs[i]->path) == 0) {
+      dir = site_directory->dirs[i];
+      break;
+    }
+  }
+
+  if (!dir) {
+    return;
+  }
+
+  TemplateStyleLinks(dir, "/assets/styles");
 }
 
 void TemplateFooterNav(Page *page, Directory *site_directory,

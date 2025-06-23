@@ -171,17 +171,39 @@ static void MkDir(const char *path) {
   }
 }
 
+static void MkDirR(const char *path) {
+  char tmp[1000];
+  char buffer[1000] = {0};
+
+  strcpy(tmp, path);
+  char *tok = strtok(tmp, "/");
+
+  while (tok != NULL) {
+    if (buffer[0] != '\0') {
+      strncat(buffer, "/", sizeof(buffer) - strlen(buffer) - 1);
+    }
+    strncat(buffer, tok, sizeof(buffer) - strlen(buffer) - 1);
+
+    MkDir(buffer);
+
+    tok = strtok(NULL, "/");
+
+    // Don't create a directory if it's obviously a file
+    if (tok) {
+      char *ext = strrchr(tok, '.');
+      if (ext) break;
+    }
+  }
+}
+
 static const char *BUILDDIR;
 
 // TODO Make this better
 void InitializeSite(const char *dir) {
   BUILDDIR = dir;
-  MkDir(dir);
   char buff[100];
-  sprintf(buff, "%s/assets", dir);
-  MkDir(buff);
-  sprintf(buff, "%s/assets/styles", dir);
-  MkDir(buff);
+  sprintf(buff, "%s/assets/styles", BUILDDIR);
+  MkDirR(buff);
 }
 
 void BuildSite(Directory *site_directory, Directory *current_directory,
@@ -198,8 +220,14 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
 
     const char *ext = strrchr(page->src_name, '.');
     if (strcmp(".css", ext) == 0) {
+      char p[MAXFILEPATH];
+      strcpy(p, page->full_path);
+      char *tok = strtok(p, "/");     // strip docs directory
+      tok       = strtok(NULL, "/");  // strip _styles
+      tok       = strtok(NULL, "");   // css file with directory
       char path[MAXFILEPATH];
-      sprintf(path, "%s/assets/styles/%s", BUILDDIR, page->src_name);
+      sprintf(path, "%s/assets/styles/%s", BUILDDIR, tok);
+      MkDirR(path);
 
       struct stat source_stat, target_stat;
       bool source_exists = stat(page->full_path, &source_stat) == 0;

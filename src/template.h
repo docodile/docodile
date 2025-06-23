@@ -1,10 +1,10 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
+#include <openssl/sha.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <openssl/sha.h>
 
 #include "config.h"
 #include "directory.h"
@@ -41,5 +41,6 @@ void TemplatePartial(const char *partial_name, Page *page,
 void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
                          Directory *current_directory);
 void TemplateLogo();
+void TemplateStyles(Directory *site_directory);
 
 #endif  // TEMPLATE_H
