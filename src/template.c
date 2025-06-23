@@ -282,6 +282,7 @@ static void Identicon() {
 
 void TemplateLogo() {
   char *logo_opt = ReadConfig("logo");
+
   if (strcmp("identicon", logo_opt) == 0) {
     Identicon();
   }
@@ -289,6 +290,16 @@ void TemplateLogo() {
   if (strcmp("bootstrap", logo_opt) == 0) {
     print("<i class=\"bi bi-book-half\"></i>");
   }
+
+  if (HasExtension(logo_opt, ".svg")) {
+    // TODO
+  }
+
+  if (HasExtension(logo_opt, ".png")) {
+    // TODO
+  }
+
+  free(logo_opt);
 }
 
 void TemplateFooterNav(Page *page, Directory *site_directory,
