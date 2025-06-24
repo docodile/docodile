@@ -680,23 +680,6 @@ article.gd-article {
         gap: 0.5rem;
       }
 
-      a {
-        all: unset;
-        text-align: center;
-        font-weight: bold;
-        user-select: none;
-        border: none;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        background: var(--gd-secondary-color);
-        cursor: pointer;
-        flex: 1;
-
-        &:active {
-          box-shadow: inset 0 1px 4px black;
-        }
-      }
-
       header {
         h2 {
           margin: 0;
@@ -717,5 +700,22 @@ article.gd-article {
   }
 
   article {
+  }
+}
+
+a.gd-button {
+  all: unset;
+  text-align: center;
+  font-weight: bold;
+  user-select: none;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background: var(--gd-secondary-color);
+  cursor: pointer;
+  flex: 1;
+
+  &:active {
+    box-shadow: inset 0 1px 4px black;
   }
 }

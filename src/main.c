@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
   if (strcmp("build", command) == 0) {
     Directory *site_directory = NewDirectory("");
     BuildSiteDirectory(site_directory, DOCSDIR, 0);
+    Build404Page(site_directory, DOCSDIR "/404.md");
     SortDirectory(site_directory);
     InitializeSite("site");
     SearchIndex index = BuildSearchIndex(site_directory);

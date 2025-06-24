@@ -1,20 +1,16 @@
 #include "server.h"
 
-#define PORT           6006
-#define BUFFER_SIZE    4096 / 2
-#define HIDDENBUILDDIR ".site"
+#define PORT               6006
+#define BUFFER_SIZE        4096 / 2
+#define HIDDENBUILDDIR     ".site"
+#define HTTPSTATUSOK       "200 OK"
+#define HTTPSTATUSNOTFOUND "404 Not Found"
 
 void Send404(int client_fd) {
-  const char *response =
-      "HTTP/1.1 404 Not Found\r\n"
-      "Content-Length: 13\r\n"
-      "Content-Type: text/plain\r\n"
-      "\r\n"
-      "404 Not Found";
-  write(client_fd, response, strlen(response));
+  SendFile(client_fd, HIDDENBUILDDIR "/404.html", HTTPSTATUSNOTFOUND);
 }
 
-static void SendFile(int client_fd, const char *path) {
+void SendFile(int client_fd, const char *path, const char *status) {
   int file_fd = open(path, O_RDONLY);
   if (file_fd == -1) {
     Send404(client_fd);
@@ -34,11 +30,11 @@ static void SendFile(int client_fd, const char *path) {
 
   char header[256];
   snprintf(header, sizeof(header),
-           "HTTP/1.1 200 OK\r\n"
+           "HTTP/1.1 %s\r\n"
            "Content-Length: %ld\r\n"
            "Content-Type: %s\r\n"
            "\r\n",
-           st.st_size, mime_type);
+           status, st.st_size, mime_type);
   write(client_fd, header, strlen(header));
 
   char buffer[BUFFER_SIZE];
@@ -53,6 +49,7 @@ static void SendFile(int client_fd, const char *path) {
 static void Build() {
   Directory *site_directory = NewDirectory("");
   BuildSiteDirectory(site_directory, DOCSDIR, 0);
+  Build404Page(site_directory, DOCSDIR "/404.md");
   SortDirectory(site_directory);
   InitializeSite(HIDDENBUILDDIR);
   const char *index_file_path = HIDDENBUILDDIR "/assets/search.json";
@@ -117,7 +114,7 @@ void Serve(const char *dir) {
       char full_path[1024];
       snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR "/.%s", path);
 
-      SendFile(client_fd, full_path);
+      SendFile(client_fd, full_path, HTTPSTATUSOK);
       close(client_fd);
       exit(0);
     } else {

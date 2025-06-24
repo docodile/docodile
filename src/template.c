@@ -116,6 +116,9 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
         if (page->is_index && page->level == 1) {
           TemplatePartial("partials/home.html", page, site_directory,
                           current_directory, build_page_func);
+        } else if (strcmp(page->src_name, "404.md") == 0) {
+          TemplatePartial("partials/404.html", page, site_directory,
+                          current_directory, build_page_func);
         } else {
           TemplatePartial("partials/main.html", page, site_directory,
                           current_directory, build_page_func);

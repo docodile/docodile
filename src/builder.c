@@ -45,6 +45,14 @@ void BuildSiteDirectory(Directory *dest, const char *path, int level) {
   closedir(dir);
 }
 
+void Build404Page(Directory *dest, const char *path) {
+  Directory *page404 = NewPage("404.md", path);
+  page404->hidden    = true;
+  page404->is_index  = true;
+  strcpy(page404->title, "Not found");
+  AddPage(dest, page404);
+}
+
 static int GetHeadingLevel(Node *n) {
   if (strcmp("h1", n->type) == 0) return 1;
   if (strcmp("h2", n->type) == 0) return 2;
@@ -283,4 +291,6 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     sprintf(path, "%s/%s", base_path, directory->path);
     BuildSite(site_directory, directory, path);
   }
+
+  // Build 404 page
 }

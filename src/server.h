@@ -18,5 +18,6 @@
 #include "search.h"
 
 void Serve(const char *dir);
+void SendFile(int client_fd, const char *path, const char *status);
 
 #endif  // SERVER_H
