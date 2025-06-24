@@ -110,7 +110,7 @@ static void LoadConfigFile(const char *filename) {
   pos   = 0;
 }
 
-void LoadConfig() { LoadConfigFile("gendoc.config"); }
+void LoadConfig() { LoadConfigFile("docodile.config"); }
 
 void UnloadConfig() { free(input); }
 

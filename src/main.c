@@ -60,7 +60,7 @@ char *ShiftArg(char ***argv) { return *(*argv)++; }
 // ╚╔╩╦╠═╬╣║╝╗
 void Help() {
   printf(
-      "Usage: gendoc [OPTIONS] COMMAND [ARGS]...\n"
+      "Usage: docodile [OPTIONS] COMMAND [ARGS]...\n"
       "\n");
 
   // printf(GRN
@@ -94,6 +94,6 @@ void Help() {
 
 void New() {
   // HACK Being lazy, will come back to this and implement properly.
-  system("cp -r /etc/gendoc/* ./");
-  system("rm gendoc install.sh");
+  system("cp -r /etc/docodile/* ./");
+  system("rm docodile install.sh");
 }

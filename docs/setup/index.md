@@ -1,6 +1,6 @@
 # Setup
 
-We think `gendoc` looks great by default, and hopefully you think so too. A core design priniciple of `gendoc` is minimal config, preferring excellent defaults over complex config files and plugins. But there are obviously times where you will want to customise to fit your needs.
+We think `Docodile` looks great by default, and hopefully you think so too. A core design priniciple of `Docodile` is minimal config, preferring excellent defaults over complex config files and plugins. But there are obviously times where you will want to customise to fit your needs.
 
 The most effective way to make your site your own is to change the colors and font. Consult the [appearance](./appearance.md) section to preview the different style options.
 
@@ -10,7 +10,7 @@ The most effective way to make your site your own is to change the colors and fo
 
 ## Advanced customisation
 
-When you initialise a `gendoc` project you'll notice that all CSS files and HTML templates are available to you right there in your repo.
+When you initialise a `Docodile` project you'll notice that all CSS files and HTML templates are available to you right there in your repo.
 
 ## What next?
 

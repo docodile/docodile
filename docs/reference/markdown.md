@@ -1,6 +1,6 @@
 # Markdown
 
-`gendoc` supports all basic Markdown syntax.
+`Docodile` supports all basic Markdown syntax.
 
 ## Headings
 

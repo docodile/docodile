@@ -36,7 +36,7 @@ Admonitions are useful when you want to draw attention to a short snippet of con
 
 ## Custom types
 
-Adding custom admonitions is super easy. Pick a name for the type and start using it. `gendoc` will automatically assign whatever you call it as a class on the admonition. You just need to edit `main.css` in your styles folder to change the color and the icon:
+Adding custom admonitions is super easy. Pick a name for the type and start using it. `Docodile` will automatically assign whatever you call it as a class on the admonition. You just need to edit `main.css` in your styles folder to change the color and the icon:
 
 ```css
 .admonition {

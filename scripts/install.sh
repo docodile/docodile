@@ -1,9 +1,9 @@
 set -e
 
-echo -ne "Installing gendoc...\r"
+echo -ne "Installing Docodile...\r"
 
-sudo cp ./gendoc /usr/local/bin
-sudo cp -r . /etc/gendoc
-sudo chmod +x /usr/local/bin/gendoc
+sudo cp ./docodile /usr/local/bin
+sudo cp -r . /etc/docodile
+sudo chmod +x /usr/local/bin/docodile
 
-echo -ne "\e[0;32mgendoc installed!\e[0m        \n"
+echo -ne "\e[0;32mDocodile installed!\e[0m        \n"

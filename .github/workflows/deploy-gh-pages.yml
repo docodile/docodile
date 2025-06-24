@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build gendoc
+      - name: Build Docodile
         run: make build
-      - name: Run gendoc build
-        run: ./src/build/gendoc build
+      - name: Run Docodile build
+        run: ./src/build/docodile build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

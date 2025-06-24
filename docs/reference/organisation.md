@@ -4,7 +4,7 @@ The structure of your `docs` folder dictates the structure of your site. Each to
 
 ## Ordering
 
-By default `gendoc` will order navigation alphabetically but with `index.md` files sorted to the top. Sometimes alphabetical isn't the appropriate sorting method as your content might have a strict order relationship. In these cases you can add a `_nav.md` file to the directory you want to sort. These hidden nav files just use a regular Markdown list to control the ordering of your  
+By default `Docodile` will order navigation alphabetically but with `index.md` files sorted to the top. Sometimes alphabetical isn't the appropriate sorting method as your content might have a strict order relationship. In these cases you can add a `_nav.md` file to the directory you want to sort. These hidden nav files just use a regular Markdown list to control the ordering of your  
 
 ```markdown
 - getting-started

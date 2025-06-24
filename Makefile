@@ -1,4 +1,4 @@
-PROGRAM := gendoc
+PROGRAM := docodile
 SRC_DIR := src
 BUILD_DIR := $(SRC_DIR)/build
 DEBUG_DIR := $(BUILD_DIR)/debug
@@ -21,7 +21,7 @@ build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)
 
 watch:
-	@find src docs gendoc.config | entr -rs "make build && ./src/build/gendoc serve"
+	@find src docs docodile.config | entr -rs "make build && ./src/build/docodile serve"
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR) ./site ./.site ./*.tar.gz
@@ -29,14 +29,14 @@ clean:
 package: build
 	@mkdir -p $(DIST_DIR)
 	@cp -r $(BUILD_DIR)/$(PROGRAM) $(DOCS_DIR) $(TEMPLATES_DIR) $(SCRIPTS_DIR)/install.sh $(DIST_DIR)
-	@cp gendoc.config.example $(DIST_DIR)/gendoc.config
+	@cp docodile.config.example $(DIST_DIR)/docodile.config
 	@tar -czvf $(PROGRAM).tar.gz -C $(DIST_DIR) $(PROGRAM)
 
 install: package
 	@sudo cp $(DIST_DIR)/$(PROGRAM) /usr/local/bin/
-	@sudo rm -rf /etc/gendoc
-	@sudo cp -r $(DIST_DIR) /etc/gendoc
+	@sudo rm -rf /etc/docodile
+	@sudo cp -r $(DIST_DIR) /etc/docodile
 	@sudo chmod +x /usr/local/bin/$(PROGRAM)
-	@echo "Installed gendoc"
-	@echo "/etc/gendoc:"
-	@ls /etc/gendoc
+	@echo "Installed docodile"
+	@echo "/etc/docodile:"
+	@ls /etc/docodile

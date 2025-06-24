@@ -257,7 +257,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
       struct stat source_stat, target_stat, config_stat;
       bool source_exists = stat(page->full_path, &source_stat) == 0;
       bool target_exists = stat(path, &target_stat) == 0;
-      bool config_exists = stat("gendoc.config", &config_stat) == 0;
+      bool config_exists = stat("docodile.config", &config_stat) == 0;
       if (source_exists && config_exists &&
           difftime(target_stat.st_mtime, config_stat.st_mtime) <= 0) {
         config_updated = true;

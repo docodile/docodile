@@ -1,6 +1,6 @@
 # Appearance
 
-In `gendoc.config` you have a few ways to quickly change the appearance of your docs site.
+In `docodile.config` you have a few ways to quickly change the appearance of your docs site.
 
 ```ini
 [theme]
@@ -13,7 +13,7 @@ layout=compact
 
 ## Color schemes
 
-`gendoc` currently offers two main color schemes, `dark` and `light`.
+`docodile` currently offers two main color schemes, `dark` and `light`.
 
 <script>
     const bodyEl = document.querySelector("body");
