@@ -103,7 +103,9 @@ void SortDirectory(Directory *dir) {
       char buffer[1000];
       sprintf(buffer, "%.*s", li->end - li->start, &li->input[li->start]);
       for (size_t i = 0; i < dir->num_dirs; i++) {
-        if (strcmp(buffer, dir->dirs[i]->path) == 0) {
+        Directory *curr = dir->dirs[i];
+        if ((curr->is_dir && strcmp(buffer, curr->path) == 0) ||
+            (!curr->is_dir && strcmp(buffer, curr->src_name) == 0)) {
           dir->dirs[i]->nav_index = index++;
           break;
         }

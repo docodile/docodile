@@ -41,10 +41,10 @@
   --gd-color-jet-black: #2d2d2d;
   --gd-color-midnight: #0f0f1a;
 
-  --gd-bg-primary: #fff;
+  --gd-bg-primary: var(--gd-color-white);
   --gd-primary-color: var(--gd-color-emerald);
   --gd-secondary-color: var(--gd-primary-color);
-  --gd-header-fg-color: var(--gd-bg-primary);
+  --gd-header-fg-color: var(--gd-color-white);
   --gd-header-bg-color: var(--gd-primary-color);
   --gd-header-bg-primary: var(--gd-primary-color);
   --gd-header-bg-secondary: var(--gd-secondary-color);
@@ -351,6 +351,10 @@
     );
   }
 
+  [data-gd-decorations~="transparent"] {
+    --gd-header-bg-color: transparent;
+  }
+
   [data-gd-color-scheme="light"] {
     --gd-bg-primary: var(--gd-color-white);
     --gd-fg-primary: color-mix(
@@ -366,5 +370,26 @@
       var(--gd-color-white) 80%,
       var(--gd-primary-color)
     );
+  }
+
+  @media (prefers-color-scheme: dark) {
+    & {
+      --gd-bg-primary: var(--gd-color-black);
+      --gd-fg-primary: color-mix(
+        in srgb,
+        var(--gd-color-white) 80%,
+        var(--gd-primary-color)
+      );
+    }
+  }
+  @media (prefers-color-scheme: light) {
+    & {
+      --gd-bg-primary: var(--gd-color-white);
+      --gd-fg-primary: color-mix(
+        in srgb,
+        var(--gd-color-black) 80%,
+        var(--gd-primary-color)
+      );
+    }
   }
 }

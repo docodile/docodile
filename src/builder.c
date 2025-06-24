@@ -201,7 +201,7 @@ static const char *BUILDDIR;
 // TODO Make this better
 void InitializeSite(const char *dir) {
   BUILDDIR = dir;
-  char buff[100];
+  char buff[MAXFILEPATH];
   sprintf(buff, "%s/assets/styles", BUILDDIR);
   MkDirR(buff);
 }

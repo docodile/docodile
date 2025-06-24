@@ -70,8 +70,11 @@ main {
   padding: 0.5rem 1rem;
   user-select: none;
   z-index: 1;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+
+  [data-gd-decorations~="glint"] & {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+  }
 
   [data-gd-decorations~="glass"] & {
     backdrop-filter: blur(12px);
@@ -223,12 +226,18 @@ article.gd-article {
     align-items: center;
     gap: 1rem;
     text-align: center;
+    margin-top: 2rem;
+
+    &:first-of-type {
+      margin-top: 1rem;
+    }
   }
 
   h2 {
     font-size: 1.25rem;
-    text-decoration: underline;
-    text-decoration-color: var(--gd-secondary-color);
+    margin-top: 2rem;
+    /* text-decoration: underline; */
+    /* text-decoration-color: var(--gd-secondary-color); */
   }
 
   h3 {

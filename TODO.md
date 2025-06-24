@@ -1,0 +1,7 @@
+- [ ] Improve links
+  - [ ] Convert local paths to site paths
+  - [ ] Images
+- [ ] Generate 404.html
+- [ ] Navigation
+  - [x] Be able to sort files not just directories
+  - [x] Fix sorting
