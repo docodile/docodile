@@ -8,7 +8,6 @@
 #include "builder.h"
 #include "html.h"
 #include "lex.h"
-#include "logger.h"
 #include "parser.h"
 #include "search.h"
 #include "server.h"
@@ -21,7 +20,7 @@ void Help();
 void New();
 
 int main(int argc, char **argv) {
-  char *name    = ShiftArg(&argv);
+  ShiftArg(&argv); // Program name
   char *command = ShiftArg(&argv);
   if (!command) command = "help";
 

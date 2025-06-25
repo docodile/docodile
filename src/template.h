@@ -33,13 +33,11 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir);
 void TemplateSideNav(Page *page, Directory *site_directory,
                      Directory *current_directory, bool hide_index);
 void TemplateToc(TOC toc);
-void TemplateFooterNav(Page *page, Directory *site_directory,
-                       Directory *current_directory);
+void TemplateFooterNav(Page *page, Directory *current_directory);
 void TemplatePartial(const char *partial_name, Page *page,
                      Directory *site_directory, Directory *current_directory,
                      BuildPageFunc build_page_func);
-void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
-                         Directory *current_directory);
+void TemplateBreadcrumbs(Directory *page);
 void TemplateLogo();
 void TemplateStyles(Directory *site_directory);
 

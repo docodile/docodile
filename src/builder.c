@@ -250,7 +250,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     }
 
     char path[MAXFILEPATH];
-    sprintf(path, "%s/%s", base_path, page->out_name);
+    snprintf(path, sizeof(path) + 1, "%s/%s", base_path, page->out_name);
     strcpy(page->url, path);
 
     if (!config_updated) {
@@ -288,7 +288,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
     Directory *directory = current_directory->dirs[i];
     char path[MAXFILEPATH];
-    sprintf(path, "%s/%s", base_path, directory->path);
+    snprintf(path, sizeof(path) + 1, "%s/%s", base_path, directory->path);
     BuildSite(site_directory, directory, path);
   }
 

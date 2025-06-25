@@ -46,7 +46,7 @@ static void RenderNodeTag(Node *node, bool closing) {
 void RenderNodeContent(Node *node) {
   if (strcmp("a", node->type) == 0 || strcmp("_text", node->type) == 0 ||
       strcmp("code", node->type) == 0 || strcmp("_html", node->type) == 0) {
-    size_t length = node->end - node->start;
+    int length = node->end - node->start;
     assert(length >= 0);
     print("%.*s", length, &node->input[node->start]);
   }

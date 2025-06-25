@@ -2,75 +2,6 @@
 
 static Token LexParagraph(Lexer *lexer);
 
-static void DebugInfo(Lexer *lexer, Token *token, bool is_inline) {
-  fprintf(stderr, "=== DEBUG START ===\n");
-  fprintf(stderr, "%s\n", is_inline ? "INLINE" : "BLOCK");
-  switch (token->type) {
-    case TOKEN_BOLD:
-      fprintf(stderr, "token->type: TOKEN_BOLD\n");
-      break;
-    case TOKEN_BR:
-      fprintf(stderr, "token->type: TOKEN_BR\n");
-      break;
-    case TOKEN_H1:
-      fprintf(stderr, "token->type: TOKEN_H1\n");
-      break;
-    case TOKEN_H2:
-      fprintf(stderr, "token->type: TOKEN_H2\n");
-      break;
-    case TOKEN_H3:
-      fprintf(stderr, "token->type: TOKEN_H3\n");
-      break;
-    case TOKEN_H4:
-      fprintf(stderr, "token->type: TOKEN_H4\n");
-      break;
-    case TOKEN_H5:
-      fprintf(stderr, "token->type: TOKEN_H5\n");
-      break;
-    case TOKEN_H6:
-      fprintf(stderr, "token->type: TOKEN_H6\n");
-      break;
-    case TOKEN_ITALICS:
-      fprintf(stderr, "token->type: TOKEN_ITALICS\n");
-      break;
-    case TOKEN_LINK:
-      fprintf(stderr, "token->type: TOKEN_LINK\n");
-      break;
-    case TOKEN_NULL:
-      fprintf(stderr, "token->type: TOKEN_NULL\n");
-      break;
-    case TOKEN_P:
-      fprintf(stderr, "token->type: TOKEN_P\n");
-      break;
-    case TOKEN_TEXT:
-      fprintf(stderr, "token->type: TOKEN_TEXT\n");
-      break;
-    case TOKEN_UNKNOWN:
-      fprintf(stderr, "token->type: TOKEN_UNKNOWN\n");
-      break;
-    case TOKEN_LISTITEMORDERED:
-      fprintf(stderr, "token->type: TOKEN_LISTITEMORDED\n");
-      break;
-    case TOKEN_LISTITEMUNORDERED:
-      fprintf(stderr, "token->type: TOKEN_LISTITEMUNORDERED\n");
-      break;
-    default:
-      fprintf(stderr, "token->type: [error]\n");
-      break;
-  }
-  fprintf(stderr, "token->start: %zu\n", token->start);
-  fprintf(stderr, "token->end: %zu\n", token->end);
-  fprintf(stderr, "token->length: %zu\n", token->length);
-  fprintf(stderr, "token->indent_level: %zu\n", token->indent_level);
-  fprintf(stderr, "lexeme: \033[34m%.*s\033[0m\n", token->length,
-          &token->input[token->start]);
-
-  fprintf(stderr, "lexer->pos: %zu\n", lexer->pos);
-  fprintf(stderr, "lexer->end: %zu\n", lexer->end);
-  fprintf(stderr, "==== DEBUG END ====\n");
-  fprintf(stderr, "\n");
-}
-
 const char *TokenName(Token *token) {
   switch (token->type) {
     case TOKEN_BOLD:
@@ -116,11 +47,6 @@ const char *TokenName(Token *token) {
     default:
       return "UNKNOWN";
   }
-}
-
-static void DebugMini(Token *token, bool is_inline) {
-  if (!is_inline) fprintf(stderr, "\n\n");
-  fprintf(stderr, "\x1b[44m\x1b[1m %s \x1b[0m  ", TokenName(token));
 }
 
 static Token TokenNew(char *input, size_t pos) {
@@ -383,18 +309,6 @@ static Token LexLinkHref(Lexer *lexer) {
   token.start  = start;
   token.end    = end;
   token.length = end - start;
-  return token;
-}
-
-static Token LexLink(Lexer *lexer) {
-  Token token  = TokenNew(lexer->input, lexer->pos);
-  token.type   = TOKEN_LINK;
-  size_t start = lexer->pos;
-  size_t end   = ConsumeUntilAny(lexer, ")", true);
-  token.start  = start;
-  token.end    = end;
-  token.length = end - start;
-  NewLine(lexer);
   return token;
 }
 

@@ -105,11 +105,11 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
       if (strcmp("side_nav", state.slot_name) == 0)
         TemplateSideNav(page, site_directory, current_directory, false);
       if (strcmp("footer_nav", state.slot_name) == 0)
-        TemplateFooterNav(page, site_directory, current_directory);
+        TemplateFooterNav(page, current_directory);
       if (strcmp("breadcrumbs", state.slot_name) == 0) {
         char *breadcrumbs_config = ReadConfig("navigation.breadcrumbs");
         if (breadcrumbs_config && strcmp("true", breadcrumbs_config) == 0) {
-          TemplateBreadcrumbs(page, site_directory, current_directory);
+          TemplateBreadcrumbs(page);
         }
       }
       if (strcmp("main", state.slot_name) == 0) {
@@ -253,8 +253,6 @@ void TemplateToc(TOC toc) {
 #define BLOCK_SIZE 20
 #define SVG_SIZE   GRID_SIZE *BLOCK_SIZE
 
-static int GetCoord(unsigned char byte) { return (byte * SVG_SIZE) / 255; }
-
 static void Identicon() {
   const char *site_name = ReadConfig("site-name");
   unsigned char hash[HASH_SIZE];
@@ -311,7 +309,7 @@ static void TemplateStyleLinks(Directory *dir, char *path) {
   for (size_t i = 0; i < dir->num_dirs; i++) {
     if (dir->dirs[i]->is_dir) {
       char buffer[MAXFILEPATH];
-      snprintf(buffer, MAXFILEPATH, "%s/%s", path, dir->dirs[i]->path);
+      snprintf(buffer, sizeof(buffer) + 1, "%s/%s", path, dir->dirs[i]->path);
       TemplateStyleLinks(dir->dirs[i], buffer);
       continue;
     }
@@ -338,8 +336,7 @@ void TemplateStyles(Directory *site_directory) {
   TemplateStyleLinks(dir, "/assets/styles");
 }
 
-void TemplateFooterNav(Page *page, Directory *site_directory,
-                       Directory *current_directory) {
+void TemplateFooterNav(Page *page, Directory *current_directory) {
   Directory *prev = NULL, *next = NULL;
 
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
@@ -348,7 +345,7 @@ void TemplateFooterNav(Page *page, Directory *site_directory,
     if (!this->hidden && !this->is_dir) prev = this;
   }
 
-  for (size_t i = current_directory->num_dirs - 1; i >= 0; i--) {
+  for (ssize_t i = current_directory->num_dirs - 1; i >= 0; i--) {
     Directory *this = current_directory->dirs[i];
     if (this == page) break;
     if (!this->hidden && !this->is_dir) next = this;
@@ -392,11 +389,9 @@ void TemplatePartial(const char *partial_name, Page *page,
   _template.input = saved_input;
 }
 
-void TemplateBreadcrumbs(Directory *page, Directory *site_directory,
-                         Directory *current_directory) {
+void TemplateBreadcrumbs(Directory *page) {
   print("<nav class=\"gd-breadcrumbs\">");
   print("<menu>");
-  int level         = 0;
   Directory *parent = page->parent;
   bool skip         = page->level < 3 && page->is_index;
   if (!skip) {

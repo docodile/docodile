@@ -33,7 +33,7 @@ void FreeNode(Node *node) {
     FreeNode(node->next_sibling);
   }
 
-  for (size_t i = 0; i < node->attributes_count; i++) {
+  for (int i = 0; i < node->attributes_count; i++) {
     free(node->attributes[i].name);
     free(node->attributes[i].value);
   }
@@ -113,9 +113,9 @@ static const char *GetHeadingTag(int level) {
 }
 
 Node *ParseHeading(Token *token, int level, Lexer *lexer) {
-  Node *n    = NodeFromToken(GetHeadingTag(level), token);
-  size_t len = n->end - n->start;
-  char *id   = malloc(len + 1);
+  Node *n  = NodeFromToken(GetHeadingTag(level), token);
+  int len  = n->end - n->start;
+  char *id = malloc(len + 1);
   snprintf(id, len + 1, "%.*s", len, &n->input[n->start]);
   char *heading = strtok(id, "{");
   len           = strlen(heading);
@@ -147,9 +147,9 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
     }
 
     if (attrs != NULL && strcmp("_attrs", attrs->type) == 0) {
-      size_t len   = attrs->end - attrs->start;
+      int len      = attrs->end - attrs->start;
       char *buffer = malloc(len + 1);
-      snprintf(buffer, len, "%.*s", len, &attrs->input[attrs->start]);
+      snprintf(buffer, len + 1, "%.*s", len, &attrs->input[attrs->start]);
       buffer[len] = '\0';
       NodeAddAttribute(details, "_attrs", buffer);
     }
@@ -205,7 +205,6 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
 
 Node *ParseHtml(Token *token, Lexer *lexer) {
   Node *n    = NodeFromToken("_html", token);
-  size_t end = n->end;
   size_t pos = lexer->pos;
   Token next = NextToken(lexer);
   while (next.type != TOKEN_NULL &&
@@ -282,8 +281,6 @@ Node *ParseList(Token *token, Lexer *lexer) {
     next = PeekToken(lexer);
   }
 
-  Token after = PeekToken(lexer);
-
   return n;
 }
 
@@ -306,7 +303,7 @@ Node *ParseCodeBlock(Token *token) {
   if (inline_token.type == TOKEN_TEXT && token->length > 0) {
     char *buffer = malloc(100);
     int written  = snprintf(buffer, inline_token.length + 10, "language-%.*s",
-                            inline_token.length + 1,
+                            (int)inline_token.length + 1,
                             &inline_token.input[inline_token.start]);
     written += 9;  // "language-" = 9 chars
     buffer[written] = '\0';
@@ -384,12 +381,11 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
 Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
                                   int indent_level) {
   Token token = NextToken(lexer);
-  Node *node;
-  size_t pos = lexer->pos;
+  size_t pos  = lexer->pos;
   while (token.type != TOKEN_NULL && ((token.type == TOKEN_EMPTYLINE) ||
                                       (token.type != TOKEN_EMPTYLINE &&
                                        token.indent_level > indent_level))) {
-    node  = TokenSwitch(lexer, parent, token);
+    TokenSwitch(lexer, parent, token);
     pos   = lexer->pos;
     token = NextToken(lexer);
   }
@@ -399,9 +395,8 @@ Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent,
 
 Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type) {
   Token token = NextToken(lexer);
-  Node *node;
   while (token.type == token_type) {
-    node  = TokenSwitch(lexer, parent, token);
+    TokenSwitch(lexer, parent, token);
     token = NextToken(lexer);
   }
   return parent;
@@ -409,9 +404,8 @@ Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type) {
 
 Node *Parse(Lexer *lexer, Node *parent) {
   Token token = NextToken(lexer);
-  Node *node;
   while (token.type != TOKEN_NULL) {
-    node  = TokenSwitch(lexer, parent, token);
+    TokenSwitch(lexer, parent, token);
     token = NextToken(lexer);
   }
   return parent;
@@ -431,8 +425,9 @@ Node *ParseLink(Token *token, Lexer *lexer) {
   assert(link_href_token.type == TOKEN_LINKHREF);
 
   char *href_value = malloc(1000);
-  sprintf(href_value, "%.*s", link_href_token.end - link_href_token.start,
-          &n->input[link_href_token.start]);
+  snprintf(href_value, sizeof(href_value) + 1, "%.*s",
+           (int)(link_href_token.end - link_href_token.start),
+           &n->input[link_href_token.start]);
   char *href  = strtok(href_value, " ");
   char *title = strtok(NULL, "");
   ChangeFilePathExtension(".md", ".html", href, href);
@@ -483,7 +478,7 @@ Node *ParseText(Token *token) {
 Node *ParseInline(Lexer *lexer, Node *parent) {
   Lexer inline_lexer = LexerNew(lexer->input, parent->start, parent->end);
   Token token        = NextInlineToken(&inline_lexer);
-  Node *node;
+  Node *node         = NULL;
 
   while (token.type != TOKEN_NULL) {
     switch (token.type) {
@@ -528,4 +523,6 @@ Node *ParseInline(Lexer *lexer, Node *parent) {
 
     token = NextInlineToken(&inline_lexer);
   }
+
+  return node;
 }

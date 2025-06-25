@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "logger.h"
-
 typedef enum {
   TOKEN_UNKNOWN,
   TOKEN_NULL,

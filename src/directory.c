@@ -47,7 +47,7 @@ Page *NewPage(const char *name, const char *fullpath) {
   page->nav_index = __INT_MAX__;
   page->is_dir    = false;
   page->num_dirs  = 0;
-  page->toc       = (TOC){.count = 0, .items = malloc(sizeof(char *))};
+  page->toc       = (TOC){.count = 0, .items = malloc(sizeof(TOCItem))};
   page->parent    = NULL;
   page->level     = 0;
   return page;
@@ -64,7 +64,7 @@ Directory *NewDirectory(const char *path) {
   dir->num_dirs     = 0;
   dir->hidden       = false;
   dir->is_dir       = true;
-  dir->toc          = (TOC){.count = 0, .items = malloc(sizeof(char *))};
+  dir->toc          = (TOC){.count = 0, .items = malloc(sizeof(TOCItem))};
   dir->parent       = NULL;
   dir->level        = 0;
   return dir;

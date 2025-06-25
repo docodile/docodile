@@ -3,7 +3,6 @@
 
 #include <assert.h>
 
-#include "logger.h"
 #include "parser.h"
 #include "utils.h"
 

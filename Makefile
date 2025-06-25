@@ -11,11 +11,11 @@ DEPS := -lc -lssl -lcrypto
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(DEBUG_DIR)
-	@gcc -m64 -g -o $@ $^ -DLOG_LEVEL=4 $(DEPS)
+	@gcc -m64 -g -fsanitize=address,undefined -o $@ $^ -DLOG_LEVEL=4 $(DEPS)
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	@gcc -m64 -o $@ $^ $(DEPS)
+	@gcc -m64 -Wall -Wextra -o $@ $^ $(DEPS)
 
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)

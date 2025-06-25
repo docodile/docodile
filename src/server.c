@@ -63,8 +63,6 @@ static void Build() {
 }
 
 void SigchildHandler(int s) {
-  LOG_DEBUG("Handling SIGCHLD signal.");
-
   int saved_errno = errno;
 
   while (waitpid(-1, NULL, WNOHANG) > 0);
@@ -111,7 +109,7 @@ void Serve(const char *dir) {
       sscanf(request, "%s %s", method, path);
 
       if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
-      char full_path[1024];
+      char full_path[1031];
       snprintf(full_path, sizeof(full_path), HIDDENBUILDDIR "/.%s", path);
 
       SendFile(client_fd, full_path, HTTPSTATUSOK);
