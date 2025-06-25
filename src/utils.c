@@ -5,10 +5,11 @@ void ChangeFilePathExtension(const char *from, const char *to, const char *in,
   const char *ext = strrchr(in, '.');
   if (ext && strcmp(ext, from) == 0) {
     size_t base_len = ext - in;
-    strncpy(out, in, base_len);
+    memmove(out, in, base_len);
+    out[base_len] = '\0';
     strcpy(out + base_len, to);
   } else {
-    strcpy(out, in);
+    memmove(out, in, strlen(in) + 1);
   }
 }
 

@@ -22,6 +22,7 @@ static void BuildIndex(SearchIndex *index, Directory *dir) {
     char *text    = ReadFileToString(dir->full_path, &len);
     char *escaped = malloc(len * 2);
     EscapeString(text, escaped);
+    free(text);
 
     SearchDoc *doc = malloc(sizeof(SearchDoc));
     doc->name      = name;
@@ -108,4 +109,5 @@ void WriteSearchIndex(SearchIndex index, const char *filename) {
   }
 
   fputc(']', f);
+  fclose(f);
 }

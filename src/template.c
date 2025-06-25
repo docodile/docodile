@@ -111,6 +111,7 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
         if (breadcrumbs_config && strcmp("true", breadcrumbs_config) == 0) {
           TemplateBreadcrumbs(page);
         }
+        free(breadcrumbs_config);
       }
       if (strcmp("main", state.slot_name) == 0) {
         if (page->is_index && page->level == 1) {
@@ -385,7 +386,8 @@ void TemplatePartial(const char *partial_name, Page *page,
   _template.pos         = 0;
   _template.input       = template_source;
   TemplatePage(page, site_directory, current_directory, build_page_func);
-  _template.pos   = saved_pos;
+  _template.pos = saved_pos;
+  free(_template.input);
   _template.input = saved_input;
 }
 

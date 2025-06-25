@@ -15,7 +15,7 @@ $(DEBUG_DIR)/$(PROGRAM): $(SRC)
 
 $(BUILD_DIR)/$(PROGRAM): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	@gcc -m64 -Wall -Wextra -o $@ $^ $(DEPS)
+	@gcc -m64 -Wall -Wextra -fsanitize=undefined -o $@ $^ $(DEPS)
 
 build: $(BUILD_DIR)/$(PROGRAM)
 debug: $(DEBUG_DIR)/$(PROGRAM)

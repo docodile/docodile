@@ -5,7 +5,7 @@ Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent, int indent_level);
 Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type);
 
 Node *NewNode(const char *type) {
-  Node *node = (Node *)malloc(sizeof(Node));
+  Node *node = malloc(sizeof(Node));
   if (node == NULL) {
     perror("malloc failed");
     exit(EXIT_FAILURE);
@@ -25,17 +25,16 @@ Node *NewNode(const char *type) {
 }
 
 void FreeNode(Node *node) {
-  if (node->first_child) {
-    FreeNode(node->first_child);
-  }
+  static int total_attrs_freed = 0;
+  if (!node) return;
 
-  if (node->next_sibling) {
-    FreeNode(node->next_sibling);
-  }
+  if (node->first_child) FreeNode(node->first_child);
+  if (node->next_sibling) FreeNode(node->next_sibling);
 
   for (int i = 0; i < node->attributes_count; i++) {
     free(node->attributes[i].name);
     free(node->attributes[i].value);
+    total_attrs_freed++;
   }
 
   free(node->attributes);
@@ -45,6 +44,7 @@ void FreeNode(Node *node) {
 // TODO Error handling
 // TODO Test if the realloc works when enough attrs are added
 Node *NodeAddAttribute(Node *node, char *name, char *value) {
+  static int total_attr_count = 0;
   if (node->attributes_count + 1 >= node->max_attributes) {
     int new_max = node->max_attributes * 2;
     HTMLAttribute *new_attrs =
@@ -63,6 +63,7 @@ Node *NodeAddAttribute(Node *node, char *name, char *value) {
   strcpy(node->attributes[node->attributes_count].name, name);
   strcpy(node->attributes[node->attributes_count].value, value);
   node->attributes_count++;
+  total_attr_count++;
 
   return node;
 }
@@ -123,6 +124,7 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
   TitleCaseToKebabCase(heading, heading);
   heading[len] = '\0';
   NodeAddAttribute(n, "id", heading);
+  free(id);
 
   size_t last_token = lexer->pos;
   Token next        = NextToken(lexer);
@@ -152,6 +154,7 @@ Node *ParseHeading(Token *token, int level, Lexer *lexer) {
       snprintf(buffer, len + 1, "%.*s", len, &attrs->input[attrs->start]);
       buffer[len] = '\0';
       NodeAddAttribute(details, "_attrs", buffer);
+      free(buffer);
     }
 
     ParseUntilIndentationResets(lexer, details, token->indent_level);
@@ -193,10 +196,12 @@ Node *ParseAdmonition(Token *token, Lexer *lexer) {
   char *title_class = malloc(sizeof("admonition-title"));
   strcpy(title_class, "admonition-title");
   NodeAddAttribute(title, "class", title_class);
+  free(title_class);
   ParseUntilIndentationResets(lexer, n, token->indent_level);
   char *class = malloc(100);
   sprintf(class, "admonition %s", admonition_type);
   NodeAddAttribute(n, "class", class);
+  free(class);
   free(admonition);
 
   n->end = n->start;  // HACK prevent the title line being written again.
@@ -310,17 +315,16 @@ Node *ParseCodeBlock(Token *token) {
     n->start        = n->start + inline_token.length + 1;
 
     NodeAddAttribute(pre, "class", buffer);
+    free(buffer);
   }
 
   return pre;
 }
 
 static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
-  bool skip = false;
-  Node *node;
+  Node *node = NULL;
   switch (token.type) {
     case TOKEN_EMPTYLINE:
-      skip = true;
       break;
     case TOKEN_H1:
       node = ParseHeading(&token, 1, lexer);
@@ -368,12 +372,11 @@ static Node *TokenSwitch(Lexer *lexer, Node *parent, Token token) {
       break;
   }
 
-  if (!skip) {
-    NodeAppendChild(parent, node);
-    // HACK Maybe not the nicest way of handling code blocks.
-    if (token.type != TOKEN_CODEBLOCK && token.type != TOKEN_HTML)
-      ParseInline(lexer, node);
-  }
+  NodeAppendChild(parent, node);
+  // HACK Maybe not the nicest way of handling code blocks.
+  if (token.type != TOKEN_CODEBLOCK && token.type != TOKEN_HTML &&
+      token.type != TOKEN_EMPTYLINE)
+    ParseInline(lexer, node);
 
   return node;
 }
@@ -432,14 +435,16 @@ Node *ParseLink(Token *token, Lexer *lexer) {
   char *title = strtok(NULL, "");
   ChangeFilePathExtension(".md", ".html", href, href);
   NodeAddAttribute(n, "href", href);
+  free(href_value);
 
   if (title) {
     if (title[0] == '"') title++;
-    char *buffer = malloc(strlen(title));
+    char *buffer = malloc(strlen(title) + 1);
     strcpy(buffer, title);
     size_t len = strlen(buffer);
     if (buffer[len - 1] == '"') buffer[len - 1] = '\0';
     NodeAddAttribute(n, "title", buffer);
+    free(buffer);
   }
 
   return n;

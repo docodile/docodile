@@ -112,6 +112,8 @@ void SortDirectory(Directory *dir) {
       }
       li = li->next_sibling;
     }
+
+    FreeNode(nav);
   }
 
   if (input) free(input);
