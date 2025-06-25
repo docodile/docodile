@@ -1,0 +1,107 @@
+<a class="gd-repo hidden" href="https://github.com/{{ config.repo }}">
+  <i id="repo-icon" class="bi bi-github"></i>
+  <div id="repo-info">
+    <div>
+      <small id="repo-owner"></small
+      ><small id="repo-name">{{ config.repo }}</small>
+    </div>
+    <div id="repo-metadata">
+      <span id="repo-language">
+        <i class="bi bi-circle-fill"></i>
+        <span></span>
+      </span>
+      <span id="repo-stars">
+        <i class="bi bi-star-fill"></i>
+        <span></span>
+      </span>
+      <span id="repo-latest">
+        <i class="bi bi-tag-fill"></i>
+        <span></span>
+      </span>
+    </div>
+  </div>
+</a>
+
+<script>
+  // { name, full_name, html_url, stargazers_count, language }
+  const repo = "{{ config.repo }}";
+
+  async function getRepoData() {
+    try {
+      const data = await fetch(`https://api.github.com/repos/${repo}`);
+      return await data.json();
+    } catch {}
+  }
+
+  async function getLatestRelease() {
+    try {
+      const data = await fetch(
+        `https://api.github.com/repos/${repo}/releases/latest`
+      );
+      return await data.json();
+    } catch {}
+  }
+
+  async function getRepoInfo() {
+    const {
+      name,
+      full_name,
+      html_url: repo_url,
+      stargazers_count,
+      language,
+      owner: { login },
+    } = await getRepoData();
+    const { tag_name, html_url: release_url } = await getLatestRelease();
+    return {
+      name,
+      full_name,
+      repo_url,
+      stargazers_count,
+      language,
+      tag_name,
+      release_url,
+      owner: login,
+    };
+  }
+
+  async function getCachedRepoInfo() {
+    const cached = sessionStorage.getItem("repo");
+    let repo = JSON.parse(cached);
+    if (!repo) {
+      repo = await getRepoInfo();
+      sessionStorage.setItem("repo", JSON.stringify(repo));
+    }
+    return repo;
+  }
+
+  async function buildRepoLink() {
+    const {
+      name,
+      full_name,
+      repo_url,
+      stargazers_count,
+      language,
+      tag_name,
+      release_url,
+      owner,
+    } = await getCachedRepoInfo();
+
+    const repoEl = document.querySelector(".gd-repo");
+    const repoOwnerEl = repoEl.querySelector("#repo-owner");
+    repoOwnerEl.textContent = owner + "/";
+    const repoNameEl = repoEl.querySelector("#repo-name");
+    repoNameEl.textContent = name;
+    const starsEl = repoEl.querySelector("#repo-stars span");
+    starsEl.textContent = String(stargazers_count);
+    const latestEl = repoEl.querySelector("#repo-latest span");
+    latestEl.textContent = tag_name ?? "No releases";
+    const languageEl = repoEl.querySelector("#repo-language span");
+    languageEl.textContent = language;
+
+    repoEl.classList.remove("hidden");
+  }
+
+  if (repo.length > 0) {
+    buildRepoLink();
+  }
+</script>
