@@ -24,7 +24,11 @@ void TemplateDestroy() {
 
 static char Peek() { return _template.input[_template.pos]; }
 static char Advance() { return _template.input[_template.pos++]; }
-static void Put(char c) { fputc(c, _out); }
+static void Put(char c) {
+  if (_out) {
+    fputc(c, _out);
+  }
+}
 
 TemplateState TemplateBuild(Page *page) {
   char c;
@@ -295,12 +299,8 @@ void TemplateLogo() {
     print("<i class=\"bi bi-book-half\"></i>");
   }
 
-  if (HasExtension(logo_opt, ".svg")) {
-    // TODO
-  }
-
-  if (HasExtension(logo_opt, ".png")) {
-    // TODO
+  if (HasExtension(logo_opt, ".svg") || HasExtension(logo_opt, ".png")) {
+    print("<img class=\"gd-logo\" src=\"/assets/%s\">", logo_opt);
   }
 
   free(logo_opt);

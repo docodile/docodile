@@ -227,6 +227,18 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     if (page->is_dir) continue;
 
     const char *ext = strrchr(page->src_name, '.');
+    if (strcmp(".svg", ext) == 0 || strcmp(".ico", ext) == 0) {
+      char p[MAXFILEPATH];
+      strcpy(p, page->full_path);
+      char *tok = strtok(p, "/");     // strip docs directory
+      tok       = strtok(NULL, "/");  // strip _assets
+      tok       = strtok(NULL, "");   // file with directory
+      char path[MAXFILEPATH];
+      sprintf(path, "%s/assets/%s", BUILDDIR, tok);
+      CopyFile(page->full_path, path);
+      continue;
+    }
+
     if (strcmp(".css", ext) == 0) {
       char p[MAXFILEPATH];
       strcpy(p, page->full_path);

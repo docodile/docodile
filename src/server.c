@@ -24,6 +24,10 @@ void SendFile(int client_fd, const char *path, const char *status) {
   const char *ext       = strrchr(path, '.');
   if (ext && strcmp(ext, ".css") == 0) {
     mime_type = "text/css";
+  } else if (ext && strcmp(ext, ".ico") == 0) {
+    mime_type = "image/x-icon";
+  } else if (ext && strcmp(ext, ".svg") == 0) {
+    mime_type = "image/svg+xml";
   } else if (ext && strcmp(ext, ".json") == 0) {
     mime_type = "application/json; charset=utf-8";
   }
