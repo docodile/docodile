@@ -431,9 +431,26 @@ Node *ParseLink(Token *token, Lexer *lexer) {
   snprintf(href_value, 1000, "%.*s",
            (int)(link_href_token.end - link_href_token.start),
            &n->input[link_href_token.start]);
-  char *href  = strtok(href_value, " ");
-  char *title = strtok(NULL, "");
-  RemoveExtension(href, href);
+  char *href      = strtok(href_value, " ");
+  char *title     = strtok(NULL, "");
+  size_t href_len = strlen(href);
+  // TODO come back to this and clean up.
+  if (HasExtension(href, ".md")) {
+    if (href_len > 2 && href[0] == '.' && href[1] == '/') {
+      href += 2;  // skip ./
+      href_len -= 2;
+    }
+    const char *index_name = "index.md";
+    if (href_len > sizeof(index_name)) {
+      size_t start = href_len - sizeof(index_name);
+      if (strcmp(&href[start], index_name) == 0) {
+        href[start] = '\0';
+        href_len    = start;
+      }
+    }
+
+    RemoveExtension(href, href);
+  }
   NodeAddAttribute(n, "href", href);
   free(href_value);
 
