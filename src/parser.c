@@ -428,12 +428,12 @@ Node *ParseLink(Token *token, Lexer *lexer) {
   assert(link_href_token.type == TOKEN_LINKHREF);
 
   char *href_value = malloc(1000);
-  snprintf(href_value, sizeof(href_value) + 1, "%.*s",
+  snprintf(href_value, 1000, "%.*s",
            (int)(link_href_token.end - link_href_token.start),
            &n->input[link_href_token.start]);
   char *href  = strtok(href_value, " ");
   char *title = strtok(NULL, "");
-  ChangeFilePathExtension(".md", ".html", href, href);
+  RemoveExtension(href, href);
   NodeAddAttribute(n, "href", href);
   free(href_value);
 
