@@ -20,7 +20,7 @@ void Help();
 void New();
 
 int main(int argc, char **argv) {
-  ShiftArg(&argv); // Program name
+  ShiftArg(&argv);  // Program name
   char *command = ShiftArg(&argv);
   if (!command) command = "help";
 
@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
   }
 
   if (strcmp("build", command) == 0) {
+    LoadConfig();
     Directory *site_directory = NewDirectory("");
     BuildSiteDirectory(site_directory, DOCSDIR, 0);
     Build404Page(site_directory, DOCSDIR "/404.md");
@@ -44,6 +45,7 @@ int main(int argc, char **argv) {
     WriteSearchIndex(index, "site/assets/search.json");
     FreeSearchIndex(index);
     BuildSite(site_directory, site_directory, "site");
+    UnloadConfig();
     return 0;
   }
 

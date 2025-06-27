@@ -7,6 +7,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "config.h"
 #include "parser.h"
 #include "utils.h"
 
@@ -45,6 +46,7 @@ typedef struct Directory {
   char full_path[MAXFILEPATH];
   char url[MAXURL];
   char url_path[MAXURL];
+  char *clean_path;
   TOC toc;
 } Directory;
 

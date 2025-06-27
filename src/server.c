@@ -10,8 +10,40 @@ void Send404(int client_fd) {
   SendFile(client_fd, HIDDENBUILDDIR "/404.html", HTTPSTATUSNOTFOUND);
 }
 
+static char *StringAppend(const char *original, const char *suffix) {
+  size_t len = strlen(original) + strlen(suffix) + 1;
+  char *str  = malloc(len);
+  snprintf(str, len, "%s%s", original, suffix);
+  str[len] = '\0';
+  return str;
+}
+
+bool IsValidFile(const char *path) {
+  struct stat s;
+  if (stat(path, &s) != 0) {
+    return 0;
+  }
+  return s.st_mode & S_IFREG;
+}
+
 void SendFile(int client_fd, const char *path, const char *status) {
-  int file_fd = open(path, O_RDONLY);
+  int file_fd = -1;
+  if (IsValidFile(path)) file_fd = open(path, O_RDONLY);
+  if (file_fd < 0) {
+    char *path_with_ext = StringAppend(path, ".html");
+    if (IsValidFile(path_with_ext)) {
+      file_fd = open(path_with_ext, O_RDONLY);
+    }
+    free(path_with_ext);
+  }
+  if (file_fd < 0) {
+    char *path_with_index = StringAppend(path, "/index.html");
+    if (IsValidFile(path_with_index)) {
+      file_fd = open(path_with_index, O_RDONLY);
+    }
+    free(path_with_index);
+  }
+
   if (file_fd == -1) {
     Send404(client_fd);
     return;
@@ -52,6 +84,7 @@ void SendFile(int client_fd, const char *path, const char *status) {
 
 static void Build() {
   Directory *site_directory = NewDirectory("");
+  LoadConfig();
   BuildSiteDirectory(site_directory, DOCSDIR, 0);
   Build404Page(site_directory, DOCSDIR "/404.md");
   SortDirectory(site_directory);
@@ -63,6 +96,7 @@ static void Build() {
     FreeSearchIndex(index);
   }
   BuildSite(site_directory, site_directory, HIDDENBUILDDIR);
+  UnloadConfig();
   FreeDirectory(site_directory);
 }
 
@@ -104,13 +138,35 @@ void Serve(const char *dir) {
     if (pid == 0) {
       close(server_fd);
 
-      // TODO only build if change detected
       Build();
       char request[BUFFER_SIZE];
-      read(client_fd, request, BUFFER_SIZE - 1);
+      ssize_t request_bytes = read(client_fd, request, BUFFER_SIZE - 1);
 
-      char method[8], path[1024];
-      sscanf(request, "%s %s", method, path);
+      if (request_bytes <= 0) {
+        Send404(client_fd);
+        close(client_fd);
+        exit(0);
+      }
+
+      ssize_t c = -1;
+      while (c < request_bytes && request[++c] != ' ');
+      size_t method_len = c;
+      size_t path_start = ++c;
+      while (c < request_bytes && request[++c] != ' ');
+      size_t path_len = c - path_start;
+
+      if (path_len <= 1) {
+        SendFile(client_fd, HIDDENBUILDDIR "/index.html", HTTPSTATUSOK);
+        close(client_fd);
+        exit(0);
+      }
+
+      char *method = malloc(method_len + 1);
+      char *path   = malloc(path_len + 1);
+      memcpy(method, &request[0], method_len);
+      method[method_len] = '\0';
+      memcpy(path, &request[path_start], path_len);
+      path[path_len] = '\0';
 
       if (strcmp(path, "/") == 0) strcpy(path, "/index.html");
       char full_path[1031];

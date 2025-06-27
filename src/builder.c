@@ -283,8 +283,6 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     }
 
     FILE *html_page = fopen(path, "w");
-    LoadConfig();
-
     TemplateInit("templates/index.html", html_page);
     TemplateState state =
         TemplatePage(page, site_directory, current_directory, BuildPage);
@@ -292,7 +290,6 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
       state = TemplatePage(page, site_directory, current_directory, BuildPage);
     }
     TemplateDestroy();
-    UnloadConfig();
 
     fclose(html_page);
   }

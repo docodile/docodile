@@ -174,7 +174,7 @@ void TemplateNav(Directory *site_dir, Directory *current_dir) {
       print("<li class=\"active\">");
     else
       print("<li>");
-    print("<a href=\"/%s/index.html\">%s</a>", dir->path, dir->title);
+    print("<a href=\"/%s\">%s</a>", dir->path, dir->title);
     print("</li>");
   }
   print("</menu>");
@@ -218,7 +218,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       Directory *index_page = FindIndexPage(dir);
 
       if (index_page != NULL) {
-        print("<summary><a href=\"%s\">%s</a></summary>", index_page->url_path,
+        print("<summary><a href=\"%s\">%s</a></summary>", dir->clean_path,
               dir->title);
       } else {
         print("<summary>%s</summary>", dir->title);
@@ -230,7 +230,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       if (hide_index && dir->is_index) continue;
       char classes[100] = "";
       if (page == dir) sprintf(classes, " class=\"active\"");
-      print("<li><a href=\"%s\"%s>%s</a></li>", dir->url_path, classes,
+      print("<li><a href=\"%s\"%s>%s</a></li>", dir->clean_path, classes,
             dir->title);
     }
   }
@@ -343,18 +343,44 @@ void TemplateFooterNav(Page *page, Directory *current_directory) {
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
     Directory *this = current_directory->dirs[i];
     if (this == page) break;
-    if (!this->hidden && !this->is_dir) prev = this;
+    if (!this->hidden) prev = this->is_dir ? FindIndexPage(this) : this;
+  }
+
+  if (!prev) {
+    Directory *parent      = page->parent;
+    Directory *grandparent = parent->parent;
+
+    if (grandparent) {
+      for (size_t i = 0; i < current_directory->num_dirs; i++) {
+        Directory *this = grandparent->dirs[i];
+        if (this == parent) break;
+        if (!this->hidden) prev = this->is_dir ? FindIndexPage(this) : this;
+      }
+    }
   }
 
   for (ssize_t i = current_directory->num_dirs - 1; i >= 0; i--) {
     Directory *this = current_directory->dirs[i];
     if (this == page) break;
-    if (!this->hidden && !this->is_dir) next = this;
+    if (!this->hidden) next = this->is_dir ? FindIndexPage(this) : this;
+  }
+
+  if (!next) {
+    Directory *parent      = page->parent;
+    Directory *grandparent = parent->parent;
+
+    if (grandparent) {
+      for (ssize_t i = grandparent->num_dirs - 1; i >= 0; i--) {
+        Directory *this = grandparent->dirs[i];
+        if (this == parent) break;
+        if (!this->hidden) next = this->is_dir ? FindIndexPage(this) : this;
+      }
+    }
   }
 
   print("<nav class=\"gd-footer-nav\">");
   if (prev) {
-    print("<a class=\"gd-nav-link prev\" href=\"%s\">", prev->url_path);
+    print("<a class=\"gd-nav-link prev\" href=\"%s\">", prev->clean_path);
     print("<div>");
     print("<small>Prev</small>");
     print("<h2>%s</h2>", prev->title);
@@ -363,7 +389,7 @@ void TemplateFooterNav(Page *page, Directory *current_directory) {
     print("</a>");
   }
   if (next) {
-    print("<a class=\"gd-nav-link next\" href=\"%s\">", next->url_path);
+    print("<a class=\"gd-nav-link next\" href=\"%s\">", next->clean_path);
     print("<div>");
     print("<small>Next</small>");
     print("<h2>%s</h2>", next->title);

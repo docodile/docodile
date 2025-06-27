@@ -20,6 +20,16 @@ static void GenerateTitle(const char *in, char *out) {
   else
     strcpy(title, second);
 
+  char *site_name = ReadConfig("site-name");
+
+  if (strcmp("docs", title) == 0) {
+    if (site_name) {
+      strcpy(title, site_name);
+    }
+  }
+
+  free(site_name);
+
   RemoveExtension(title, out);
   KebabCaseToTitleCase(out, out);
 }
@@ -34,11 +44,25 @@ static void GenerateUrl(const char *in, char *out) {
   strcpy(out, article_link);
 }
 
+static char *CreateCleanPath(const char *original, bool is_index) {
+  size_t len = strlen(original);
+  char *path = malloc(len + 1);
+  memcpy(path, original, len);
+  path[len] = '\0';
+  if (is_index) {
+    path[len - sizeof("/index.html")] = '\0';
+  } else {
+    path[len - sizeof(".html")] = '\0';
+  }
+  return path;
+}
+
 Page *NewPage(const char *name, const char *fullpath) {
   Page *page     = malloc(sizeof(Page));
   page->is_index = strcmp("index.md", name) == 0;
   ChangeFilePathExtension(".md", ".html", name, page->out_name);
   GenerateUrl(fullpath, page->url_path);
+  page->clean_path = CreateCleanPath(page->url_path, page->is_index);
   GenerateTitle(fullpath, page->title);
   strcpy(page->src_name, name);
   strcpy(page->full_path, fullpath);
@@ -132,6 +156,6 @@ void FreeDirectory(Directory *dir) {
 
   for (size_t i = 0; i < dir->toc.count; i++) free(dir->toc.items[i].link);
   free(dir->toc.items);
-
+  free(dir->clean_path);
   free(dir);
 }
