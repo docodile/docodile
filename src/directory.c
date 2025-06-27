@@ -50,9 +50,9 @@ static char *CreateCleanPath(const char *original, bool is_index) {
   memcpy(path, original, len);
   path[len] = '\0';
   if (is_index) {
-    path[len - sizeof("/index.html")] = '\0';
+    path[len - sizeof("/index.html") + 1] = '\0';
   } else {
-    path[len - sizeof(".html")] = '\0';
+    path[len - sizeof(".html") + 1] = '\0';
   }
   return path;
 }

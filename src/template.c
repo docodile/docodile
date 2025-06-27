@@ -218,8 +218,8 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       Directory *index_page = FindIndexPage(dir);
 
       if (index_page != NULL) {
-        print("<summary><a href=\"%s\">%s</a></summary>", dir->clean_path,
-              dir->title);
+        print("<summary><a href=\"%s\">%s</a></summary>",
+              index_page->clean_path, dir->title);
       } else {
         print("<summary>%s</summary>", dir->title);
       }
