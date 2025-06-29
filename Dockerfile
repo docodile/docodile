@@ -1,7 +1,7 @@
 FROM docker.io/library/ubuntu:22.04
 
 RUN apt-get update && \
-    apt-get install -y libssl-dev libssl3 make && \
+    apt-get install -y libssl-dev libssl3 make gcc && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /docodile
