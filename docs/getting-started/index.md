@@ -4,10 +4,10 @@
 
 ### Docker / Podman
 
-The easiest way to get up and running on any machine is to pull the Docker image and mount your `docs` folder to `/docodile/docs`.
+The easiest way to get up and running on any machine is to pull [the Docker image](https://hub.docker.com/r/jakeecarrington/docodile "jakeecarrington/docodile") and mount your directories to the appropriate places as shown below.
 
 ```shell
-podman run -d -v ./docs:/docodile/docs -v ./templates:/docodile/templates -v ./docodile.config:/docodile/docodile.config -p 6006:6006 docodile
+podman run -d -v ./docs:/docodile/docs -v ./templates:/docodile/templates -v ./docodile.config:/docodile/docodile.config -p 6006:6006 docker.io/jakeecarrington/docodile:v0.1.3
 ```
 
 ### From source
