@@ -42,4 +42,4 @@ jobs:
           context: .
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/your-image:${{ steps.extract_tag.outputs.TAG }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docodile:${{ steps.extract_tag.outputs.TAG }}
