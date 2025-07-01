@@ -1,4 +1,6 @@
 :root {
+  --breakpoint-md: max-width: 840px;
+
   --gd-color-black: black;
   --gd-color-white: white;
 

@@ -1,0 +1,22 @@
+<button class="gd-mobile-menu-button" onclick="toggleMenu()">
+  <i class="bi bi-list"></i>
+</button>
+<div class="gd-mobile-menu hidden">
+  <div class="gd-mobile-menu-header">
+    <button class="gd-mobile-menu-button" onclick="toggleMenu()">
+      <i class="bi bi-arrow-left-short"></i>
+    </button>
+    {{ page.title }}
+  </div>
+  <nav>
+    <menu> {% mobile_menu_items %} </menu>
+  </nav>
+</div>
+<script>
+  const menuEl = document.querySelector(".gd-mobile-menu");
+  function toggleMenu() {
+    const isMenuClosed = menuEl.classList.contains("hidden");
+    if (isMenuClosed) menuEl.classList.remove("hidden");
+    else menuEl.classList.add("hidden");
+  }
+</script>

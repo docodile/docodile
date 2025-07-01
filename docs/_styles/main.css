@@ -51,9 +51,20 @@ body {
 
 main {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr 3fr 1fr;
   gap: 1rem;
   flex: 1;
+  max-width: 60rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (max-width: 1060px) {
+    grid-template-columns: 3fr 1fr;
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .gd-title {
@@ -84,6 +95,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   h1 {
@@ -131,10 +143,18 @@ a {
 
 .gd-nav {
   margin-left: auto;
+
+  @media (max-width: 1060px) {
+    display: none;
+  }
 }
 
 .gd-toc {
   margin-right: auto;
+
+  @media (max-width: 860px) {
+    display: none;
+  }
 }
 
 .gd-nav,
@@ -216,10 +236,9 @@ a {
 
 article.gd-article {
   width: 100%;
-  max-width: 40rem;
+  max-width: min(36rem, 100vw);
+  padding: 0 1rem;
   overflow: none;
-  margin-left: auto;
-  margin-right: auto;
 
   h1 {
     display: flex;
@@ -353,6 +372,7 @@ article.gd-article {
 
     h2 {
       margin: 0;
+      text-align: start;
     }
   }
 
@@ -361,6 +381,10 @@ article.gd-article {
 
     > div {
       align-items: end;
+
+      h2 {
+        text-align: end;
+      }
     }
   }
 }

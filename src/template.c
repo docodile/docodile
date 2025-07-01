@@ -96,6 +96,8 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
   TemplateState state;
   while ((state = TemplateBuild(page)).state != TEMPLATE_END) {
     if (state.state == TEMPLATE_YIELD) {
+      if (strcmp("mobile_menu_items", state.slot_name) == 0)
+        TemplateMobileMenuItems(page, site_directory, current_directory);
       if (strcmp("styles", state.slot_name) == 0)
         TemplateStyles(site_directory);
       if (strcmp("logo", state.slot_name) == 0) TemplateLogo();
@@ -438,4 +440,23 @@ void TemplateBreadcrumbs(Directory *page) {
   }
   print("</menu>");
   print("</nav>");
+}
+
+void TemplateMobileMenuItems(Page *page, Directory *site_directory,
+                             Directory *current_directory) {
+  for (size_t i = 0; i < site_directory->num_dirs; i++) {
+    Directory *dir = site_directory->dirs[i];
+    if (dir->hidden) continue;
+    if (dir->path[0] == '_') continue;
+    print("<details name=\"menu-section\">");
+    Directory *index_page = FindIndexPage(dir);
+    if (index_page != NULL) {
+      print("<summary><a href=\"%s\">%s</a></summary>", index_page->clean_path,
+            dir->title);
+    } else {
+      print("<summary>%s</summary>", dir->title);
+    }
+    TemplateSideNav(page, site_directory, dir, true);
+    print("</details>");
+  }
 }

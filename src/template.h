@@ -40,5 +40,7 @@ void TemplatePartial(const char *partial_name, Page *page,
 void TemplateBreadcrumbs(Directory *page);
 void TemplateLogo();
 void TemplateStyles(Directory *site_directory);
+void TemplateMobileMenuItems(Page *page, Directory *site_directory,
+                        Directory *current_directory);
 
 #endif  // TEMPLATE_H
