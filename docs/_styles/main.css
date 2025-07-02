@@ -228,6 +228,12 @@ a {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+
+  @media (max-width: 1060px) {
+    nav {
+      display: none;
+    }
+  }
 }
 
 .gd-toc {
@@ -498,9 +504,10 @@ article.gd-article {
   height: 2rem;
   border-radius: 0.25rem;
   transition: width 0.3s ease-in-out;
+  margin-left: auto;
 
   &:focus-within {
-    width: 30rem;
+    width: min(30rem, 100vw);
 
     .gd-search-box {
       background-color: var(--focus-background);
@@ -625,6 +632,7 @@ article.gd-article {
 
 .gd-homepage {
   display: block;
+  max-width: none;
 
   > h1,
   > h2 {
@@ -654,13 +662,14 @@ article.gd-article {
     flex-wrap: wrap;
     gap: 2rem;
     padding: 2rem;
+    min-width: min(25rem, 100vw);
+    max-width: 100vw;
 
     section {
       border: 2px solid
         color-mix(in srgb, var(--gd-fg-primary), transparent 90%);
       border-radius: 1rem;
       background: color-mix(in srgb, var(--gd-fg-primary), transparent 95%);
-      min-width: 25rem;
       max-width: 25rem;
       min-height: 25rem;
       display: flex;

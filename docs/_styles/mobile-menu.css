@@ -1,10 +1,16 @@
 .gd-mobile-menu-button {
   all: unset;
   font-size: 1.5rem;
+  display: none;
+
+  @media (max-width: 1060px) {
+    display: inline-block;
+  }
 }
 
 .gd-mobile-menu {
-  /* display: none; */
+  --text: var(--gd-fg-primary);
+
   position: fixed;
   top: 0;
   left: 0;
@@ -18,21 +24,60 @@
   );
   z-index: 999;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1), 2px 0 8px rgba(0, 0, 0, 0.1);
-
   transition: left 0.3s ease;
+  color: var(--text);
 
   &.hidden {
     left: -100%;
   }
 
-  nav {
-    menu {
-        display: flex;
-        flex-direction: column;
+  user-select: none;
 
-        details {
-            border-bottom: 1px solid white;
+  nav {
+    padding: 1rem 0;
+
+    menu {
+      display: flex;
+      flex-direction: column;
+
+      > details {
+        border-bottom: 1px solid color-mix(in srgb, var(--text), transparent);
+      }
+
+      details {
+        ul {
+          list-style: none;
+          padding: 0;
+          padding-bottom: 1rem;
+
+          li {
+            padding: 0.25rem 0.5rem;
+            font-size: 1rem;
+
+            &.active {
+              color: var(--gd-secondary-color);
+            }
+          }
         }
+      }
+
+      details > summary {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+
+      details[open] > summary::after {
+        content: "\F282";
+        font-family: bootstrap-icons;
+      }
+
+      details > summary::after {
+        content: "\F285";
+        font-family: bootstrap-icons;
+      }
     }
   }
 }

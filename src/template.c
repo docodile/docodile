@@ -442,13 +442,36 @@ void TemplateBreadcrumbs(Directory *page) {
   print("</nav>");
 }
 
+static bool IsAncestor(Directory *dir, Directory *page) {
+  Directory *curr = page->parent;
+  if (curr == NULL) return false;
+  while (curr != NULL) {
+    if (curr == dir) return true;
+    curr = curr->parent;
+  }
+
+  return false;
+}
+
 void TemplateMobileMenuItems(Page *page, Directory *site_directory,
                              Directory *current_directory) {
   for (size_t i = 0; i < site_directory->num_dirs; i++) {
     Directory *dir = site_directory->dirs[i];
     if (dir->hidden) continue;
     if (dir->path[0] == '_') continue;
-    print("<details name=\"menu-section\">");
+
+    if (!dir->is_dir) {
+      if (dir->is_index) continue;
+      print("<li");
+      if (dir == page) print(" class=\"active\"");
+      print("><a href=\"%s\">%s</a></li>", dir->url_path, dir->title);
+      continue;
+    }
+
+    print("<details name=\"menu-section-%d\" ", dir->level);
+    if (IsAncestor(dir, page)) print("class=\"active\" open");
+    print(">");
+
     Directory *index_page = FindIndexPage(dir);
     if (index_page != NULL) {
       print("<summary><a href=\"%s\">%s</a></summary>", index_page->clean_path,
@@ -456,7 +479,11 @@ void TemplateMobileMenuItems(Page *page, Directory *site_directory,
     } else {
       print("<summary>%s</summary>", dir->title);
     }
-    TemplateSideNav(page, site_directory, dir, true);
+
+    print("<ul>");
+    TemplateMobileMenuItems(page, dir, current_directory);
+    print("</ul>");
+
     print("</details>");
   }
 }
