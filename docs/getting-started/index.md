@@ -17,3 +17,9 @@ To install from source you can clone this repo and run `make install`. This will
 !!! question "Want to help?"
 
     If you have knowledge of programming for Windows in C your pull requests would be greatly appreciated. See [Contributing](/getting-started/contributing.md) for more information.
+
+## Initial setup
+
+Once you have a way to run Docodile create a folder where you want to build your site. In this folder place a `docodile.config` (example included in this repo) and run `docodile serve` to see a hotloaded preview of your site.
+
+From here it works much like any other static site generator. Add some Markdown files to your folder and see your website come to life in your browser. Want to publish your site? Go here to find out more (TODO).
