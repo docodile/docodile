@@ -11,4 +11,6 @@
 - [ ] Improve styles 
 - [ ] Be able to switch off features in config
   - [ ] Search
-  - [ ] Footer nav  
+  - [ ] Footer nav
+- [ ] Fix display of links in TOC (e.g. use a link as a header)
+- [ ] Add support for .org files
