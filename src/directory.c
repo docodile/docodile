@@ -1,13 +1,15 @@
 #include "directory.h"
 
-static void GenerateTitle(const char *in, char *out) {
+#include "utils.h"
+
+static void GenerateTitle(const char* in, char* out) {
   char buffer[1000];
   strcpy(buffer, in);
 
-  char *first  = strtok(buffer, "/");
-  char *second = strtok(NULL, "/");
+  char* first  = strtok(buffer, "/");
+  char* second = strtok(NULL, "/");
   while (second != NULL) {
-    char *next = strtok(NULL, "/");
+    char* next = strtok(NULL, "/");
     if (!next) break;
     first  = second;
     second = next;
@@ -20,7 +22,7 @@ static void GenerateTitle(const char *in, char *out) {
   else
     strcpy(title, second);
 
-  char *site_name = ReadConfig("site-name");
+  char* site_name = ReadConfig("site-name");
 
   if (strcmp("docs", title) == 0) {
     if (site_name) {
@@ -34,19 +36,23 @@ static void GenerateTitle(const char *in, char *out) {
   KebabCaseToTitleCase(out, out);
 }
 
-static void GenerateUrl(const char *in, char *out) {
+static void GenerateUrl(const char* in, char* out) {
   char article_link[MAXURL];
   strcpy(article_link, in);
   strtok(article_link, "/");
-  char *path = strtok(NULL, "");
-  ChangeFilePathExtension(".md", ".html", path, out);
+  char* path = strtok(NULL, "");
+  if (HasExtension(path, ".org")) {
+    ChangeFilePathExtension(".org", ".html", path, out);
+  } else {
+    ChangeFilePathExtension(".md", ".html", path, out);
+  }
   sprintf(article_link, "/%s", out);
   strcpy(out, article_link);
 }
 
-static char *CreateCleanPath(const char *original, bool is_index) {
+static char* CreateCleanPath(const char* original, bool is_index) {
   size_t len = strlen(original);
-  char *path = malloc(len + 1);
+  char* path = malloc(len + 1);
   memcpy(path, original, len);
   path[len] = '\0';
   if (is_index) {
@@ -57,10 +63,14 @@ static char *CreateCleanPath(const char *original, bool is_index) {
   return path;
 }
 
-Page *NewPage(const char *name, const char *fullpath) {
-  Page *page     = malloc(sizeof(Page));
+Page* NewPage(const char* name, const char* fullpath) {
+  Page* page     = malloc(sizeof(Page));
   page->is_index = strcmp("index.md", name) == 0;
-  ChangeFilePathExtension(".md", ".html", name, page->out_name);
+  if (HasExtension(name, ".org")) {
+    ChangeFilePathExtension(".org", ".html", name, page->out_name);
+  } else {
+    ChangeFilePathExtension(".md", ".html", name, page->out_name);
+  }
   GenerateUrl(fullpath, page->url_path);
   page->clean_path = CreateCleanPath(page->url_path, page->is_index);
   GenerateTitle(fullpath, page->title);
@@ -77,8 +87,8 @@ Page *NewPage(const char *name, const char *fullpath) {
   return page;
 }
 
-Directory *NewDirectory(const char *path) {
-  Directory *dir = malloc(sizeof(Directory));
+Directory* NewDirectory(const char* path) {
+  Directory* dir = malloc(sizeof(Directory));
   KebabCaseToTitleCase(path, dir->title);
   dir->is_index = false;
   strcpy(dir->path, path);
@@ -94,9 +104,9 @@ Directory *NewDirectory(const char *path) {
   return dir;
 }
 
-static int CompareDirs(const void *a, const void *b) {
-  Directory *dir_a = *(Directory **)a;
-  Directory *dir_b = *(Directory **)b;
+static int CompareDirs(const void* a, const void* b) {
+  Directory* dir_a = *(Directory**)a;
+  Directory* dir_b = *(Directory**)b;
 
   if (dir_a->nav_index < dir_b->nav_index) return -1;
   if (dir_a->nav_index > dir_b->nav_index) return 1;
@@ -105,9 +115,9 @@ static int CompareDirs(const void *a, const void *b) {
   return strcasecmp(dir_a->title, dir_b->title);
 }
 
-void SortDirectory(Directory *dir) {
-  char *input = NULL;
-  Node *nav   = NULL;
+void SortDirectory(Directory* dir) {
+  char* input = NULL;
+  Node* nav   = NULL;
   for (size_t i = 0; i < dir->num_dirs; i++) {
     if (strcmp("_nav.md", dir->dirs[i]->src_name) == 0) {
       nav = NewNode("nav");
@@ -121,13 +131,13 @@ void SortDirectory(Directory *dir) {
 
   if (nav) {
     size_t index = 0;
-    Node *li     = nav->first_child;
+    Node* li     = nav->first_child;
     if (li != NULL) li = li->first_child;
     while (li != NULL && strcmp("li", li->type) == 0) {
       char buffer[1000];
       sprintf(buffer, "%.*s", li->end - li->start, &li->input[li->start]);
       for (size_t i = 0; i < dir->num_dirs; i++) {
-        Directory *curr = dir->dirs[i];
+        Directory* curr = dir->dirs[i];
         if ((curr->is_dir && strcmp(buffer, curr->path) == 0) ||
             (!curr->is_dir && strcmp(buffer, curr->src_name) == 0)) {
           dir->dirs[i]->nav_index = index++;
@@ -142,14 +152,14 @@ void SortDirectory(Directory *dir) {
 
   if (input) free(input);
 
-  qsort(dir->dirs, dir->num_dirs, sizeof(Directory *), CompareDirs);
+  qsort(dir->dirs, dir->num_dirs, sizeof(Directory*), CompareDirs);
 
   for (size_t i = 0; i < dir->num_dirs; i++) {
     SortDirectory(dir->dirs[i]);
   }
 }
 
-void FreeDirectory(Directory *dir) {
+void FreeDirectory(Directory* dir) {
   for (size_t i = 0; i < dir->num_dirs; i++) {
     FreeDirectory(dir->dirs[i]);
   }
