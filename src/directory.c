@@ -1,5 +1,7 @@
 #include "directory.h"
 
+#include "utils.h"
+
 static void GenerateTitle(const char *in, char *out) {
   char buffer[1000];
   strcpy(buffer, in);
@@ -39,7 +41,11 @@ static void GenerateUrl(const char *in, char *out) {
   strcpy(article_link, in);
   strtok(article_link, "/");
   char *path = strtok(NULL, "");
-  ChangeFilePathExtension(".md", ".html", path, out);
+  if (HasExtension(path, ".org")) {
+    ChangeFilePathExtension(".org", ".html", path, out);
+  } else {
+    ChangeFilePathExtension(".md", ".html", path, out);
+  }
   sprintf(article_link, "/%s", out);
   strcpy(out, article_link);
 }
@@ -60,7 +66,11 @@ static char *CreateCleanPath(const char *original, bool is_index) {
 Page *NewPage(const char *name, const char *fullpath) {
   Page *page     = malloc(sizeof(Page));
   page->is_index = strcmp("index.md", name) == 0;
-  ChangeFilePathExtension(".md", ".html", name, page->out_name);
+  if (HasExtension(name, ".org")) {
+    ChangeFilePathExtension(".org", ".html", name, page->out_name);
+  } else {
+    ChangeFilePathExtension(".md", ".html", name, page->out_name);
+  }
   GenerateUrl(fullpath, page->url_path);
   page->clean_path = CreateCleanPath(page->url_path, page->is_index);
   GenerateTitle(fullpath, page->title);
