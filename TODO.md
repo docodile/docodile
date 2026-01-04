@@ -5,3 +5,10 @@
 - [x] Navigation
   - [x] Be able to sort files not just directories
   - [x] Fix sorting
+  - [ ] Be able to remove items from navigation
+  - [ ] Rename items in navigation
+- [ ] Sitemap generation
+- [ ] Improve styles 
+- [ ] Be able to switch off features in config
+  - [ ] Search
+  - [ ] Footer nav  
