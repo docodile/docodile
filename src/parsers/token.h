@@ -1,12 +1,7 @@
-#ifndef LEX_H
-#define LEX_H
+#ifndef TOKEN_H
+#define TOKEN_H
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 typedef enum {
   TOKEN_UNKNOWN,
@@ -48,7 +43,7 @@ typedef enum {
 } TokenType;
 
 typedef struct {
-  char *input;
+  char* input;
   TokenType type;
   size_t start;
   size_t end;
@@ -57,17 +52,8 @@ typedef struct {
   int indent_level;
 } Token;
 
-typedef struct Lexer {
-  char *input;
-  size_t pos;
-  size_t end;
-  size_t current_line;
-} Lexer;
+Token TokenNew(char* input, size_t pos);
+Token TokenNull();
+void TokenPrint(Token* token);
 
-Lexer LexerNew(char *input, size_t start, size_t end);
-Token NextToken(Lexer *lexer);
-Token PeekToken(Lexer *lexer);
-Token NextInlineToken(Lexer *lexer);
-void TokenPrint(Token *token);
-
-#endif  // LEX_H
+#endif

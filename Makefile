@@ -6,7 +6,7 @@ DIST_DIR := dist
 SCRIPTS_DIR := scripts
 DOCS_DIR := docs
 TEMPLATES_DIR := templates
-SRC := $(wildcard $(SRC_DIR)/*.c)
+SRC := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*/*/*.c)
 DEPS := -lc -lssl -lcrypto
 
 $(DEBUG_DIR)/$(PROGRAM): $(SRC)
