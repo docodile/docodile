@@ -8,7 +8,7 @@
 #include <strings.h>
 
 #include "config.h"
-#include "parser.h"
+#include "parsers/parser.h"
 #include "utils.h"
 
 #define MAXDIRS        1000
@@ -19,12 +19,12 @@
 
 typedef struct {
   int heading_level;
-  char *link;
+  char* link;
 } TOCItem;
 
 typedef struct {
   size_t count;
-  TOCItem *items;
+  TOCItem* items;
 } TOC;
 
 typedef struct Directory {
@@ -33,8 +33,8 @@ typedef struct Directory {
   bool hidden;
   size_t num_dirs;
   int level;
-  struct Directory *parent;
-  struct Directory *dirs[MAXDIRS];
+  struct Directory* parent;
+  struct Directory* dirs[MAXDIRS];
 
   bool is_dir;
   bool is_index;
@@ -46,15 +46,15 @@ typedef struct Directory {
   char full_path[MAXFILEPATH];
   char url[MAXURL];
   char url_path[MAXURL];
-  char *clean_path;
+  char* clean_path;
   TOC toc;
 } Directory;
 
 typedef Directory Page;
 
-Directory *NewDirectory(const char *path);
-void SortDirectory(Directory *dir);
-Page *NewPage(const char *name, const char *fullpath);
-void FreeDirectory(Directory *dir);
+Directory* NewDirectory(const char* path);
+void SortDirectory(Directory* dir);
+Page* NewPage(const char* name, const char* fullpath);
+void FreeDirectory(Directory* dir);
 
 #endif  // DIRECTORY_H

@@ -6,22 +6,18 @@
 
 #include "ANSI-color-codes.h"
 #include "builder.h"
-#include "html.h"
-#include "lex.h"
-#include "parser.h"
 #include "search.h"
 #include "server.h"
-#include "template.h"
 
 #define BUILDDIR ".site"
 
-char *ShiftArg(char ***argv);
+char* ShiftArg(char*** argv);
 void Help();
 void New();
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   ShiftArg(&argv);  // Program name
-  char *command = ShiftArg(&argv);
+  char* command = ShiftArg(&argv);
   if (!command) command = "help";
 
   if (strcmp("help", command) == 0) {
@@ -36,7 +32,7 @@ int main(int argc, char **argv) {
 
   if (strcmp("build", command) == 0) {
     LoadConfig();
-    Directory *site_directory = NewDirectory("");
+    Directory* site_directory = NewDirectory("");
     BuildSiteDirectory(site_directory, DOCSDIR, 0);
     Build404Page(site_directory, DOCSDIR "/404.md");
     SortDirectory(site_directory);
@@ -56,7 +52,7 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-char *ShiftArg(char ***argv) { return *(*argv)++; }
+char* ShiftArg(char*** argv) { return *(*argv)++; }
 
 // ╚╔╩╦╠═╬╣║╝╗
 void Help() {

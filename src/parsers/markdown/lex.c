@@ -1,83 +1,24 @@
-#include "lex.h"
+#include "../lex.h"
 
-static Token LexParagraph(Lexer *lexer);
+static Token LexParagraph(Lexer* lexer);
 
-const char *TokenName(Token *token) {
-  switch (token->type) {
-    case TOKEN_BOLD:
-      return "BOLD";
-    case TOKEN_BR:
-      return "BREAK";
-    case TOKEN_EMPTYLINE:
-      return "EMPTYLINE";
-    case TOKEN_H1:
-      return "H1";
-    case TOKEN_H2:
-      return "H2";
-    case TOKEN_H3:
-      return "H3";
-    case TOKEN_H4:
-      return "H4";
-    case TOKEN_H5:
-      return "H5";
-    case TOKEN_H6:
-      return "H6";
-    case TOKEN_ITALICS:
-      return "ITALICS";
-    case TOKEN_LINK:
-      return "LINK";
-    case TOKEN_LINKHREF:
-      return "LINKHREF";
-    case TOKEN_LINKLABEL:
-      return "LINKLABEL";
-    case TOKEN_LISTITEMORDERED:
-      return "OL";
-    case TOKEN_LISTITEMUNORDERED:
-      return "UL";
-    case TOKEN_P:
-      return "PARAGRAPH";
-    case TOKEN_QUOTE:
-      return "QUOTE";
-    case TOKEN_TEXT:
-      return "TEXT";
-    case TOKEN_CODEBLOCK:
-    case TOKEN_CODEBLOCKINLINE:
-      return "CODE";
-    case TOKEN_UNKNOWN:
-    default:
-      return "UNKNOWN";
-  }
-}
-
-static Token TokenNew(char *input, size_t pos) {
-  return (Token){.input        = input,
-                 .type         = TOKEN_UNKNOWN,
-                 .length       = 0,
-                 .start        = pos,
-                 .end          = pos,
-                 .line         = 0,
-                 .indent_level = 0};
-}
-
-static Token TokenNull() { return (Token){.input = NULL, .type = TOKEN_NULL}; }
-
-static void Advance(Lexer *lexer) {
+static void Advance(Lexer* lexer) {
   assert(lexer->pos < lexer->end);
   lexer->pos++;
 }
 
-static char Peek(Lexer *lexer) {
+static char Peek(Lexer* lexer) {
   if (lexer->pos >= lexer->end) return '\0';
   return lexer->input[lexer->pos];
 }
 
-static void NewLine(Lexer *lexer) {
+static void NewLine(Lexer* lexer) {
   if (Peek(lexer) == '\n') {
     Advance(lexer);
   }
 }
 
-static int Whitespace(Lexer *lexer) {
+static int Whitespace(Lexer* lexer) {
   int count = 0;
   while (Peek(lexer) == ' ') {
     Advance(lexer);
@@ -86,7 +27,7 @@ static int Whitespace(Lexer *lexer) {
   return count;
 }
 
-static int Repeats(Lexer *lexer, char expected) {
+static int Repeats(Lexer* lexer, char expected) {
   int count = 0;
 
   while (Peek(lexer) == expected) {
@@ -97,7 +38,7 @@ static int Repeats(Lexer *lexer, char expected) {
   return count;
 }
 
-static size_t ConsumeUntilAny(Lexer *lexer, const char *ends, bool inclusive) {
+static size_t ConsumeUntilAny(Lexer* lexer, const char* ends, bool inclusive) {
   char c = 0;
   while ((c = Peek(lexer)) != '\0' && strchr(ends, c) == NULL) {
     Advance(lexer);
@@ -106,11 +47,11 @@ static size_t ConsumeUntilAny(Lexer *lexer, const char *ends, bool inclusive) {
   return lexer->pos;
 }
 
-static size_t ConsumeLine(Lexer *lexer) {
+static size_t ConsumeLine(Lexer* lexer) {
   return ConsumeUntilAny(lexer, "\n", false);
 }
 
-static Token LexHeading(Lexer *lexer, bool collapsing) {
+static Token LexHeading(Lexer* lexer, bool collapsing) {
   Token token = TokenNew(lexer->input, lexer->pos);
 
   int count;
@@ -147,7 +88,7 @@ static Token LexHeading(Lexer *lexer, bool collapsing) {
   return token;
 }
 
-static Token LexCodeBlock(Lexer *lexer) {
+static Token LexCodeBlock(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   Repeats(lexer, '`');
   token.type  = TOKEN_CODEBLOCK;
@@ -167,7 +108,7 @@ static Token LexCodeBlock(Lexer *lexer) {
   return token;
 }
 
-static Token LexCodeInline(Lexer *lexer) {
+static Token LexCodeInline(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_CODEBLOCKINLINE;
   Repeats(lexer, '`');
@@ -178,7 +119,7 @@ static Token LexCodeInline(Lexer *lexer) {
   return token;
 }
 
-static Token LexCode(Lexer *lexer) {
+static Token LexCode(Lexer* lexer) {
   size_t saved_pos = lexer->pos;
   int count        = Repeats(lexer, '`');
   lexer->pos       = saved_pos;
@@ -188,7 +129,7 @@ static Token LexCode(Lexer *lexer) {
   return LexParagraph(lexer);
 }
 
-static Token LexQuote(Lexer *lexer) {
+static Token LexQuote(Lexer* lexer) {
   int count = Repeats(lexer, '>');
   Whitespace(lexer);
   Token token  = TokenNew(lexer->input, lexer->pos);
@@ -211,7 +152,7 @@ static Token LexQuote(Lexer *lexer) {
   return token;
 }
 
-static Token LexAdmonition(Lexer *lexer) {
+static Token LexAdmonition(Lexer* lexer) {
   size_t pos  = lexer->pos;
   Token token = TokenNew(lexer->input, pos);
   token.type  = TOKEN_ADMONITION;
@@ -227,7 +168,7 @@ static Token LexAdmonition(Lexer *lexer) {
   return token;
 }
 
-static Token LexTableRow(Lexer *lexer) {
+static Token LexTableRow(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_TABLEROW;
   size_t pos  = lexer->pos;
@@ -244,7 +185,7 @@ static Token LexTableRow(Lexer *lexer) {
   return token;
 }
 
-static Token LexParagraph(Lexer *lexer) {
+static Token LexParagraph(Lexer* lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_P;
   size_t start = lexer->pos;
@@ -263,7 +204,7 @@ static Token LexParagraph(Lexer *lexer) {
   return token;
 }
 
-static Token LexEmptyLine(Lexer *lexer) {
+static Token LexEmptyLine(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_EMPTYLINE;
 
@@ -274,7 +215,7 @@ static Token LexEmptyLine(Lexer *lexer) {
   return token;
 }
 
-static Token LexText(Lexer *lexer) {
+static Token LexText(Lexer* lexer) {
   // HACK Remove quote.
   if (Repeats(lexer, '>') > 0) Whitespace(lexer);
 
@@ -286,7 +227,7 @@ static Token LexText(Lexer *lexer) {
   return token;
 }
 
-static Token LexLinkLabel(Lexer *lexer) {
+static Token LexLinkLabel(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_LINKLABEL;
   Repeats(lexer, '[');
@@ -299,7 +240,7 @@ static Token LexLinkLabel(Lexer *lexer) {
   return token;
 }
 
-static Token LexLinkHref(Lexer *lexer) {
+static Token LexLinkHref(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_LINKHREF;
   Repeats(lexer, '(');
@@ -312,7 +253,7 @@ static Token LexLinkHref(Lexer *lexer) {
   return token;
 }
 
-static Token LexListItem(Lexer *lexer) {
+static Token LexListItem(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_TEXT;
 
@@ -339,7 +280,7 @@ static Token LexListItem(Lexer *lexer) {
   return token;
 }
 
-static Token LexBreak(Lexer *lexer) {
+static Token LexBreak(Lexer* lexer) {
   Token token  = TokenNew(lexer->input, lexer->pos);
   token.type   = TOKEN_BR;
   size_t start = lexer->pos;
@@ -351,7 +292,7 @@ static Token LexBreak(Lexer *lexer) {
   return token;
 }
 
-static Token LexTableCell(Lexer *lexer) {
+static Token LexTableCell(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_TABLECELL;
   Advance(lexer);
@@ -367,7 +308,7 @@ static Token LexTableCell(Lexer *lexer) {
   return token;
 }
 
-static Token LexAttributes(Lexer *lexer) {
+static Token LexAttributes(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_ATTRIBUTES;
   Advance(lexer);
@@ -382,11 +323,11 @@ static Token LexAttributes(Lexer *lexer) {
 
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
-static Token LexEmphasis(Lexer *lexer) {
+static Token LexEmphasis(Lexer* lexer) {
   char format            = Peek(lexer);
   int opening            = Repeats(lexer, format);
   size_t start           = lexer->pos;
-  const char *format_str = (char[]){format, '\0'};
+  const char* format_str = (char[]){format, '\0'};
   size_t end             = ConsumeUntilAny(lexer, format_str, false);
   int closing            = Repeats(lexer, format);
   int matching           = MIN(opening, closing);
@@ -404,7 +345,7 @@ static Token LexEmphasis(Lexer *lexer) {
   return token;
 }
 
-static Token LexHtml(Lexer *lexer) {
+static Token LexHtml(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_HTML;
   token.end   = ConsumeLine(lexer);
@@ -413,7 +354,7 @@ static Token LexHtml(Lexer *lexer) {
   return token;
 }
 
-static Token LexHorizontalRule(Lexer *lexer) {
+static Token LexHorizontalRule(Lexer* lexer) {
   Token token = TokenNew(lexer->input, lexer->pos);
   token.type  = TOKEN_HR;
   token.end   = ConsumeLine(lexer);
@@ -421,18 +362,18 @@ static Token LexHorizontalRule(Lexer *lexer) {
   return token;
 }
 
-Lexer LexerNew(char *input, size_t start, size_t end) {
+Lexer LexerNew(char* input, size_t start, size_t end) {
   return (Lexer){.input = input, .pos = start, .end = end, .current_line = 1};
 }
 
-Token PeekToken(Lexer *lexer) {
+Token PeekToken(Lexer* lexer) {
   size_t saved_pos = lexer->pos;
   Token token      = NextToken(lexer);
   lexer->pos       = saved_pos;
   return token;
 }
 
-Token NextToken(Lexer *lexer) {
+Token NextToken(Lexer* lexer) {
   char c = Peek(lexer);
   if (c == '\0') return TokenNull();
 
@@ -486,7 +427,7 @@ Token NextToken(Lexer *lexer) {
   return token;
 }
 
-Token NextInlineToken(Lexer *lexer) {
+Token NextInlineToken(Lexer* lexer) {
   char c = Peek(lexer);
   if (c == '\0') return TokenNull();
 
@@ -520,10 +461,4 @@ Token NextInlineToken(Lexer *lexer) {
   }
 
   return token;
-}
-
-void TokenPrint(Token *token) {
-  for (size_t i = token->start; i < token->end; i++) {
-    putchar(token->input[i]);
-  }
 }

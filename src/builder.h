@@ -13,17 +13,19 @@
 #include "config.h"
 #include "directory.h"
 #include "html.h"
-#include "parser.h"
+#include "parsers/ast.h"
+#include "parsers/lex.h"
+#include "parsers/parser.h"
 #include "template.h"
 #include "utils.h"
 
 #define DOCSDIR      "docs"
 #define DOCSMAXDEPTH 1000
 
-void BuildSiteDirectory(Directory *dest, const char *path, int level);
-void InitializeSite(const char *dir);
-void BuildSite(Directory *site_directory, Directory *current_directory,
-               const char *base_path);
-void Build404Page(Directory *dest, const char *path);
+void BuildSiteDirectory(Directory* dest, const char* path, int level);
+void InitializeSite(const char* dir);
+void BuildSite(Directory* site_directory, Directory* current_directory,
+               const char* base_path);
+void Build404Page(Directory* dest, const char* path);
 
 #endif  // BUILD_H
