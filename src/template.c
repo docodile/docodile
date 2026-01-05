@@ -104,6 +104,9 @@ TemplateState TemplatePage(Page *page, Directory *site_directory,
       if (strcmp("article", state.slot_name) == 0)
         build_page_func(page->full_path, _out, page);
       if (strcmp("toc", state.slot_name) == 0) TemplateToc(page->toc);
+      if (strcmp("search", state.slot_name) == 0)
+        TemplateSearch(page, site_directory, current_directory,
+                       build_page_func);
       if (strcmp("nav", state.slot_name) == 0)
         TemplateNav(site_directory, current_directory);
       if (strcmp("nav_back_button", state.slot_name) == 0)
@@ -485,5 +488,16 @@ void TemplateMobileMenuItems(Page *page, Directory *site_directory,
     print("</ul>");
 
     print("</details>");
+  }
+}
+
+void TemplateSearch(Page *page, Directory *site_directory,
+                    Directory *current_directory,
+                    BuildPageFunc build_page_func) {
+  char *search_config = ReadConfig("search");
+  if (!search_config) search_config = "yes";
+  if (strcmp("yes", search_config) == 0) {
+    TemplatePartial("partials/search-input.html", page, site_directory,
+                    current_directory, build_page_func);
   }
 }

@@ -1,16 +1,16 @@
 - [ ] Improve links
   - [ ] Convert local paths to site paths
   - [ ] Images
-- [x] Generate 404.html
-- [x] Navigation
-  - [x] Be able to sort files not just directories
-  - [x] Fix sorting
+- [X] Generate 404.html
+- [-] Navigation
+  - [X] Be able to sort files not just directories
+  - [X] Fix sorting
   - [ ] Be able to remove items from navigation
   - [ ] Rename items in navigation
 - [ ] Sitemap generation
 - [ ] Improve styles 
-- [ ] Be able to switch off features in config
-  - [ ] Search
+- [-] Be able to switch off features in config
+  - [X] Search
   - [ ] Footer nav
 - [ ] Fix display of links in TOC (e.g. use a link as a header)
 - [ ] Add support for .org files

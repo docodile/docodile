@@ -41,6 +41,9 @@ void TemplateBreadcrumbs(Directory *page);
 void TemplateLogo();
 void TemplateStyles(Directory *site_directory);
 void TemplateMobileMenuItems(Page *page, Directory *site_directory,
-                        Directory *current_directory);
+                             Directory *current_directory);
+void TemplateSearch(Page *page, Directory *site_directory,
+                    Directory *current_directory,
+                    BuildPageFunc build_page_func);
 
 #endif  // TEMPLATE_H

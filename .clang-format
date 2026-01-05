@@ -1,4 +1,5 @@
 BasedOnStyle: Google
 AlignConsecutiveMacros: true
 AlignConsecutiveAssignments: true
+PointerAlignment: Right
 ColumnLimit: 80
