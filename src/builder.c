@@ -1,5 +1,9 @@
 #include "builder.h"
 
+#include <string.h>
+
+#define CACHING false
+
 static void AddPage(Directory *dir, Page *page) {
   assert(dir->num_dirs + 1 < MAXPAGESPERDIR);
   dir->dirs[dir->num_dirs++] = page;
@@ -265,6 +269,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
     snprintf(path, sizeof(path) + 1, "%s/%s", base_path, page->out_name);
     strcpy(page->url, path);
 
+#if CACHING
     if (!config_updated) {
       struct stat source_stat, target_stat, config_stat;
       bool source_exists = stat(page->full_path, &source_stat) == 0;
@@ -281,6 +286,7 @@ void BuildSite(Directory *site_directory, Directory *current_directory,
         }
       }
     }
+#endif
 
     FILE *html_page = fopen(path, "w");
     TemplateInit("templates/index.html", html_page);

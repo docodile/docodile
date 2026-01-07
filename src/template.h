@@ -1,7 +1,6 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
-#include <openssl/sha.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -257,48 +257,8 @@ void TemplateToc(TOC toc) {
   print("</nav>");
 }
 
-#define HASH_SIZE  SHA256_DIGEST_LENGTH
-#define GRID_SIZE  5
-#define MID        3
-#define BLOCK_SIZE 20
-#define SVG_SIZE   GRID_SIZE *BLOCK_SIZE
-
-static void Identicon() {
-  const char *site_name = ReadConfig("site-name");
-  unsigned char hash[HASH_SIZE];
-  SHA256(site_name, strlen(site_name), hash);
-  print(
-      "<svg class=\"gd-logo\" viewBox=\"0 0 %d %d\" "
-      "xmlns=\"http://www.w3.org/2000/svg\">\n",
-      SVG_SIZE, SVG_SIZE);
-
-  for (size_t y = 0; y < GRID_SIZE; y++) {
-    for (size_t x = 0; x < MID; x++) {
-      int bit_index  = y * MID + x;
-      int byte_index = bit_index / 8;
-      int bit        = (hash[MID + byte_index] >> (7 - (bit_index % 8))) & 1;
-
-      if (bit) {
-        int px = x * BLOCK_SIZE;
-        int py = y * BLOCK_SIZE;
-        print("<rect x='%d' y='%d' width='%d' height='%d'/>\n", px, py,
-              BLOCK_SIZE, BLOCK_SIZE);
-        int mirror_x = (4 - x) * BLOCK_SIZE;
-        print("<rect x='%d' y='%d' width='%d' height='%d'/>\n", mirror_x, py,
-              BLOCK_SIZE, BLOCK_SIZE);
-      }
-    }
-  }
-
-  print("</svg>\n");
-}
-
 void TemplateLogo() {
   char *logo_opt = ReadConfig("logo");
-
-  if (strcmp("identicon", logo_opt) == 0) {
-    Identicon();
-  }
 
   if (strcmp("bootstrap", logo_opt) == 0) {
     print("<i class=\"bi bi-book-half\"></i>");

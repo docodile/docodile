@@ -14,3 +14,6 @@
   - [ ] Footer nav
 - [ ] Fix display of links in TOC (e.g. use a link as a header)
 - [ ] Add support for .org files
+- [ ] Mobile sidebar and TOC
+- [ ] Use first heading as link display
+- [ ] Blog support
