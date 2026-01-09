@@ -1,5 +1,7 @@
 #include "template.h"
 
+#include "config.h"
+
 static FILE *_out;
 static Template _template;
 
@@ -173,6 +175,7 @@ void TemplateNav(Directory *site_dir, Directory *current_dir) {
   print("<menu>");
   for (size_t i = 0; i < site_dir->num_dirs; i++) {
     Directory *dir = site_dir->dirs[i];
+    if (dir->hidden) continue;
     if (!dir->is_dir) continue;
     if (dir->path[0] == '_') continue;
     if (IsActive(dir, current_dir))
@@ -202,7 +205,7 @@ void TemplateBackButton(Directory *site_dir, Directory *curr_dir) {
     }
     if (first_index) {
       print("<a class=\"gd-back\" href=\"%s\">%s</a>", first_index->url_path,
-            parent->title);
+            "Back");
     }
   }
 }
@@ -216,6 +219,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
     Directory *dir = current_directory->dirs[i];
     if (dir->is_dir) {
+      if (dir->hidden) continue;
       if (current_directory == site_directory) continue;
       if (dir->path[0] == '_') continue;
       print("<details>");
@@ -232,6 +236,7 @@ void TemplateSideNav(Page *page, Directory *site_directory,
       print("</details>");
     } else {
       if (strcmp("_nav.md", dir->src_name) == 0) continue;
+      if (dir->hidden) continue;
       if (hide_index && dir->is_index) continue;
       char classes[100] = "";
       if (page == dir) sprintf(classes, " class=\"active\"");
@@ -303,6 +308,13 @@ void TemplateStyles(Directory *site_directory) {
 }
 
 void TemplateFooterNav(Page *page, Directory *current_directory) {
+  if (strcmp(ReadConfigOrFallback("navigation.footer", "false"), "true"))
+    return;
+
+  // TODO Hard-coded .md, makes it harder if we want to add support for other
+  // file formats
+  if (strcmp(page->path, "docs/index.md") == 0) return;
+
   Directory *prev = NULL, *next = NULL;
 
   for (size_t i = 0; i < current_directory->num_dirs; i++) {
@@ -454,9 +466,7 @@ void TemplateMobileMenuItems(Page *page, Directory *site_directory,
 void TemplateSearch(Page *page, Directory *site_directory,
                     Directory *current_directory,
                     BuildPageFunc build_page_func) {
-  char *search_config = ReadConfig("search");
-  if (!search_config) search_config = "yes";
-  if (strcmp("yes", search_config) == 0) {
+  if (strcmp("true", ReadConfigOrFallback("search", "true")) == 0) {
     TemplatePartial("partials/search-input.html", page, site_directory,
                     current_directory, build_page_func);
   }

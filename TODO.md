@@ -1,19 +1,23 @@
+- [x] Be able to switch off features in config
+  - [x] Search
+  - [x] Footer nav
+- [x] Generate 404.html
 - [ ] Improve links
   - [ ] Convert local paths to site paths
   - [ ] Images
-- [X] Generate 404.html
-- [-] Navigation
-  - [X] Be able to sort files not just directories
-  - [X] Fix sorting
-  - [ ] Be able to remove items from navigation
+  - [ ] Fix todo syntax which is interpreted as links at the moment
+- [ ] Navigation
+  - [x] Be able to sort files not just directories
+  - [x] Fix sorting
+  - [x] Be able to remove items from navigation
+  - [x] Fix footer nav showing link to last page on home page
+  - [x] Rename first item of nested nav to "back"
+    - [ ] Add back icon
   - [ ] Rename items in navigation
+  - [ ] Use first heading as link display
+  - [ ] Mobile sidebar and TOC
+  - [ ] Fix display of links in TOC (e.g. use a link as a header)
 - [ ] Sitemap generation
 - [ ] Improve styles 
-- [-] Be able to switch off features in config
-  - [X] Search
-  - [ ] Footer nav
-- [ ] Fix display of links in TOC (e.g. use a link as a header)
 - [ ] Add support for .org files
-- [ ] Mobile sidebar and TOC
-- [ ] Use first heading as link display
 - [ ] Blog support

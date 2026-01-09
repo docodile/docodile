@@ -20,5 +20,6 @@ typedef struct {
 void LoadConfig();
 void UnloadConfig();
 char *ReadConfig(const char *path);
+const char *ReadConfigOrFallback(const char *path, const char *fallback);
 
 #endif  // CONFIG_H

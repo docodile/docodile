@@ -161,3 +161,9 @@ char *ReadConfig(const char *path) {
 
   return NULL;
 }
+
+const char *ReadConfigOrFallback(const char *path, const char *fallback) {
+  char *config = ReadConfig(path);
+  if (!config || strlen(config) == 0) return fallback;
+  return config;
+}

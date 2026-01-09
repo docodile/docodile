@@ -128,9 +128,12 @@ void SortDirectory(Directory *dir) {
       sprintf(buffer, "%.*s", li->end - li->start, &li->input[li->start]);
       for (size_t i = 0; i < dir->num_dirs; i++) {
         Directory *curr = dir->dirs[i];
-        if ((curr->is_dir && strcmp(buffer, curr->path) == 0) ||
-            (!curr->is_dir && strcmp(buffer, curr->src_name) == 0)) {
+        bool is_hidden  = buffer[0] == '!';
+        if ((curr->is_dir && strcmp(&buffer[is_hidden], curr->path) == 0) ||
+            (!curr->is_dir &&
+             strcmp(&buffer[is_hidden], curr->src_name) == 0)) {
           dir->dirs[i]->nav_index = index++;
+          dir->dirs[i]->hidden    = is_hidden;
           break;
         }
       }

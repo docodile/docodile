@@ -1,5 +1,5 @@
 <main class="gd-homepage">
-  <h1><img src="/assets/docodile-logo.svg" width="100px"> Docodile</h1>
+  <h1><img src="/assets/docodile-logo.svg" width="100px" /> Docodile</h1>
   <div class="gd-headlines">
     <section>
       <i class="bi bi-lightning-fill"></i>
@@ -39,7 +39,9 @@
       <p>
         Quickly navigate your documentation with accurate client-side search.
       </p>
-      <div class="gd-feature-buttons"></div>
+      <div class="gd-feature-buttons">
+        <a class="gd-button" onclick="focusSearch()">Try it out</a>
+      </div>
     </section>
     <section>
       <header>
@@ -62,8 +64,8 @@
         <h2>Extended Markdown</h2>
       </header>
       <p>
-        Docodile's custom Markdown processor provides all the syntax you know and
-        love, along with some unique extensions that make sense.
+        Docodile's custom Markdown processor provides all the syntax you know
+        and love, along with some unique extensions that make sense.
       </p>
       <div class="gd-feature-buttons">
         <a class="gd-button" href="/reference/markdown.html">Learn more</a>
@@ -73,6 +75,10 @@
   {% article %}
 </main>
 <script>
+  function focusSearch() {
+    document.querySelector(".gd-search-input").focus();
+  }
+
   function getRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
