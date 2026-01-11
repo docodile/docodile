@@ -3,6 +3,7 @@
   - [x] Footer nav
 - [x] Generate 404.html
 - [ ] Improve links
+  - [ ] Footnotes
   - [ ] Convert local paths to site paths
   - [ ] Images
   - [ ] Fix todo syntax which is interpreted as links at the moment
