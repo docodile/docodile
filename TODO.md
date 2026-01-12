@@ -23,3 +23,4 @@
 - [ ] Add support for .org files
 - [ ] Blog support
 - [ ] Disable repo widget for ui-tests
+- [ ] Add suppot for custom attributes on all element types (currently only on collapsible headings)
