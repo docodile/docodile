@@ -446,7 +446,7 @@ article.gd-article {
 
     p {
         margin-top: 0;
-        color: color-mix(in srgb, var(--color), white 70%);
+        color: color-mix(in srgb, var(--color), var(--gd-fg-primary) 70%);
     }
 
     & :not(:first-child) {

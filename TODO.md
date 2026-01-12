@@ -22,3 +22,4 @@
 - [ ] Improve styles 
 - [ ] Add support for .org files
 - [ ] Blog support
+- [ ] Disable repo widget for ui-tests
