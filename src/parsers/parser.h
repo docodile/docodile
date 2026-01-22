@@ -6,10 +6,9 @@
 #include "utils.h"
 
 typedef struct {
-  const char* input;
+  const char *input;
 } Parser;
 
-Node* Parse(Lexer* lexer, Node* parent);
-Node* ParseInline(Lexer* lexer, Node* parent);
+Node *Parse(Lexer *lexer, Node *parent);
 
 #endif  // PARSER_H
