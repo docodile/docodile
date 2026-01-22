@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include "lex.h"
+
 Node *ParseInlineCode(Token *token);
 Node *ParseUntilIndentationResets(Lexer *lexer, Node *parent, int indent_level);
 Node *ParseWhile(Lexer *lexer, Node *parent, TokenType token_type);
@@ -421,47 +423,76 @@ Node *ParseListItem(Token *token) {
 }
 
 Node *ParseLink(Token *token, Lexer *lexer) {
-  Node *n               = NodeFromToken("a", token);
-  Token link_href_token = NextInlineToken(lexer);
+  Node *n    = NodeFromToken("a", token);
+  Token next = NextInlineToken(lexer);
+  printf("next: %.*s\n", next.end - next.start, &next.input[next.start]);
 
-  // TODO Silently fail and fallback to text rendering.
-  assert(link_href_token.type == TOKEN_LINKHREF);
+  if (next.type == TOKEN_LINKHREF) {
+    // This eventually gets freed after printing when all node attributes are
+    // released
+    char *href_value = malloc(1000);
+    snprintf(href_value, 1000, "%.*s", (int)(next.end - next.start),
+             &n->input[next.start]);
+    char *href      = strtok(href_value, " ");
+    char *title     = strtok(NULL, "");
+    size_t href_len = strlen(href);
+    // TODO come back to this and clean up.
+    if (HasExtension(href, ".md")) {
+      if (href_len > 2 && href[0] == '.' && href[1] == '/') {
+        href += 2;  // skip ./
+        href_len -= 2;
+      }
 
-  char *href_value = malloc(1000);
-  snprintf(href_value, 1000, "%.*s",
-           (int)(link_href_token.end - link_href_token.start),
-           &n->input[link_href_token.start]);
-  char *href      = strtok(href_value, " ");
-  char *title     = strtok(NULL, "");
-  size_t href_len = strlen(href);
-  // TODO come back to this and clean up.
-  if (HasExtension(href, ".md")) {
-    if (href_len > 2 && href[0] == '.' && href[1] == '/') {
-      href += 2;  // skip ./
-      href_len -= 2;
-    }
-    const char *index_name = "index.md";
-    if (href_len > sizeof(index_name)) {
-      size_t start = href_len - sizeof(index_name);
-      if (strcmp(&href[start], index_name) == 0) {
-        href[start] = '\0';
-        href_len    = start;
+      const char *index_name = "index.md";
+      if (href_len > sizeof(index_name)) {
+        size_t start = href_len - sizeof(index_name);
+        if (strcmp(&href[start], index_name) == 0) {
+          href[start] = '\0';
+          href_len    = start;
+        }
+      }
+      RemoveExtension(href, href);
+      NodeAddAttribute(n, "href", href);
+      free(href_value);
+      if (title) {
+        if (title[0] == '"') title++;
+        char *buffer = malloc(strlen(title) + 1);
+        strcpy(buffer, title);
+        size_t len = strlen(buffer);
+        if (buffer[len - 1] == '"') buffer[len - 1] = '\0';
+        NodeAddAttribute(n, "title", buffer);
+        free(buffer);
       }
     }
 
-    RemoveExtension(href, href);
+    return n;
   }
-  NodeAddAttribute(n, "href", href);
-  free(href_value);
 
-  if (title) {
-    if (title[0] == '"') title++;
-    char *buffer = malloc(strlen(title) + 1);
-    strcpy(buffer, title);
-    size_t len = strlen(buffer);
-    if (buffer[len - 1] == '"') buffer[len - 1] = '\0';
-    NodeAddAttribute(n, "title", buffer);
-    free(buffer);
+  // Check if it's a footnote or footnote reference
+  if (n->input[n->start] == '^') {
+    // Remove the ^ from the footnote label
+    n->start++;
+
+    // Again, attributes are freed after use.
+    char *internal_link = malloc(1000);
+    snprintf(internal_link, 1000, "#fn-%.*s", n->end - n->start,
+             &n->input[n->start]);
+
+    // Check if it's a footnote
+    if (next.type == TOKEN_TEXT && next.input[next.start] == ':') {
+      Node *target = NewNode("li");
+      NodeAddAttribute(target, "id", &internal_link[1]);
+      Node *footnote = NodeFromToken("_text", &next);
+      footnote->start++;
+      NodeAppendChild(target, footnote);
+      return target;
+    }
+
+    Node *a = n;
+    NodeAddAttribute(n, "href", internal_link);
+    Node *sup = NewNode("sup");
+    NodeAppendChild(sup, a);
+    return sup;
   }
 
   return n;

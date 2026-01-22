@@ -1,3 +1,4 @@
 - getting-started
 - setup
 - reference
+- !index.md

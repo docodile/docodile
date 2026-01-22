@@ -82,7 +82,8 @@ static void RenderNode(Node *node, int indent, bool should_indent) {
   }
 
   if (strcmp("br", node->type) == 0) {
-    print("<br>");
+    // Quick fix don't print <br>s
+    /* print("<br>"); */
     RenderNode(node->next_sibling, indent, false);
     return;
   }
